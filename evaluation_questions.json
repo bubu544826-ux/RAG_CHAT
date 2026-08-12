@@ -1,0 +1,42 @@
+[
+  {
+    "question": "忘记公司账号密码后，员工应该如何重置？",
+    "expected_source": "rag.txt"
+  },
+  {
+    "question": "IT 服务台的正常工作时间是什么时候？",
+    "expected_source": "rag.txt"
+  },
+  {
+    "question": "新员工入职后多久会自动创建公司邮箱？",
+    "expected_source": "rag.txt"
+  },
+  {
+    "question": "可以用个人电脑登录公司邮箱吗？需要满足什么条件？",
+    "expected_source": "rag.txt"
+  },
+  {
+    "question": "申请公司 VPN 权限需要经过哪些步骤？",
+    "expected_source": "rag.txt"
+  },
+  {
+    "question": "VPN 密码连续输错五次后会怎样？",
+    "expected_source": "rag.txt"
+  },
+  {
+    "question": "公司电脑硬件损坏后如何提交维修申请？",
+    "expected_source": "rag.txt"
+  },
+  {
+    "question": "公司的标准办公笔记本通常几年更换一次？",
+    "expected_source": "rag.txt"
+  },
+  {
+    "question": "员工正式离职后，公司邮箱和邮件会如何处理？",
+    "expected_source": "rag.txt"
+  },
+  {
+    "question": "收到疑似钓鱼邮件时应该怎么处理？",
+    "expected_source": "rag.txt"
+  }
+]

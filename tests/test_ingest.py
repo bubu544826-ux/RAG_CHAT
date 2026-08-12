@@ -1,0 +1,41 @@
+"""Tests for the ingestion command entry point."""
+
+import io
+import unittest
+from contextlib import redirect_stdout
+from unittest.mock import patch
+
+import ingest
+
+
+class IngestCommandTest(unittest.TestCase):
+    @patch("ingest.build_index")
+    def test_prints_file_chunk_and_embedding_counts(self, build_index_mock) -> None:
+        build_index_mock.return_value = {
+            "file_count": 2,
+            "chunk_count": 4,
+            "embedding_count": 4,
+        }
+        output = io.StringIO()
+
+        with redirect_stdout(output):
+            exit_code = ingest.main()
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(
+            output.getvalue().splitlines(),
+            [
+                "文件数量：2",
+                "chunk 数量：4",
+                "embedding 数量：4",
+                f"index 文件：{ingest.OUTPUT_PATH.relative_to(ingest.PROJECT_ROOT)}",
+            ],
+        )
+        build_index_mock.assert_called_once_with(
+            ingest.INPUT_DIRECTORY,
+            ingest.OUTPUT_PATH,
+        )
+
+
+if __name__ == "__main__":
+    unittest.main()

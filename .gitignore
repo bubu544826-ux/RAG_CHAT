@@ -35,5 +35,8 @@ Thumbs.db
 data/*
 !data/raw/
 !data/raw/.gitkeep
+!data/raw/rag_notes.md
+!data/raw/rag_overview.txt
 !data/processed/
+data/processed/*
 !data/processed/.gitkeep

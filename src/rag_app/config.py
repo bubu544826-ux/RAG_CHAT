@@ -1,0 +1,17 @@
+"""Application configuration values."""
+
+import os
+
+
+DEFAULT_EMBEDDING_MODEL_NAME = "Qwen/Qwen3-Embedding-0.6B"
+DEFAULT_ANTHROPIC_MODEL_NAME = "claude-sonnet-5"
+
+EMBEDDING_MODEL_NAME = (
+    os.getenv("EMBEDDING_MODEL_NAME", DEFAULT_EMBEDDING_MODEL_NAME).strip()
+    or DEFAULT_EMBEDDING_MODEL_NAME
+)
+
+ANTHROPIC_MODEL_NAME = (
+    os.getenv("ANTHROPIC_MODEL_NAME", DEFAULT_ANTHROPIC_MODEL_NAME).strip()
+    or DEFAULT_ANTHROPIC_MODEL_NAME
+)
