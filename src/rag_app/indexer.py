@@ -1,8 +1,9 @@
-"""Build a small local JSON index from source documents."""
+"""Build a small local Chroma index from source documents."""
 
-import json
 from collections.abc import Callable
 from pathlib import Path
+
+import chromadb
 
 from .chunker import chunk_document
 from .document_loader import load_documents
@@ -11,6 +12,23 @@ from .embedding import embed_text
 
 DEFAULT_CHUNK_SIZE = 500
 DEFAULT_CHUNK_OVERLAP = 50
+COLLECTION_NAME = "rag_chunks"
+
+
+def _prepare_chroma_directory(index_path: Path) -> None:
+    """Replace a legacy JSON index with a recoverable backup directory layout."""
+    index_path.parent.mkdir(parents=True, exist_ok=True)
+    if index_path.is_file():
+        backup_path = index_path.with_name(f"{index_path.name}.legacy")
+        backup_number = 1
+        while backup_path.exists():
+            backup_path = index_path.with_name(
+                f"{index_path.name}.legacy.{backup_number}"
+            )
+            backup_number += 1
+        index_path.replace(backup_path)
+
+    index_path.mkdir(parents=True, exist_ok=True)
 
 
 def build_index(
@@ -20,9 +38,12 @@ def build_index(
     overlap: int = DEFAULT_CHUNK_OVERLAP,
     embedding_function: Callable[[str], list[float]] = embed_text,
 ) -> dict[str, int]:
-    """Run loader, chunker and embedding, then write records as JSON."""
+    """Run loader, chunker and embedding, then persist records in Chroma."""
     documents = load_documents(input_directory)
-    records: list[dict[str, object]] = []
+    ids: list[str] = []
+    texts: list[str] = []
+    metadatas: list[dict[str, str]] = []
+    embeddings: list[list[float]] = []
 
     for document in documents:
         chunks = chunk_document(document, chunk_size=chunk_size, overlap=overlap)
@@ -32,24 +53,36 @@ def build_index(
             if not chunk["text"].strip():
                 continue
 
-            records.append(
-                {
-                    "source": chunk["source"],
-                    "chunk_id": chunk["chunk_id"],
-                    "text": chunk["text"],
-                    "embedding": embedding_function(chunk["text"]),
-                }
+            ids.append(chunk["chunk_id"])
+            texts.append(chunk["text"])
+            metadatas.append(
+                {"source": chunk["source"], "chunk_id": chunk["chunk_id"]}
             )
+            embeddings.append(embedding_function(chunk["text"]))
 
     index_path = Path(output_path)
-    index_path.parent.mkdir(parents=True, exist_ok=True)
-    index_path.write_text(
-        json.dumps(records, ensure_ascii=False, indent=2),
-        encoding="utf-8",
+    _prepare_chroma_directory(index_path)
+    client = chromadb.PersistentClient(path=str(index_path))
+
+    collection_names = {collection.name for collection in client.list_collections()}
+    if COLLECTION_NAME in collection_names:
+        client.delete_collection(COLLECTION_NAME)
+
+    collection = client.create_collection(
+        name=COLLECTION_NAME,
+        embedding_function=None,
+        configuration={"hnsw": {"space": "cosine"}},
     )
+    if ids:
+        collection.add(
+            ids=ids,
+            documents=texts,
+            metadatas=metadatas,
+            embeddings=embeddings,
+        )
 
     return {
         "file_count": len(documents),
-        "chunk_count": len(records),
-        "embedding_count": len(records),
+        "chunk_count": len(ids),
+        "embedding_count": len(embeddings),
     }

@@ -1,11 +1,12 @@
-"""Retrieve the most relevant chunks from a local JSON index."""
+"""Retrieve the most relevant chunks from a local Chroma index."""
 
-import json
 from collections.abc import Callable
 from pathlib import Path
 
+import chromadb
+
 from .embedding import embed_text
-from .similarity import cosine_similarity
+from .indexer import COLLECTION_NAME
 
 
 DEFAULT_TOP_K = 3
@@ -27,31 +28,52 @@ def retrieve(
     if top_k <= 0:
         raise ValueError("top_k 必须大于 0。")
 
-    records = json.loads(Path(index_path).read_text(encoding="utf-8"))
-    if not isinstance(records, list):
-        raise ValueError("index 必须是 JSON 数组。")
+    chroma_path = Path(index_path)
+    if chroma_path.is_file():
+        raise ValueError("检测到旧 JSON index，请先运行 python ingest.py 迁移到 Chroma。")
+
+    client = chromadb.PersistentClient(path=str(chroma_path))
+    collection = client.get_collection(
+        name=COLLECTION_NAME,
+        embedding_function=None,
+    )
+    result_count = min(top_k, collection.count())
+    if result_count == 0:
+        return []
 
     query_embedding = embedding_function(question)
+    query_result = collection.query(
+        query_embeddings=[query_embedding],
+        n_results=result_count,
+        include=["documents", "metadatas", "distances"],
+    )
+    documents = query_result["documents"]
+    metadatas = query_result["metadatas"]
+    distances = query_result["distances"]
+    if documents is None or metadatas is None or distances is None:
+        raise ValueError("Chroma 查询结果缺少 documents、metadatas 或 distances。")
+
     results: list[dict[str, object]] = []
+    for text, metadata, distance in zip(
+        documents[0],
+        metadatas[0],
+        distances[0],
+    ):
+        if text is None or metadata is None:
+            raise ValueError("Chroma 查询结果包含空文档或空 metadata。")
+        source = metadata.get("source")
+        chunk_id = metadata.get("chunk_id")
+        if not isinstance(source, str) or not isinstance(chunk_id, str):
+            raise ValueError("Chroma metadata 缺少 source 或 chunk_id。")
 
-    for record in records:
-        if not isinstance(record, dict):
-            raise ValueError("index 中的每条记录必须是 JSON 对象。")
-
-        required_fields = ("text", "source", "chunk_id", "embedding")
-        missing_fields = [field for field in required_fields if field not in record]
-        if missing_fields:
-            raise ValueError(f"index 记录缺少字段：{', '.join(missing_fields)}。")
-
-        score = cosine_similarity(query_embedding, record["embedding"])
         results.append(
             {
-                "text": record["text"],
-                "source": record["source"],
-                "chunk_id": record["chunk_id"],
-                "score": score,
+                "text": text,
+                "source": source,
+                "chunk_id": chunk_id,
+                # Chroma cosine distance is 1 - cosine similarity.
+                "score": 1.0 - float(distance),
             }
         )
 
-    results.sort(key=lambda result: result["score"], reverse=True)
-    return results[:top_k]
+    return results

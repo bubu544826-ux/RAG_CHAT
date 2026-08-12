@@ -1,5 +1,6 @@
 """Tests for the end-to-end RAG service orchestration."""
 
+import json
 import unittest
 from pathlib import Path
 from unittest.mock import Mock, call, patch
@@ -56,6 +57,76 @@ class RAGServiceTest(unittest.TestCase):
                 call.generate("built prompt"),
             ],
         )
+
+    @patch("src.rag_app.rag_service.time.perf_counter", side_effect=[10.0, 10.125])
+    @patch("src.rag_app.rag_service.build_prompt", return_value="built prompt")
+    @patch("src.rag_app.rag_service.retrieve")
+    def test_logs_request_metadata_without_embedding(
+        self,
+        retrieve_mock: Mock,
+        _build_prompt_mock: Mock,
+        _perf_counter_mock: Mock,
+    ) -> None:
+        retrieve_mock.return_value = [
+            {
+                "text": "RAG 是检索增强生成。",
+                "source": "rag.txt",
+                "chunk_id": "rag.txt#chunk-0",
+                "score": 0.92,
+                "embedding": [12345.6789, 98765.4321],
+            }
+        ]
+        generator = Mock()
+        generator.generate.return_value = "final answer"
+        service = RAGService(generator=generator)
+
+        with self.assertLogs("src.rag_app.rag_service", level="INFO") as logs:
+            service.ask("什么是 RAG？")
+
+        record = json.loads(logs.records[-1].getMessage())
+        self.assertEqual(record["question"], "什么是 RAG？")
+        self.assertEqual(record["retrieved_chunk_ids"], ["rag.txt#chunk-0"])
+        self.assertEqual(record["similarity_scores"], [0.92])
+        self.assertEqual(record["request_latency_ms"], 125.0)
+        self.assertTrue(record["success"])
+        self.assertIsNone(record["error"])
+        self.assertNotIn("embedding", logs.output[-1])
+        self.assertNotIn("12345.6789", logs.output[-1])
+
+    @patch("src.rag_app.rag_service.time.perf_counter", side_effect=[20.0, 20.05])
+    @patch("src.rag_app.rag_service.build_prompt", return_value="built prompt")
+    @patch("src.rag_app.rag_service.retrieve")
+    def test_logs_failure_and_redacts_api_keys(
+        self,
+        retrieve_mock: Mock,
+        _build_prompt_mock: Mock,
+        _perf_counter_mock: Mock,
+    ) -> None:
+        retrieve_mock.return_value = [
+            {
+                "text": "context",
+                "source": "rag.txt",
+                "chunk_id": 1,
+                "score": 0.8,
+            }
+        ]
+        api_key = "sk-ant-test-secret-12345678"
+        generator = Mock()
+        generator.generate.side_effect = RuntimeError(f"request failed: {api_key}")
+        service = RAGService(generator=generator)
+
+        with self.assertLogs("src.rag_app.rag_service", level="INFO") as logs:
+            with self.assertRaises(RuntimeError):
+                service.ask(f"使用 API_KEY={api_key} 测试")
+
+        record = json.loads(logs.records[-1].getMessage())
+        self.assertEqual(record["question"], "使用 [REDACTED] 测试")
+        self.assertEqual(record["retrieved_chunk_ids"], [1])
+        self.assertEqual(record["similarity_scores"], [0.8])
+        self.assertEqual(record["request_latency_ms"], 50.0)
+        self.assertFalse(record["success"])
+        self.assertEqual(record["error"], "request failed: [REDACTED]")
+        self.assertNotIn(api_key, logs.output[-1])
 
 
 if __name__ == "__main__":

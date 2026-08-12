@@ -28,7 +28,7 @@ def _parse_arguments(arguments: Sequence[str] | None = None) -> argparse.Namespa
         "--index",
         type=Path,
         default=DEFAULT_INDEX_PATH,
-        help="index.json 路径",
+        help="Chroma index 目录",
     )
     return parser.parse_args(arguments)
 

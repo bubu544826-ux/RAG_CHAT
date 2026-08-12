@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RAG Chat</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <main class="app">
+      <h1>RAG Chat</h1>
+
+      <form id="chat-form">
+        <label for="question">Question</label>
+        <div class="question-row">
+          <input
+            id="question"
+            name="question"
+            type="text"
+            placeholder="Ask a question"
+            autocomplete="off"
+            required
+          >
+          <button id="send-button" type="submit">Send</button>
+        </div>
+      </form>
+
+      <p id="loading" role="status" hidden>Loading...</p>
+      <p id="error" role="alert" hidden></p>
+
+      <section aria-labelledby="answer-heading">
+        <h2 id="answer-heading">Answer</h2>
+        <p id="answer">Your answer will appear here.</p>
+      </section>
+
+      <section aria-labelledby="sources-heading">
+        <h2 id="sources-heading">Sources</h2>
+        <ul id="sources">
+          <li>No sources yet.</li>
+        </ul>
+      </section>
+    </main>
+
+    <script src="/static/app.js" defer></script>
+  </body>
+</html>

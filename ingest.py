@@ -22,7 +22,7 @@ def main() -> int:
     print(f"文件数量：{summary['file_count']}")
     print(f"chunk 数量：{summary['chunk_count']}")
     print(f"embedding 数量：{summary['embedding_count']}")
-    print(f"index 文件：{OUTPUT_PATH.relative_to(PROJECT_ROOT)}")
+    print(f"Chroma index 目录：{OUTPUT_PATH.relative_to(PROJECT_ROOT)}")
     return 0
 
 

@@ -3,3 +3,7 @@ numpy
 sentence-transformers>=2.7.0
 transformers>=4.51.0
 anthropic
+fastapi
+uvicorn
+httpx
+chromadb>=1.0,<2

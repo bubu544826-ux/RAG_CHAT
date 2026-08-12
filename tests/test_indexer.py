@@ -1,18 +1,17 @@
-"""Tests for the local JSON indexing pipeline."""
+"""Tests for the local Chroma indexing pipeline."""
 
-import json
-import tempfile
 import unittest
-from pathlib import Path
 from unittest.mock import Mock
 
-from src.rag_app.indexer import build_index
+import chromadb
+
+from src.rag_app.indexer import COLLECTION_NAME, build_index
+from tests.chroma_test_utils import temporary_chroma_directory
 
 
 class BuildIndexTest(unittest.TestCase):
-    def test_builds_json_records_for_every_chunk(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary_directory:
-            temporary_path = Path(temporary_directory)
+    def test_builds_chroma_records_for_every_chunk(self) -> None:
+        with temporary_chroma_directory() as temporary_path:
             input_directory = temporary_path / "raw"
             output_path = temporary_path / "processed" / "index.json"
             input_directory.mkdir()
@@ -30,39 +29,47 @@ class BuildIndexTest(unittest.TestCase):
                 embedding_function=embedding_function,
             )
 
-            records = json.loads(output_path.read_text(encoding="utf-8"))
+            client = chromadb.PersistentClient(path=str(output_path))
+            collection = client.get_collection(
+                COLLECTION_NAME,
+                embedding_function=None,
+            )
+            stored = collection.get(include=["documents", "metadatas", "embeddings"])
+
+            self.assertTrue(output_path.is_dir())
             self.assertEqual(
                 summary,
                 {"file_count": 2, "chunk_count": 3, "embedding_count": 3},
             )
+            self.assertEqual(collection.count(), 3)
+            records_by_id = {
+                record_id: {
+                    "text": text,
+                    "metadata": metadata,
+                    "embedding": list(embedding),
+                }
+                for record_id, text, metadata, embedding in zip(
+                    stored["ids"],
+                    stored["documents"],
+                    stored["metadatas"],
+                    stored["embeddings"],
+                )
+            }
+            self.assertEqual(records_by_id["a.txt#chunk-0"]["text"], "abcd")
             self.assertEqual(
-                records,
-                [
-                    {
-                        "source": "a.txt",
-                        "chunk_id": "a.txt#chunk-0",
-                        "text": "abcd",
-                        "embedding": [4.0, 1.0],
-                    },
-                    {
-                        "source": "a.txt",
-                        "chunk_id": "a.txt#chunk-1",
-                        "text": "ef",
-                        "embedding": [2.0, 1.0],
-                    },
-                    {
-                        "source": "b.md",
-                        "chunk_id": "b.md#chunk-0",
-                        "text": "xyz",
-                        "embedding": [3.0, 1.0],
-                    },
-                ],
+                records_by_id["a.txt#chunk-0"]["metadata"],
+                {"source": "a.txt", "chunk_id": "a.txt#chunk-0"},
             )
+            self.assertEqual(
+                records_by_id["a.txt#chunk-0"]["embedding"],
+                [4.0, 1.0],
+            )
+            self.assertEqual(records_by_id["a.txt#chunk-1"]["text"], "ef")
+            self.assertEqual(records_by_id["b.md#chunk-0"]["text"], "xyz")
             self.assertEqual(embedding_function.call_count, 3)
 
-    def test_writes_empty_index_for_whitespace_only_document(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary_directory:
-            temporary_path = Path(temporary_directory)
+    def test_creates_empty_collection_for_whitespace_only_document(self) -> None:
+        with temporary_chroma_directory() as temporary_path:
             input_directory = temporary_path / "raw"
             output_path = temporary_path / "processed" / "index.json"
             input_directory.mkdir()
@@ -75,12 +82,66 @@ class BuildIndexTest(unittest.TestCase):
                 embedding_function=embedding_function,
             )
 
+            client = chromadb.PersistentClient(path=str(output_path))
+            collection = client.get_collection(
+                COLLECTION_NAME,
+                embedding_function=None,
+            )
             self.assertEqual(
                 summary,
                 {"file_count": 1, "chunk_count": 0, "embedding_count": 0},
             )
-            self.assertEqual(json.loads(output_path.read_text(encoding="utf-8")), [])
+            self.assertEqual(collection.count(), 0)
             embedding_function.assert_not_called()
+
+    def test_rebuild_removes_chunks_that_are_no_longer_present(self) -> None:
+        with temporary_chroma_directory() as temporary_path:
+            input_directory = temporary_path / "raw"
+            output_path = temporary_path / "processed" / "index.json"
+            input_directory.mkdir()
+            first_document = input_directory / "first.txt"
+            first_document.write_text("first", encoding="utf-8")
+
+            build_index(
+                input_directory,
+                output_path,
+                embedding_function=lambda text: [1.0],
+            )
+            first_document.unlink()
+            (input_directory / "second.txt").write_text("second", encoding="utf-8")
+
+            build_index(
+                input_directory,
+                output_path,
+                embedding_function=lambda text: [1.0],
+            )
+
+            client = chromadb.PersistentClient(path=str(output_path))
+            collection = client.get_collection(
+                COLLECTION_NAME,
+                embedding_function=None,
+            )
+            self.assertEqual(collection.get()["ids"], ["second.txt#chunk-0"])
+
+    def test_backs_up_legacy_json_index_before_creating_chroma_directory(self) -> None:
+        with temporary_chroma_directory() as temporary_path:
+            input_directory = temporary_path / "raw"
+            output_path = temporary_path / "processed" / "index.json"
+            input_directory.mkdir()
+            output_path.parent.mkdir()
+            output_path.write_text('[{"legacy": true}]', encoding="utf-8")
+
+            build_index(
+                input_directory,
+                output_path,
+                embedding_function=lambda text: [1.0],
+            )
+
+            self.assertTrue(output_path.is_dir())
+            self.assertEqual(
+                output_path.with_name("index.json.legacy").read_text(encoding="utf-8"),
+                '[{"legacy": true}]',
+            )
 
 
 if __name__ == "__main__":

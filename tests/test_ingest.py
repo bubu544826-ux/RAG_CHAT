@@ -28,7 +28,8 @@ class IngestCommandTest(unittest.TestCase):
                 "文件数量：2",
                 "chunk 数量：4",
                 "embedding 数量：4",
-                f"index 文件：{ingest.OUTPUT_PATH.relative_to(ingest.PROJECT_ROOT)}",
+                "Chroma index 目录："
+                f"{ingest.OUTPUT_PATH.relative_to(ingest.PROJECT_ROOT)}",
             ],
         )
         build_index_mock.assert_called_once_with(

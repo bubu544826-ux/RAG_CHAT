@@ -1,6 +1,6 @@
 # RAG 项目
 
-这是一个学习型 RAG 项目。目前已包含文档加载、文本切分、Embedding、本地 JSON 索引、向量检索、Prompt 构建和基于 Anthropic 的问答生成。
+这是一个学习型 RAG 项目。目前已包含文档加载、文本切分、Embedding、本地 Chroma vector store、向量检索、Prompt 构建和基于 Anthropic 的问答生成。
 
 ## 项目结构
 
@@ -9,21 +9,25 @@
 ├── ingest.py             # 构建本地 index 的命令入口
 ├── retrieve.py           # 从本地 index 检索 Top K chunks
 ├── evaluate_retrieval.py # 计算 Retriever 的 Recall@1 和 Recall@3
+├── evaluate_rag.py       # 端到端评估 retrieval、回答事实和拒答
 ├── evaluation_questions.json # 10 条 retrieval 测试问题
+├── evaluation_cases.json # 端到端 RAG 测试数据
 ├── src/
 │   └── rag_app/          # 应用源代码包
 │       ├── __init__.py
 │       ├── __main__.py   # `python -m src.rag_app` 的模块入口
 │       ├── app.py        # 最小启动函数
+│       ├── api.py        # FastAPI /chat 接口
 │       ├── chunker.py    # 按字符切分文档
 │       ├── config.py     # 集中管理模型配置
 │       ├── document_loader.py # 加载 txt 和 md 文件
 │       ├── embedding.py  # 文本向量化
-│       ├── indexer.py    # 编排并保存本地 JSON index
-│       ├── retriever.py  # 计算相似度并返回 Top K chunks
+│       ├── indexer.py    # 编排并保存本地 Chroma index
+│       ├── retriever.py  # 查询 Chroma 并返回 Top K chunks
 │       ├── prompt_builder.py # 用问题和检索结果构建 Prompt
 │       ├── generator.py  # 调用 Anthropic 生成回答
-│       └── rag_service.py # 编排完整 RAG 问答流程
+│       ├── rag_service.py # 编排完整 RAG 问答流程
+│       └── web/          # 简单 Web UI（HTML、CSS、JavaScript）
 ├── data/
 │   ├── raw/              # 原始数据（默认不提交到 Git）
 │   └── processed/        # 处理后的数据（默认不提交到 Git）
@@ -90,16 +94,27 @@ uv run --no-project --python 3.12 --with-requirements requirements.txt python -m
 python ingest.py
 ```
 
-命令依次执行 loader → chunker → embedding，并生成 `data/processed/index.json`。该文件是普通 JSON 数组，每条记录包含：
+命令依次执行 loader → chunker → embedding，并在 `data/processed/index.json`
+目录中生成持久化 Chroma vector store。目录名保留 `index.json` 是为了兼容现有
+Retriever 和 RAGService 调用；它不再是 JSON 文件。
+
+Chroma collection 名为 `rag_chunks`，使用 cosine distance。每个 chunk 保存为：
 
 ```json
 {
-  "source": "rag_notes.md",
-  "chunk_id": "rag_notes.md#chunk-0",
-  "text": "...",
+  "id": "rag_notes.md#chunk-0",
+  "document": "...",
+  "metadata": {
+    "source": "rag_notes.md",
+    "chunk_id": "rag_notes.md#chunk-0"
+  },
   "embedding": [0.01, 0.02]
 }
 ```
+
+首次迁移时，如果路径上存在旧 `index.json` 文件，ingestion 会把它改名为
+`index.json.legacy` 后再建立 Chroma 目录。重复运行 ingestion 会完整重建
+`rag_chunks` collection，避免已经删除的文档残留在索引中。
 
 运行完成后，终端会显示文件数量、chunk 数量和 embedding 数量。默认 chunk 大小为 500 个字符，相邻 chunk 重叠 50 个字符。
 
@@ -111,7 +126,10 @@ python ingest.py
 python retrieve.py "什么是 RAG？" --top-k 3
 ```
 
-`--top-k` 可配置返回数量，默认值为 3；`--index` 可指定其他 index 文件。命令只执行 question embedding、余弦相似度计算和排序，不调用 LLM。输出是按 `score` 降序排列的 JSON：
+`--top-k` 可配置返回数量，默认值为 3；`--index` 可指定其他 Chroma index
+目录。命令只执行 question embedding 和 Chroma cosine 查询，不调用 LLM。
+Retriever 会把 Chroma distance 转换成原接口使用的 cosine similarity score，
+输出仍是按 `score` 降序排列的 JSON：
 
 ```json
 [
@@ -162,6 +180,52 @@ print(answer)
 
 `ask(question)` 会依次执行 `retrieve -> build_prompt -> generate`。默认模型由
 `src/rag_app/config.py` 集中管理，也可以通过 `ANTHROPIC_MODEL_NAME` 环境变量覆盖。
+
+## 运行端到端 RAG Evaluation
+
+先构建 index 并配置 `ANTHROPIC_API_KEY`，然后运行：
+
+```powershell
+python evaluate_rag.py --top-k 3
+```
+
+脚本读取 `evaluation_cases.json`。有答案样本使用
+`{question, expected_source, expected_answer_keywords}`；无答案样本把
+`expected_source` 设为 `null`、关键字设为空数组。每条问题只调用一次完整 RAG
+流程，并计算：
+
+- `retrieval_recall_at_3`：正确来源是否出现在 Top 3，仅统计有答案问题。
+- `answer_keyword_pass_rate`：回答是否包含该样本的全部关键事实。
+- `no_answer_refusal_rate`：无答案问题是否明确使用“无法回答”等拒答表达。
+
+汇总结果会打印到终端，逐题明细默认写入 `evaluation_report.json`。可以使用
+`--cases`、`--index`、`--top-k` 和 `--output` 修改输入、K 值和报告路径。
+
+## 启动 FastAPI
+
+先构建本地 index，并在 `.env` 中配置 `ANTHROPIC_API_KEY`。使用 `uv` 启动：
+
+```powershell
+uv run --env-file .env --no-project --python 3.12 --with-requirements requirements.txt uvicorn src.rag_app.api:app --host 127.0.0.1 --port 8000
+```
+
+如果已经安装依赖并激活虚拟环境，则运行：
+
+```powershell
+uvicorn src.rag_app.api:app --host 127.0.0.1 --port 8000
+```
+
+启动后打开 `http://127.0.0.1:8000/` 即可使用 Web UI；交互式 API 文档仍可在
+`http://127.0.0.1:8000/docs` 查看。
+
+接口接收问题，并原样返回 `RAGService.ask()` 生成的答案和来源信息：
+
+```http
+POST /chat
+Content-Type: application/json
+
+{"question": "什么是 RAG？"}
+```
 
 ## 运行测试
 
