@@ -27,6 +27,8 @@ class ChatEndpointTest(unittest.TestCase):
         self.assertIn('id="send-button"', response.text)
         self.assertIn("Answer", response.text)
         self.assertIn("Sources", response.text)
+        self.assertIn("Get a sourced answer", response.text)
+        self.assertIn('role="status"', response.text)
 
     def test_web_ui_assets_are_served(self) -> None:
         script_response = self.client.get("/static/app.js")
@@ -34,9 +36,12 @@ class ChatEndpointTest(unittest.TestCase):
 
         self.assertEqual(script_response.status_code, 200)
         self.assertIn('fetch("/chat"', script_response.text)
-        self.assertIn("Loading", self.client.get("/").text)
+        self.assertIn('className = "source-score"', script_response.text)
+        self.assertIn("Searching your documents", self.client.get("/").text)
         self.assertEqual(style_response.status_code, 200)
         self.assertIn("text/css", style_response.headers["content-type"])
+        self.assertIn("prefers-reduced-motion", style_response.text)
+        self.assertIn("@media (max-width: 480px)", style_response.text)
 
     def test_chat_returns_answer_and_sources_from_rag_service(self) -> None:
         self.rag_service.ask.return_value = {
