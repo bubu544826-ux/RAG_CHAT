@@ -17,6 +17,7 @@ function renderSources(sources) {
 
   if (sources.length === 0) {
     const item = document.createElement("li");
+    item.className = "source-empty";
     item.textContent = "No sources returned.";
     sourcesOutput.append(item);
     return;
@@ -24,8 +25,20 @@ function renderSources(sources) {
 
   for (const source of sources) {
     const item = document.createElement("li");
+    const details = document.createElement("div");
+    const sourceName = document.createElement("strong");
+    const chunkId = document.createElement("span");
+    const scoreBadge = document.createElement("span");
     const score = Number(source.score).toFixed(3);
-    item.textContent = `${source.source} — ${source.chunk_id} (score: ${score})`;
+
+    details.className = "source-details";
+    sourceName.textContent = source.source;
+    chunkId.textContent = source.chunk_id;
+    scoreBadge.className = "source-score";
+    scoreBadge.textContent = score;
+
+    details.append(sourceName, chunkId);
+    item.append(details, scoreBadge);
     sourcesOutput.append(item);
   }
 }
