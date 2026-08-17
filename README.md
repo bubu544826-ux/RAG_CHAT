@@ -8,9 +8,10 @@
 .
 ├── ingest.py             # 构建本地 index 的命令入口
 ├── retrieve.py           # 从本地 index 检索 Top K chunks
-├── evaluate_retrieval.py # 计算 Retriever 的 Recall@1 和 Recall@3
+├── evaluate_retrieval.py # 计算 Retriever 的 Recall、Precision、MRR 和 NDCG
 ├── evaluate_rag.py       # 端到端评估 retrieval、回答事实和拒答
-├── evaluation_questions.json # 10 条 retrieval 测试问题
+├── RAG_test.json         # 20 条带相关 chunk 标注的 retrieval 测试样本
+├── evaluation_questions.json # 旧版 source 级 retrieval 测试问题
 ├── evaluation_cases.json # 端到端 RAG 测试数据
 ├── src/
 │   └── rag_app/          # 应用源代码包
@@ -46,7 +47,16 @@
 
 ### 使用 uv（当前环境推荐）
 
-当前机器已经安装 `uv` 并有可用的 Python 3.12。在项目根目录可以直接执行：
+当前机器已经安装 `uv` 并有可用的 Python 3.12。建议先建立一个持久化的 `.venv`，
+避免每次运行都重新解析 `--with-requirements` 依赖：
+
+```powershell
+uv venv --python 3.12
+uv pip install -r requirements.txt
+uv run python -m src.rag_app
+```
+
+也可以不建立 `.venv`，每次使用临时环境：
 
 ```powershell
 uv run --no-project --python 3.12 python -m src.rag_app
@@ -86,6 +96,30 @@ uv run --no-project --python 3.12 --with-requirements requirements.txt python -m
 
 默认模型在 `src/rag_app/config.py` 中集中配置，也可以在启动进程前通过 `EMBEDDING_MODEL_NAME` 环境变量覆盖。
 
+## 把 Embedding 画成 3D 向量
+
+embedding 有一千多维，无法直接观察。可视化脚本先用 PCA 找出方差最大的 3 个方向，把向量投影到这 3 维再画成从原点出发的箭头：
+
+```powershell
+python -m scripts.visualize_embeddings
+```
+
+如果使用 `uv` 且尚未安装依赖，可以直接执行：
+
+```powershell
+uv run --no-project --python 3.12 --with-requirements requirements.txt python -m scripts.visualize_embeddings
+```
+
+默认使用内置的示例句子（动物、编程、天气三组），图片保存到 `data/processed/embeddings_3d.png`。常用参数：
+
+| 参数 | 说明 |
+| --- | --- |
+| `--input sentences.txt` | 改用自己的句子，每行一句，至少 3 句 |
+| `--output my_plot.png` | 修改图片保存路径 |
+| `--show` | 保存后打开交互窗口，可以旋转查看 |
+
+坐标轴标题中的百分比是该主成分保留的信息比例。三个百分比之和通常远小于 100%，说明这张图只是高维空间的一个投影，图上的距离不等于真实的向量距离。
+
 ## 构建本地 index
 
 把 `.txt` 或 `.md` 文件放入 `data/raw/`，然后在项目根目录执行：
@@ -117,6 +151,46 @@ Chroma collection 名为 `rag_chunks`，使用 cosine distance。每个 chunk �
 `rag_chunks` collection，避免已经删除的文档残留在索引中。
 
 运行完成后，终端会显示文件数量、chunk 数量和 embedding 数量。默认 chunk 大小为 500 个字符，相邻 chunk 重叠 50 个字符。
+
+Indexer 会先收集全部 chunk，再通过 `embed_texts` 一次性分批向量化（默认
+`batch_size=32`），而不是每个 chunk 调用一次模型。`ingest.py` 会显示批次进度条。
+
+## 让 Embedding 使用 GPU
+
+Embedding 是 ingestion 中最慢的一步。PyPI 在 Windows 上默认安装的 `torch` 是
+**CPU-only** 版本，即使机器有 NVIDIA 显卡也不会使用。检查当前状态：
+
+```powershell
+uv run python -c "import torch; print(torch.__version__, torch.cuda.is_available())"
+```
+
+如果输出中版本号带 `+cpu` 或 `is_available()` 为 `False`，安装带 CUDA 的版本。
+本机的 Quadro P4000 属于 Pascal 架构（compute capability 6.1），CUDA 12.8 以后
+已不再支持该架构，因此需要指定 cu126：
+
+```powershell
+uv pip install torch --index-url https://download.pytorch.org/whl/cu126 --reinstall-package torch
+```
+
+### 还需要足够新的显卡驱动
+
+只装 CUDA 版 torch 还不够，**显卡驱动也必须支持对应的 CUDA 版本**。用
+`nvidia-smi` 查看右上角的 `CUDA Version`：
+
+```powershell
+nvidia-smi
+```
+
+本机原本是驱动 516.40（CUDA 11.7，2022 年版本），torch cu126 会报
+`CUDA initialization: The NVIDIA driver on your system is too old`，
+并且 `is_available()` 仍为 `False`。CUDA 12.x 需要 525 以上的驱动。
+
+从 <https://www.nvidia.com/Download/index.aspx> 选择
+`NVIDIA RTX / Quadro` → `Quadro Series` → `Quadro P4000` → `Windows 10 64-bit`
+下载并安装最新驱动，然后重启。Pascal 架构的支持一直保留到 R580 驱动分支。
+
+驱动更新后不需要重装 torch，重新执行检查命令，`is_available()` 应为 `True`。
+sentence-transformers 会自动使用检测到的 GPU，不需要修改代码。
 
 ## 检索 Top K chunks
 
@@ -150,9 +224,75 @@ Retriever 会把 Chroma distance 转换成原接口使用的 cosine similarity s
 python evaluate_retrieval.py
 ```
 
-脚本读取 `evaluation_questions.json` 中的 10 个 `question` / `expected_source`
-测试对。每个问题只检索一次 Top 3，检查正确 source 是否出现在第 1 条和前 3 条，
-最后输出 `Recall@1` 和 `Recall@3`。可以用 `--questions` 和 `--index` 指定其他文件。
+脚本默认读取 `RAG_test.json`，每个问题只检索一次，并按显式标注的相关
+chunk 计算排名指标。默认 `K=3`，可以通过参数调整测试集、index 和 K：
+
+```powershell
+python evaluate_retrieval.py --test-set RAG_test.json --index data/processed/index.json --top-k 5
+```
+
+测试集是非空 JSON 数组。每条样本必须有唯一的非空 `id`、非空 `question`，
+以及由唯一、非空字符串组成的 `relevant_chunk_ids`；`ground_truth`、`evidence`
+等字段会保留为元数据，但 retrieval 评估不会调用 LLM，也不使用相似度阈值：
+
+```json
+{
+  "id": "rag_quic_001",
+  "question": "In QUIC, what is the final size of a stream?",
+  "relevant_chunk_ids": ["RCF.txt#chunk-116"],
+  "ground_truth": "..."
+}
+```
+
+四项指标先逐题计算，再对全部问题做宏平均，并以 `0` 到 `100` 的百分数输出：
+
+- `Recall@K = 前 K 条中的相关 chunk 数 / 该题全部标注相关 chunk 数`
+- `Precision@K = 前 K 条中的相关 chunk 数 / K`
+- `MRR@K = 1 / 第一个相关 chunk 的排名`；前 K 条无命中时为 `0`
+- `NDCG@K = DCG@K / IDCG@K`，其中二元相关性 `rel` 为 `0` 或 `1`，
+  `DCG@K = Σ rel(rank) / log2(rank + 1)`
+
+当前 `RAG_test.json` 的 chunk 标签依赖 `data/raw/RCF.txt` 以及
+`chunk_size=500`、`overlap=50` 的切分配置。源文档或切分参数变化后，必须重新核对
+`relevant_chunk_ids`，否则指标不再代表真实检索质量。`--questions` 仍作为
+`--test-set` 的兼容别名保留。
+
+### 对比完整检索管线
+
+应用默认使用 `query rewrite -> vector + BM25 -> RRF -> CrossEncoder rerank`。
+直接调用 `retriever.retrieve()` 时仍保持原来的 vector-only 默认行为，便于旧代码兼容。
+运行四组使用同一标签和 cutoff 的对照实验：
+
+```powershell
+python evaluate_retrieval.py --compare --output retrieval_evaluation_report.json
+```
+
+报告包含 Recall@1/@3/@5/@10、Precision、MRR、NDCG，以及 mean/median/P95
+检索延迟。CrossEncoder 首次运行会下载并缓存
+`cross-encoder/ms-marco-MiniLM-L6-v2`；模型加载造成的冷启动会体现在 mean 中，
+而 median 更接近预热后的单请求延迟。
+
+以下环境变量控制检索，默认值也列在 `.env.example`：
+
+```dotenv
+RETRIEVAL_STRATEGY=hybrid
+VECTOR_TOP_K=30
+LEXICAL_TOP_K=30
+RRF_K=60
+RERANKER_ENABLED=true
+RERANKER_MODEL_NAME=cross-encoder/ms-marco-MiniLM-L6-v2
+RETRIEVAL_CANDIDATE_K=30
+FINAL_TOP_K=5
+QUERY_REWRITE_ENABLED=true
+QUERY_REWRITE_MODE=multi_query
+MAX_QUERIES=3
+```
+
+`RETRIEVAL_STRATEGY` 支持 `vector_only`、`lexical_only`、`hybrid`；rewrite mode
+支持 `single` 和 `multi_query`。改写失败会使用原问题，reranker 失败会使用 RRF
+顺序，任一检索后端失败时会使用另一个后端。结果保留 `document_id`、`chunk_id`、
+`retrieval_score`、`rerank_score`、`original_rank`、`final_rank` 和
+`retrieval_source`，便于调试与离线评估。
 
 ## 使用 RAGService 问答
 

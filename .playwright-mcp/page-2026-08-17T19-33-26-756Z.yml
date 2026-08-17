@@ -1,0 +1,45 @@
+- generic [ref=f3e2]:
+  - banner [ref=f3e3]:
+    - generic [ref=f3e8]: RAG Chat
+    - generic [ref=f3e9]: Knowledge base ready
+    - button "Toggle dark mode" [ref=f3e11] [cursor=pointer]
+  - main [ref=f3e16]:
+    - heading "Ask your documents. Get a sourced answer." [level=1] [ref=f3e17]:
+      - text: Ask your documents.
+      - generic [ref=f3e18]: Get a sourced answer.
+    - generic [ref=f3e19]:
+      - generic [ref=f3e20]:
+        - generic [ref=f3e21]: What would you like to know?
+        - generic [ref=f3e22]: Answers use only retrieved context
+      - generic [ref=f3e23]:
+        - generic [ref=f3e24]:
+          - textbox "What would you like to know?" [disabled] [ref=f3e25]:
+            - /placeholder: e.g. What is retrieval-augmented generation?
+            - text: What is retrieval-augmented generation?
+          - button "Clear question" [ref=f3e26] [cursor=pointer]
+        - button "Ask RAG" [disabled] [ref=f3e30]
+      - generic [ref=f3e34]:
+        - button "What is retrieval-augmented generation?" [disabled] [ref=f3e35]
+        - button "How does chunking work?" [disabled] [ref=f3e36]
+        - button "What embedding model is used?" [disabled] [ref=f3e37]
+      - generic [ref=f3e38]:
+        - generic [ref=f3e39]: Press Enter to send · / to focus
+        - status [ref=f3e40]: Searching your documents...
+    - generic [ref=f3e42]:
+      - region [ref=f3e43]:
+        - generic [ref=f3e49]:
+          - paragraph [ref=f3e50]: Response
+          - heading "Answer" [level=2] [ref=f3e51]
+        - text: Your answer will appear here.
+      - region [ref=f3e56]:
+        - generic [ref=f3e57]:
+          - generic [ref=f3e62]:
+            - paragraph [ref=f3e63]: Retrieved context
+            - heading "Sources" [level=2] [ref=f3e64]
+          - generic [ref=f3e65]: "0"
+        - list [ref=f3e66]:
+          - listitem [ref=f3e67]: No sources yet.
+  - contentinfo [ref=f3e68]:
+    - text: Local RAG workspace
+    - generic [ref=f3e69]: ·
+    - text: Answers stay grounded in your files

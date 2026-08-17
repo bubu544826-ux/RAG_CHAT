@@ -1,0 +1,698 @@
+- generic [ref=e4]:
+  - generic [ref=e6]:
+    - link "Skip to main content" [ref=e7] [cursor=pointer]:
+      - /url: "#main"
+    - navigation [ref=e9]:
+      - generic [ref=e14]:
+        - generic [ref=e15]:
+          - navigation [ref=e16]:
+            - button "Open Navigation Menu" [ref=e17] [cursor=pointer]
+          - link "Coursera" [ref=e20] [cursor=pointer]:
+            - /url: /
+            - img "Coursera" [ref=e23]
+        - button "Join for Free" [ref=e26] [cursor=pointer]
+  - main [ref=e28]:
+    - generic [ref=e30]:
+      - search [ref=e36]:
+        - generic [ref=e40]:
+          - combobox "Search catalog" [ref=e41]: Programming in Python — Meta
+          - generic [ref=e42]:
+            - button "Clear search" [ref=e43] [cursor=pointer]
+            - button "Search" [ref=e48] [cursor=pointer]
+          - group
+      - region "Search Results Frame" [ref=e51]:
+        - generic [ref=e54]:
+          - complementary "AI Overview" [ref=e56]:
+            - status [ref=e58]: AI summary is now available. Navigate to the AI Overview section to read it.
+            - generic [ref=e59]:
+              - generic [ref=e62]:
+                - generic [ref=e64]:
+                  - heading "AI Overview" [level=2] [ref=e70]
+                  - heading "You are looking for Programming in Python from Meta:" [level=3] [ref=e73]
+                  - generic [ref=e74] [cursor=pointer]:
+                    - 'link "Programming in Python Meta Meta Programming in Python Rating: 4.6 · Course" [ref=e76]':
+                      - /url: https://www.coursera.org/learn/programming-in-python
+                      - img "Programming in Python" [ref=e77]
+                      - generic [ref=e78]:
+                        - generic [ref=e79]:
+                          - img "Meta" [ref=e80]
+                          - generic [ref=e81]: Meta
+                        - paragraph [ref=e82]: Programming in Python
+                        - generic [ref=e83]:
+                          - generic [ref=e84]:
+                            - text: ★ 4.6
+                            - generic [ref=e85]: "Rating: 4.6"
+                          - generic [ref=e86]: ·
+                          - generic [ref=e87]: Course
+                    - paragraph [ref=e90]: This beginner-level course from Meta covers foundational Python programming skills including Object Oriented Programming (OOP), Unit Testing, and Test Driven Development (TDD). It is ideal for learners aiming to build solid programming fundamentals over one to three months. No prior experience is required, making it a great starting point for those new to coding or Python.
+                  - button "Show more" [ref=e91] [cursor=pointer]
+                  - generic [ref=e93]:
+                    - heading "Other similar courses:" [level=3] [ref=e94]
+                    - generic [ref=e95]:
+                      - 'link "Python for Data Science, AI & Development IBM IBM Python for Data Science, AI & Development Best for: beginners with 1-3 months availability, learners interested in data science, and those seeking a course format ready to build applied Python skills" [ref=e97] [cursor=pointer]':
+                        - /url: https://www.coursera.org/learn/python-for-applied-data-science-ai
+                        - img "Python for Data Science, AI & Development" [ref=e98]
+                        - generic [ref=e99]:
+                          - generic [ref=e100]:
+                            - img "IBM" [ref=e101]
+                            - generic [ref=e102]: IBM
+                          - paragraph [ref=e103]: Python for Data Science, AI & Development
+                          - paragraph [ref=e106]:
+                            - strong [ref=e107]: "Best for:"
+                            - text: beginners with 1-3 months availability, learners interested in data science, and those seeking a course format ready to build applied Python skills
+                      - 'link "Python Programming Essentials Rice University Rice University Python Programming Essentials Best for: learners with 1-4 weeks to commit, beginners in computer science, and those preferring a course style eager to master Python programming essentials" [ref=e109] [cursor=pointer]':
+                        - /url: https://www.coursera.org/learn/python-programming
+                        - img "Python Programming Essentials" [ref=e110]
+                        - generic [ref=e111]:
+                          - generic [ref=e112]:
+                            - img "Rice University" [ref=e113]
+                            - generic [ref=e114]: Rice University
+                          - paragraph [ref=e115]: Python Programming Essentials
+                          - paragraph [ref=e118]:
+                            - strong [ref=e119]: "Best for:"
+                            - text: learners with 1-4 weeks to commit, beginners in computer science, and those preferring a course style eager to master Python programming essentials
+                      - 'link "An Introduction to Programming using Python University of Leeds University of Leeds An Introduction to Programming using Python Best for: beginners with short-term availability, computer science enthusiasts, and learners looking for an introduction to programming using Python" [ref=e121] [cursor=pointer]':
+                        - /url: https://www.coursera.org/learn/an-introduction-to-programming-using-python
+                        - img "An Introduction to Programming using Python" [ref=e122]
+                        - generic [ref=e123]:
+                          - generic [ref=e124]:
+                            - img "University of Leeds" [ref=e125]
+                            - generic [ref=e126]: University of Leeds
+                          - paragraph [ref=e127]: An Introduction to Programming using Python
+                          - paragraph [ref=e130]:
+                            - strong [ref=e131]: "Best for:"
+                            - text: beginners with short-term availability, computer science enthusiasts, and learners looking for an introduction to programming using Python
+                      - 'link "Llama for Python Programmers University of Michigan University of Michigan Llama for Python Programmers Best for: intermediate learners with 1-4 weeks duration, those interested in large language modeling, and learners seeking a course format eager to explore LLM applications in Python" [ref=e133] [cursor=pointer]':
+                        - /url: https://www.coursera.org/learn/llama-for-python-programmers
+                        - img "Llama for Python Programmers" [ref=e134]
+                        - generic [ref=e135]:
+                          - generic [ref=e136]:
+                            - img "University of Michigan" [ref=e137]
+                            - generic [ref=e138]: University of Michigan
+                          - paragraph [ref=e139]: Llama for Python Programmers
+                          - paragraph [ref=e142]:
+                            - strong [ref=e143]: "Best for:"
+                            - text: intermediate learners with 1-4 weeks duration, those interested in large language modeling, and learners seeking a course format eager to explore LLM applications in Python
+                - generic [ref=e145]:
+                  - heading "You might follow up with..." [level=2] [ref=e146]
+                  - generic [ref=e148]:
+                    - button "python programming in data science" [ref=e150] [cursor=pointer]
+                    - button "meta full stack python programming" [ref=e153] [cursor=pointer]
+                    - button "meta backend python programming" [ref=e156] [cursor=pointer]
+                    - button "programming in python in information technology" [ref=e159] [cursor=pointer]
+                    - button "python coding from ibm" [ref=e162] [cursor=pointer]
+                    - button "computer programming with python" [ref=e165] [cursor=pointer]
+                    - button "python for everybody – university of michigan data visualization python programming" [ref=e168] [cursor=pointer]
+                    - button "python programming with red hat" [ref=e171] [cursor=pointer]
+                    - button "python and r programming" [ref=e174] [cursor=pointer]
+                    - button "python for ai python programming" [ref=e177] [cursor=pointer]
+              - separator [ref=e179]
+          - generic [ref=e180]:
+            - heading "All Results" [level=2] [ref=e185]
+            - generic [ref=e191]:
+              - button "Filter & Sort" [ref=e192] [cursor=pointer]
+              - separator [ref=e197]
+              - generic [ref=e198]:
+                - button "Topic" [ref=e200] [cursor=pointer]
+                - button "Duration" [ref=e206] [cursor=pointer]
+                - button "Learning Product" [ref=e212] [cursor=pointer]
+                - button "Language" [ref=e218] [cursor=pointer]
+                - button "Level" [ref=e224] [cursor=pointer]
+                - generic [ref=e229]:
+                  - button "Core Python Programming Skills" [ref=e230] [cursor=pointer]
+                  - button "Python Programming Concepts and Paradigms" [ref=e240] [cursor=pointer]
+            - region "Search Results" [ref=e250]:
+              - generic [ref=e252]:
+                - list [ref=e253]:
+                  - listitem [ref=e254]:
+                    - generic [ref=e259] [cursor=pointer]:
+                      - generic [ref=e265]:
+                        - generic [ref=e266]: "Status: Free Trial"
+                        - generic [ref=e267]: Free Trial
+                      - generic [ref=e268]:
+                        - generic [ref=e269]:
+                          - generic "Meta" [ref=e272]:
+                            - paragraph [ref=e275]: Meta
+                          - link "Programming in Python, offered by Meta, COURSE" [ref=e277]:
+                            - /url: /learn/programming-in-python
+                            - heading "Programming in Python" [level=3] [ref=e278]
+                        - paragraph [ref=e281]:
+                          - strong [ref=e282]: "Skills you'll gain:"
+                          - text: Object Oriented Programming (OOP), Unit Testing, Test Driven Development (TDD), Test Script Development, Programming Principles, Software Testing, Data Structures, Python Programming, Program Development, Computer Programming, Development Environment, Debugging, Django (Web Framework), Functional Design, Package and Software Management, Cloud Hosting
+                        - generic [ref=e283]:
+                          - generic [ref=e285]:
+                            - img "4.6 out of 5 stars" [ref=e286]:
+                              - generic [ref=e289]: "4.6"
+                              - generic [ref=e290]: Rating, 4.6 out of 5 stars
+                            - generic [ref=e291]: ·
+                            - generic [ref=e292]: 1.8K reviews
+                          - paragraph [ref=e294]: Beginner · Course · 1 - 3 Months
+                  - listitem [ref=e295]:
+                    - generic [ref=e300] [cursor=pointer]:
+                      - generic [ref=e304]:
+                        - generic [ref=e305]: "Status: Free Trial"
+                        - generic [ref=e306]: Free Trial
+                      - generic [ref=e307]:
+                        - generic [ref=e308]:
+                          - generic "IBM" [ref=e311]:
+                            - paragraph [ref=e314]: IBM
+                          - link "Python for Data Science, AI & Development, offered by IBM, COURSE" [ref=e316]:
+                            - /url: /learn/python-for-applied-data-science-ai
+                            - heading "Python for Data Science, AI & Development" [level=3] [ref=e317]
+                        - paragraph [ref=e320]:
+                          - strong [ref=e321]: "Skills you'll gain:"
+                          - text: Data Import/Export, Python Programming, NumPy, Scripting, Data Collection, Data Analysis
+                        - generic [ref=e322]:
+                          - generic [ref=e324]:
+                            - img "4.6 out of 5 stars" [ref=e325]:
+                              - generic [ref=e328]: "4.6"
+                              - generic [ref=e329]: Rating, 4.6 out of 5 stars
+                            - generic [ref=e330]: ·
+                            - generic [ref=e331]: 44K reviews
+                          - paragraph [ref=e333]: Beginner · Course · 1 - 3 Months
+                  - listitem [ref=e334]:
+                    - generic [ref=e339] [cursor=pointer]:
+                      - generic [ref=e343]:
+                        - generic [ref=e344]: "Status: Free Trial"
+                        - generic [ref=e345]: Free Trial
+                      - generic [ref=e346]:
+                        - generic [ref=e347]:
+                          - generic "Rice University" [ref=e350]:
+                            - paragraph [ref=e353]: Rice University
+                          - link "Python Programming Essentials, offered by Rice University, COURSE" [ref=e355]:
+                            - /url: /learn/python-programming
+                            - heading "Python Programming Essentials" [level=3] [ref=e356]
+                        - paragraph [ref=e359]:
+                          - strong [ref=e360]: "Skills you'll gain:"
+                          - text: Programming Principles, Python Programming, Computational Logic, Development Environment, Computer Programming, Program Development, Integrated Development Environments, Debugging
+                        - generic [ref=e361]:
+                          - generic [ref=e363]:
+                            - img "4.8 out of 5 stars" [ref=e364]:
+                              - generic [ref=e367]: "4.8"
+                              - generic [ref=e368]: Rating, 4.8 out of 5 stars
+                            - generic [ref=e369]: ·
+                            - generic [ref=e370]: 3.6K reviews
+                          - paragraph [ref=e372]: Beginner · Course · 1 - 4 Weeks
+                  - listitem [ref=e373]:
+                    - generic [ref=e378] [cursor=pointer]:
+                      - generic [ref=e382]:
+                        - generic [ref=e383]: "Status: Preview"
+                        - generic [ref=e384]: Preview
+                      - generic [ref=e385]:
+                        - generic [ref=e386]:
+                          - generic "University of Leeds" [ref=e389]:
+                            - paragraph [ref=e392]: University of Leeds
+                          - link "An Introduction to Programming using Python, offered by University of Leeds, COURSE" [ref=e394]:
+                            - /url: /learn/an-introduction-to-programming-using-python
+                            - heading "An Introduction to Programming using Python" [level=3] [ref=e395]
+                        - paragraph [ref=e398]:
+                          - strong [ref=e399]: "Skills you'll gain:"
+                          - text: Programming Principles, Computational Logic, Robotics, Python Programming, Computer Programming, Code Reusability, Automation, Algorithms
+                        - generic [ref=e400]:
+                          - generic [ref=e402]:
+                            - img "4.7 out of 5 stars" [ref=e403]:
+                              - generic [ref=e406]: "4.7"
+                              - generic [ref=e407]: Rating, 4.7 out of 5 stars
+                            - generic [ref=e408]: ·
+                            - generic [ref=e409]: 108 reviews
+                          - paragraph [ref=e411]: Beginner · Course · 1 - 4 Weeks
+                  - listitem [ref=e412]:
+                    - generic [ref=e417] [cursor=pointer]:
+                      - generic [ref=e421]:
+                        - generic [ref=e422]: "Status: Preview"
+                        - generic [ref=e423]: Preview
+                      - generic [ref=e424]:
+                        - generic [ref=e425]:
+                          - generic "University of Michigan" [ref=e428]:
+                            - paragraph [ref=e431]: University of Michigan
+                          - link "Llama for Python Programmers, offered by University of Michigan, COURSE" [ref=e433]:
+                            - /url: /learn/llama-for-python-programmers
+                            - heading "Llama for Python Programmers" [level=3] [ref=e434]
+                        - paragraph [ref=e437]:
+                          - strong [ref=e438]: "Skills you'll gain:"
+                          - text: LLM Application, Prompt Patterns, Large Language Modeling, Prompt Engineering, Generative AI, Token Optimization, Applied Machine Learning, Generative Model Architectures, Fine-tuning, Python Programming, Model Training, Open Source Technology, Model Optimization
+                        - generic [ref=e439]:
+                          - generic [ref=e441]:
+                            - img "4.7 out of 5 stars" [ref=e442]:
+                              - generic [ref=e445]: "4.7"
+                              - generic [ref=e446]: Rating, 4.7 out of 5 stars
+                            - generic [ref=e447]: ·
+                            - generic [ref=e448]: 19 reviews
+                          - paragraph [ref=e450]: Intermediate · Course · 1 - 4 Weeks
+                  - listitem [ref=e451]:
+                    - generic [ref=e456] [cursor=pointer]:
+                      - generic [ref=e460]:
+                        - generic [ref=e461]: "Status: Free Trial"
+                        - generic [ref=e462]: Free Trial
+                      - generic [ref=e463]:
+                        - generic [ref=e464]:
+                          - generic "Universidad Austral" [ref=e467]:
+                            - paragraph [ref=e470]: Universidad Austral
+                          - link "Introducción a la programación con Python, offered by Universidad Austral, COURSE" [ref=e472]:
+                            - /url: /learn/introduccion-python
+                            - heading "Introducción a la programación con Python" [level=3] [ref=e473]
+                        - paragraph [ref=e476]:
+                          - strong [ref=e477]: "Skills you'll gain:"
+                          - text: Debugging, Programming Principles, Software Installation, Package and Software Management, Python Programming, Development Environment, Code Reusability, Integrated Development Environments, Computer Programming Tools, Program Development, Scripting, Computer Programming
+                        - generic [ref=e478]:
+                          - generic [ref=e480]:
+                            - img "4.6 out of 5 stars" [ref=e481]:
+                              - generic [ref=e484]: "4.6"
+                              - generic [ref=e485]: Rating, 4.6 out of 5 stars
+                            - generic [ref=e486]: ·
+                            - generic [ref=e487]: 1.8K reviews
+                          - paragraph [ref=e489]: Beginner · Course · 1 - 4 Weeks
+                - generic [ref=e493]:
+                  - heading "What brings you to Coursera today?" [level=2] [ref=e494]
+                  - generic [ref=e495]:
+                    - generic [ref=e496]:
+                      - button "Start my career" [ref=e500] [cursor=pointer]
+                      - paragraph [ref=e502]: Start my career
+                    - generic [ref=e503]:
+                      - button "Change my career" [ref=e507] [cursor=pointer]
+                      - paragraph [ref=e509]: Change my career
+                    - generic [ref=e510]:
+                      - button "Grow in my current role" [ref=e514] [cursor=pointer]
+                      - paragraph [ref=e516]: Grow in my current role
+                    - generic [ref=e517]:
+                      - button "Explore topics outside of work" [ref=e521] [cursor=pointer]
+                      - paragraph [ref=e523]: Explore topics outside of work
+                - list [ref=e524]:
+                  - listitem [ref=e525]:
+                    - generic [ref=e530] [cursor=pointer]:
+                      - generic [ref=e536]:
+                        - generic [ref=e537]: "Status: Preview"
+                        - generic [ref=e538]: Preview
+                      - generic [ref=e539]:
+                        - generic [ref=e540]:
+                          - generic "University of Leeds" [ref=e543]:
+                            - paragraph [ref=e546]: University of Leeds
+                          - link "Programming for Data Science, offered by University of Leeds, COURSE" [ref=e548]:
+                            - /url: /learn/programming-for-data-science
+                            - heading "Programming for Data Science" [level=3] [ref=e549]
+                        - paragraph [ref=e552]:
+                          - strong [ref=e553]: "Skills you'll gain:"
+                          - text: Jupyter, Programming Principles, Computer Programming Tools, Computer Programming, Python Programming, Software Installation, Data Structures, Data Science
+                        - generic [ref=e554]:
+                          - generic [ref=e556]:
+                            - img "4.4 out of 5 stars" [ref=e557]:
+                              - generic [ref=e560]: "4.4"
+                              - generic [ref=e561]: Rating, 4.4 out of 5 stars
+                            - generic [ref=e562]: ·
+                            - generic [ref=e563]: 30 reviews
+                          - paragraph [ref=e565]: Beginner · Course · 1 - 4 Weeks
+                  - listitem [ref=e566]:
+                    - generic [ref=e571] [cursor=pointer]:
+                      - generic [ref=e576]:
+                        - generic [ref=e577]:
+                          - generic [ref=e578]: "Status: New"
+                          - generic [ref=e579]: New
+                        - generic [ref=e580]:
+                          - generic [ref=e581]: "Status: Preview"
+                          - generic [ref=e582]: Preview
+                      - generic [ref=e583]:
+                        - generic [ref=e584]:
+                          - generic "Sage Publications" [ref=e587]:
+                            - paragraph [ref=e590]: Sage Publications
+                          - link "Programming with Python for Social Scientists, offered by Sage Publications, COURSE" [ref=e592]:
+                            - /url: /learn/sage-programming-with-python-for-social-scientists
+                            - heading "Programming with Python for Social Scientists" [level=3] [ref=e593]
+                        - paragraph [ref=e596]:
+                          - strong [ref=e597]: "Skills you'll gain:"
+                          - text: Data Visualization, Matplotlib, Plot (Graphics), Web Scraping, Scientific Visualization, Data Processing, Data Collection, Social Sciences, Social Impact, Data Analysis, Data Ethics, File I/O, Research, Programming Principles, Program Development, Social Justice, Python Programming, Computer Programming, Data Manipulation, Research Reports
+                        - paragraph [ref=e600]: Beginner · Course · 3 - 6 Months
+                  - listitem [ref=e601]:
+                    - generic [ref=e606] [cursor=pointer]:
+                      - generic [ref=e612]:
+                        - generic [ref=e613]: "Status: Preview"
+                        - generic [ref=e614]: Preview
+                      - generic [ref=e615]:
+                        - generic [ref=e616]:
+                          - generic "Universidad Nacional de Colombia" [ref=e619]:
+                            - paragraph [ref=e622]: Universidad Nacional de Colombia
+                          - link "Programación con Python, nivel intermedio, offered by Universidad Nacional de Colombia, COURSE" [ref=e624]:
+                            - /url: /learn/programacion-con-python-intermedio
+                            - heading "Programación con Python, nivel intermedio" [level=3] [ref=e625]
+                        - paragraph [ref=e628]:
+                          - strong [ref=e629]: "Skills you'll gain:"
+                          - text: File I/O, Computational Thinking, Data Management, Computer Programming, Computational Logic, Logical Reasoning
+                        - generic [ref=e630]:
+                          - generic [ref=e632]:
+                            - img "5 out of 5 stars" [ref=e633]:
+                              - generic [ref=e636]: "5"
+                              - generic [ref=e637]: Rating, 5 out of 5 stars
+                            - generic [ref=e638]: ·
+                            - generic [ref=e639]: 17 reviews
+                          - paragraph [ref=e641]: Intermediate · Course · 1 - 3 Months
+                  - listitem [ref=e642]:
+                    - generic [ref=e647] [cursor=pointer]:
+                      - generic [ref=e653]:
+                        - generic [ref=e654]: "Status: Free Trial"
+                        - generic [ref=e655]: Free Trial
+                      - generic [ref=e656]:
+                        - generic [ref=e657]:
+                          - generic "Northeastern University" [ref=e660]:
+                            - paragraph [ref=e663]: Northeastern University
+                          - link "Basic Programming in Python I, offered by Northeastern University, COURSE" [ref=e665]:
+                            - /url: /learn/basic-programming-in-python-i
+                            - heading "Basic Programming in Python I" [level=3] [ref=e666]
+                        - paragraph [ref=e669]:
+                          - strong [ref=e670]: "Skills you'll gain:"
+                          - text: Object Oriented Programming (OOP), Python Programming, Programming Principles, Computer Programming, Development Environment, Software Installation, Computational Logic, Program Development, Code Reusability, Package and Software Management, Data Processing
+                        - generic [ref=e671]:
+                          - generic [ref=e673]:
+                            - img "4.1 out of 5 stars" [ref=e674]:
+                              - generic [ref=e677]: "4.1"
+                              - generic [ref=e678]: Rating, 4.1 out of 5 stars
+                            - generic [ref=e679]: ·
+                            - generic [ref=e680]: 13 reviews
+                          - paragraph [ref=e682]: Beginner · Course · 1 - 3 Months
+                  - listitem [ref=e683]:
+                    - generic [ref=e688] [cursor=pointer]:
+                      - generic [ref=e694]:
+                        - generic [ref=e695]: "Status: Preview"
+                        - generic [ref=e696]: Preview
+                      - generic [ref=e697]:
+                        - generic [ref=e698]:
+                          - generic "Red Hat" [ref=e701]:
+                            - paragraph [ref=e704]: Red Hat
+                          - link "Python Programming with Red Hat, offered by Red Hat, COURSE" [ref=e706]:
+                            - /url: /learn/python-programming-with-red-hat
+                            - heading "Python Programming with Red Hat" [level=3] [ref=e707]
+                        - paragraph [ref=e710]:
+                          - strong [ref=e711]: "Skills you'll gain:"
+                          - text: Object Oriented Programming (OOP), File I/O, JSON, Python Programming, Debugging, Object Oriented Design, Data Structures, Red Hat Enterprise Linux, Programming Principles, Statistical Programming, Web Development, Program Development, Scripting, Integrated Development Environments, Development Environment, Software Installation
+                        - paragraph [ref=e714]: Intermediate · Course · 3 - 6 Months
+                  - listitem [ref=e715]:
+                    - generic [ref=e720] [cursor=pointer]:
+                      - generic [ref=e726]:
+                        - generic [ref=e727]: "Status: Free Trial"
+                        - generic [ref=e728]: Free Trial
+                      - generic [ref=e729]:
+                        - generic [ref=e730]:
+                          - generic "University of Michigan" [ref=e733]:
+                            - paragraph [ref=e736]: University of Michigan
+                          - 'link "Big Ideas in Programming: Expressing Yourself with Python, offered by University of Michigan, COURSE" [ref=e738]':
+                            - /url: /learn/bigideasinpython
+                            - 'heading "Big Ideas in Programming: Expressing Yourself with Python" [level=3] [ref=e739]'
+                        - paragraph [ref=e742]:
+                          - strong [ref=e743]: "Skills you'll gain:"
+                          - text: Data Structures, Python Programming, Computer Programming, Data Visualization, Computational Thinking, Debugging
+                        - generic [ref=e744]:
+                          - generic [ref=e746]:
+                            - img "3.8 out of 5 stars" [ref=e747]:
+                              - generic [ref=e750]: "3.8"
+                              - generic [ref=e751]: Rating, 3.8 out of 5 stars
+                            - generic [ref=e752]: ·
+                            - generic [ref=e753]: 6 reviews
+                          - paragraph [ref=e755]: Beginner · Course · 1 - 4 Weeks
+  - contentinfo [ref=e757]:
+    - contentinfo [ref=e758]:
+      - paragraph [ref=e760]: Coursera Footer
+      - generic [ref=e763]:
+        - generic [ref=e764]:
+          - heading "Skills" [level=2] [ref=e765]
+          - list [ref=e766]:
+            - listitem [ref=e767]:
+              - link "Accounting" [ref=e768] [cursor=pointer]:
+                - /url: https://www.coursera.org/courses?query=accounting
+            - listitem [ref=e769]:
+              - link "Artificial Intelligence (AI)" [ref=e770] [cursor=pointer]:
+                - /url: https://www.coursera.org/courses?query=artificial%20intelligence
+            - listitem [ref=e771]:
+              - link "Cybersecurity" [ref=e772] [cursor=pointer]:
+                - /url: https://www.coursera.org/courses?query=cybersecurity
+            - listitem [ref=e773]:
+              - link "Data Analytics" [ref=e774] [cursor=pointer]:
+                - /url: https://www.coursera.org/courses?query=data%20analytics
+            - listitem [ref=e775]:
+              - link "Digital Marketing" [ref=e776] [cursor=pointer]:
+                - /url: https://www.coursera.org/courses?query=digital%20marketing
+            - listitem [ref=e777]:
+              - link "Human Resources (HR)" [ref=e778] [cursor=pointer]:
+                - /url: https://www.coursera.org/courses?query=hr
+            - listitem [ref=e779]:
+              - link "Microsoft Excel" [ref=e780] [cursor=pointer]:
+                - /url: https://www.coursera.org/courses?query=microsoft%20excel
+            - listitem [ref=e781]:
+              - link "Project Management" [ref=e782] [cursor=pointer]:
+                - /url: https://www.coursera.org/courses?query=project%20management
+            - listitem [ref=e783]:
+              - link "Python" [ref=e784] [cursor=pointer]:
+                - /url: https://www.coursera.org/courses?query=python
+            - listitem [ref=e785]:
+              - link "SQL" [ref=e786] [cursor=pointer]:
+                - /url: https://www.coursera.org/courses?query=sql
+        - generic [ref=e787]:
+          - heading "Professional Certificates" [level=2] [ref=e788]
+          - list [ref=e789]:
+            - listitem [ref=e790]:
+              - link "Google AI Certificate" [ref=e791] [cursor=pointer]:
+                - /url: https://www.coursera.org/professional-certificates/google-ai
+            - listitem [ref=e792]:
+              - link "Google Cybersecurity Certificate" [ref=e793] [cursor=pointer]:
+                - /url: https://www.coursera.org/professional-certificates/google-cybersecurity
+            - listitem [ref=e794]:
+              - link "Google Data Analytics Certificate" [ref=e795] [cursor=pointer]:
+                - /url: https://www.coursera.org/professional-certificates/google-data-analytics
+            - listitem [ref=e796]:
+              - link "Google IT Support Certificate" [ref=e797] [cursor=pointer]:
+                - /url: https://www.coursera.org/professional-certificates/google-it-support
+            - listitem [ref=e798]:
+              - link "Google Project Management Certificate" [ref=e799] [cursor=pointer]:
+                - /url: https://www.coursera.org/professional-certificates/google-project-management
+            - listitem [ref=e800]:
+              - link "Google UX Design Certificate" [ref=e801] [cursor=pointer]:
+                - /url: https://www.coursera.org/professional-certificates/google-ux-design
+            - listitem [ref=e802]:
+              - link "IBM AI Engineering Certificate" [ref=e803] [cursor=pointer]:
+                - /url: https://www.coursera.org/professional-certificates/ai-engineer
+            - listitem [ref=e804]:
+              - link "IBM AI Product Manager Certificate" [ref=e805] [cursor=pointer]:
+                - /url: https://www.coursera.org/professional-certificates/ibm-ai-product-manager
+            - listitem [ref=e806]:
+              - link "IBM Data Science Certificate" [ref=e807] [cursor=pointer]:
+                - /url: https://www.coursera.org/professional-certificates/ibm-data-science
+            - listitem [ref=e808]:
+              - link "Intuit Academy Bookkeeping Certificate" [ref=e809] [cursor=pointer]:
+                - /url: https://www.coursera.org/professional-certificates/intuit-bookkeeping
+        - generic [ref=e810]:
+          - heading "Courses & Specializations" [level=2] [ref=e811]
+          - list [ref=e812]:
+            - listitem [ref=e813]:
+              - link "AI Essentials Specialization" [ref=e814] [cursor=pointer]:
+                - /url: https://www.coursera.org/specializations/ai-essentials-google
+            - listitem [ref=e815]:
+              - link "AI For Business Specialization" [ref=e816] [cursor=pointer]:
+                - /url: https://www.coursera.org/specializations/ai-for-business-wharton
+            - listitem [ref=e817]:
+              - link "AI For Everyone Course" [ref=e818] [cursor=pointer]:
+                - /url: https://www.coursera.org/learn/ai-for-everyone
+            - listitem [ref=e819]:
+              - link "AI in Healthcare Specialization" [ref=e820] [cursor=pointer]:
+                - /url: https://www.coursera.org/specializations/ai-healthcare
+            - listitem [ref=e821]:
+              - link "Deep Learning Specialization" [ref=e822] [cursor=pointer]:
+                - /url: https://www.coursera.org/specializations/deep-learning
+            - listitem [ref=e823]:
+              - link "Excel Skills for Business Specialization" [ref=e824] [cursor=pointer]:
+                - /url: https://www.coursera.org/specializations/excel
+            - listitem [ref=e825]:
+              - link "Financial Markets Course" [ref=e826] [cursor=pointer]:
+                - /url: https://www.coursera.org/learn/financial-markets-global
+            - listitem [ref=e827]:
+              - link "Machine Learning Specialization" [ref=e828] [cursor=pointer]:
+                - /url: https://www.coursera.org/specializations/machine-learning-introduction
+            - listitem [ref=e829]:
+              - link "Prompt Engineering for ChatGPT Course" [ref=e830] [cursor=pointer]:
+                - /url: https://www.coursera.org/learn/prompt-engineering
+            - listitem [ref=e831]:
+              - link "Python for Everybody Specialization" [ref=e832] [cursor=pointer]:
+                - /url: https://www.coursera.org/specializations/python
+        - generic [ref=e833]:
+          - heading "Career Resources" [level=2] [ref=e834]
+          - list [ref=e835]:
+            - listitem [ref=e836]:
+              - link "Career Aptitude Test" [ref=e837] [cursor=pointer]:
+                - /url: https://www.coursera.org/resources/career-quiz
+            - listitem [ref=e838]:
+              - link "CAPM Certification Requirements" [ref=e839] [cursor=pointer]:
+                - /url: https://www.coursera.org/articles/capm-certification-guide
+            - listitem [ref=e840]:
+              - link "CompTIA A+ Certification Requirements" [ref=e841] [cursor=pointer]:
+                - /url: https://www.coursera.org/articles/what-is-the-comptia-a-certification-what-to-know
+            - listitem [ref=e842]:
+              - link "CompTIA Security+ Certification Requirements" [ref=e843] [cursor=pointer]:
+                - /url: https://www.coursera.org/articles/what-is-the-comptia-security-plus-certification
+            - listitem [ref=e844]:
+              - link "Essential IT Certifications" [ref=e845] [cursor=pointer]:
+                - /url: https://www.coursera.org/articles/essential-it-certifications-entry-level-and-beginner
+            - listitem [ref=e846]:
+              - link "High-Income Skills to Learn" [ref=e847] [cursor=pointer]:
+                - /url: https://www.coursera.org/articles/high-income-skills
+            - listitem [ref=e848]:
+              - link "How to Learn Artificial Intelligence" [ref=e849] [cursor=pointer]:
+                - /url: https://www.coursera.org/articles/how-to-learn-artificial-intelligence
+            - listitem [ref=e850]:
+              - link "PMP Certification Requirements" [ref=e851] [cursor=pointer]:
+                - /url: https://www.coursera.org/articles/the-pmp-certification-a-guide-to-getting-started
+            - listitem [ref=e852]:
+              - link "Popular Cybersecurity Certifications" [ref=e853] [cursor=pointer]:
+                - /url: https://www.coursera.org/articles/popular-cybersecurity-certifications
+            - listitem [ref=e854]:
+              - link "Share your Coursera learning story" [ref=e855] [cursor=pointer]:
+                - /url: https://airtable.com/appxSsG2Dz9CjSpF8/pagCDDP2Uinw59CNP/form?prefill_utm_source=product&prefill_utm_campaign=seo_footer&prefill_utm_medium=written
+        - generic [ref=e856]:
+          - heading "Coursera" [level=2] [ref=e857]
+          - list [ref=e858]:
+            - listitem [ref=e859]:
+              - link "About" [ref=e860] [cursor=pointer]:
+                - /url: /about
+            - listitem [ref=e861]:
+              - link "What We Offer" [ref=e862] [cursor=pointer]:
+                - /url: /about/how-coursera-works/
+            - listitem [ref=e863]:
+              - link "Leadership" [ref=e864] [cursor=pointer]:
+                - /url: https://www.coursera.org/about/leadership
+            - listitem [ref=e865]:
+              - link "Careers" [ref=e866] [cursor=pointer]:
+                - /url: https://careers.coursera.com/
+            - listitem [ref=e867]:
+              - link "Catalog" [ref=e868] [cursor=pointer]:
+                - /url: /browse
+            - listitem [ref=e869]:
+              - link "Coursera Plus" [ref=e870] [cursor=pointer]:
+                - /url: /courseraplus
+            - listitem [ref=e871]:
+              - link "Professional Certificates" [ref=e872] [cursor=pointer]:
+                - /url: /professional-certificates
+            - listitem [ref=e873]:
+              - link "MasterTrack® Certificates" [ref=e874] [cursor=pointer]:
+                - /url: /mastertrack
+            - listitem [ref=e875]:
+              - link "Degrees" [ref=e876] [cursor=pointer]:
+                - /url: /degrees
+            - listitem [ref=e877]:
+              - link "For Enterprise" [ref=e878] [cursor=pointer]:
+                - /url: /business?utm_campaign=website&utm_content=corp-to-home-footer-for-enterprise&utm_medium=coursera&utm_source=enterprise
+            - listitem [ref=e879]:
+              - link "For Government" [ref=e880] [cursor=pointer]:
+                - /url: /government?utm_campaign=website&utm_content=corp-to-home-footer-for-government&utm_medium=coursera&utm_source=enterprise
+            - listitem [ref=e881]:
+              - link "For Campus" [ref=e882] [cursor=pointer]:
+                - /url: /campus?utm_campaign=website&utm_content=corp-to-home-footer-for-campus&utm_medium=coursera&utm_source=enterprise
+            - listitem [ref=e883]:
+              - link "Become a Partner" [ref=e884] [cursor=pointer]:
+                - /url: https://partnerships.coursera.org/?utm_medium=coursera&utm_source=partnerships&utm_campaign=website&utm_content=corp-to-home-footer-become-a-partner
+            - listitem [ref=e885]:
+              - link "Social Impact" [ref=e886] [cursor=pointer]:
+                - /url: /social-impact
+            - listitem [ref=e887]:
+              - link "Free Courses" [ref=e888] [cursor=pointer]:
+                - /url: https://www.coursera.org/courses?query=free
+            - listitem [ref=e889]:
+              - link "Udemy" [ref=e890] [cursor=pointer]:
+                - /url: https://www.udemy.com/
+        - generic [ref=e891]:
+          - heading "Community" [level=2] [ref=e892]
+          - list [ref=e893]:
+            - listitem [ref=e894]:
+              - link "Learners" [ref=e895] [cursor=pointer]:
+                - /url: https://www.coursera.community
+            - listitem [ref=e896]:
+              - link "Partners" [ref=e897] [cursor=pointer]:
+                - /url: https://www.coursera.org/partners
+            - listitem [ref=e898]:
+              - link "Beta Testers" [ref=e899] [cursor=pointer]:
+                - /url: https://www.coursera.support/s/article/360000152926-Become-a-Coursera-beta-tester
+            - listitem [ref=e900]:
+              - link "Blog" [ref=e901] [cursor=pointer]:
+                - /url: https://blog.coursera.org
+            - listitem [ref=e902]:
+              - link "The Coursera Podcast" [ref=e903] [cursor=pointer]:
+                - /url: https://open.spotify.com/show/58M36bneU7REOofdPZxe6A
+            - listitem [ref=e904]:
+              - link "Tech Blog" [ref=e905] [cursor=pointer]:
+                - /url: https://medium.com/coursera-engineering
+        - generic [ref=e906]:
+          - heading "More" [level=2] [ref=e907]
+          - list [ref=e908]:
+            - listitem [ref=e909]:
+              - link "Press" [ref=e910] [cursor=pointer]:
+                - /url: https://www.coursera.org/about/press
+            - listitem [ref=e911]:
+              - link "Investors" [ref=e912] [cursor=pointer]:
+                - /url: https://investor.coursera.com
+            - listitem [ref=e913]:
+              - link "Terms" [ref=e914] [cursor=pointer]:
+                - /url: https://www.coursera.org/about/terms
+            - listitem [ref=e915]:
+              - link "Privacy" [ref=e916] [cursor=pointer]:
+                - /url: https://www.coursera.org/about/privacy
+            - listitem [ref=e917]:
+              - link "Help" [ref=e918] [cursor=pointer]:
+                - /url: https://learner.coursera.help/hc
+            - listitem [ref=e919]:
+              - link "Accessibility" [ref=e920] [cursor=pointer]:
+                - /url: https://learner.coursera.help/hc/articles/360050668591-Accessibility-Statement
+            - listitem [ref=e921]:
+              - link "Contact" [ref=e922] [cursor=pointer]:
+                - /url: https://www.coursera.org/about/contact
+            - listitem [ref=e923]:
+              - link "Articles" [ref=e924] [cursor=pointer]:
+                - /url: https://www.coursera.org/articles
+            - listitem [ref=e925]:
+              - link "Directory" [ref=e926] [cursor=pointer]:
+                - /url: /directory
+            - listitem [ref=e927]:
+              - link "Affiliates" [ref=e928] [cursor=pointer]:
+                - /url: /about/affiliates
+            - listitem [ref=e929]:
+              - link "Modern Slavery Statement" [ref=e930] [cursor=pointer]:
+                - /url: https://coursera_assets.s3.amazonaws.com/footer/Modern+Slavery+Statement+(June%2C+2026).pdf
+            - listitem [ref=e931]:
+              - link "Cookies Preference Center" [ref=e932] [cursor=pointer]:
+                - /url: /about/cookies-manage
+        - generic [ref=e933]:
+          - generic [ref=e934]:
+            - link [ref=e935] [cursor=pointer]:
+              - /url: https://itunes.apple.com/app/apple-store/id736535961?pt=2334150&ct=Coursera%20Web%20Promo%20Banner&mt=8
+              - img "Download on the App Store" [ref=e937]
+            - link [ref=e938] [cursor=pointer]:
+              - /url: http://play.google.com/store/apps/details?id=org.coursera.android
+              - img "Get it on Google Play" [ref=e940]
+          - img "Logo of Certified B Corporation" [ref=e943]
+        - generic [ref=e945]:
+          - generic [ref=e946]: © 2026 Coursera Inc. All rights reserved.
+          - generic:
+            - list:
+              - listitem:
+                - link "Coursera Facebook":
+                  - /url: https://www.facebook.com/Coursera
+                  - generic:
+                    - img "Coursera Facebook"
+              - listitem:
+                - link "Coursera Linkedin":
+                  - /url: https://www.linkedin.com/company/coursera
+                  - generic:
+                    - img "Coursera Linkedin"
+              - listitem:
+                - link "Coursera Twitter":
+                  - /url: https://twitter.com/coursera
+                  - generic:
+                    - img "Coursera Twitter"
+              - listitem:
+                - link "Coursera YouTube":
+                  - /url: https://www.youtube.com/user/coursera
+                  - generic:
+                    - img "Coursera YouTube"
+              - listitem:
+                - link "Coursera Instagram":
+                  - /url: https://www.instagram.com/coursera/
+                  - generic:
+                    - img "Coursera Instagram"
+              - listitem:
+                - link "Coursera TikTok":
+                  - /url: https://www.tiktok.com/@coursera
+                  - generic:
+                    - img "Coursera TikTok"

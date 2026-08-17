@@ -23,6 +23,12 @@ class SourceResponse(BaseModel):
     source: str
     chunk_id: str | int
     score: float
+    document_id: str | None = None
+    retrieval_score: float | None = None
+    rerank_score: float | None = None
+    original_rank: int | None = None
+    final_rank: int | None = None
+    retrieval_source: list[str] | None = None
 
 
 class ChatResponse(BaseModel):
@@ -50,7 +56,7 @@ def root() -> FileResponse:
     return FileResponse(WEB_DIR / "index.html")
 
 
-@app.post("/chat", response_model=ChatResponse)
+@app.post("/chat", response_model=ChatResponse, response_model_exclude_none=True)
 def chat(
     request: ChatRequest,
     rag_service: RAGService = Depends(get_rag_service),

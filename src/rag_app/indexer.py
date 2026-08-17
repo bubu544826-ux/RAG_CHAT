@@ -7,7 +7,7 @@ import chromadb
 
 from .chunker import chunk_document
 from .document_loader import load_documents
-from .embedding import embed_text
+from .embedding import embed_texts
 
 
 DEFAULT_CHUNK_SIZE = 500
@@ -36,14 +36,13 @@ def build_index(
     output_path: str | Path,
     chunk_size: int = DEFAULT_CHUNK_SIZE,
     overlap: int = DEFAULT_CHUNK_OVERLAP,
-    embedding_function: Callable[[str], list[float]] = embed_text,
+    embedding_function: Callable[[list[str]], list[list[float]]] = embed_texts,
 ) -> dict[str, int]:
     """Run loader, chunker and embedding, then persist records in Chroma."""
     documents = load_documents(input_directory)
     ids: list[str] = []
     texts: list[str] = []
     metadatas: list[dict[str, str]] = []
-    embeddings: list[list[float]] = []
 
     for document in documents:
         chunks = chunk_document(document, chunk_size=chunk_size, overlap=overlap)
@@ -58,7 +57,14 @@ def build_index(
             metadatas.append(
                 {"source": chunk["source"], "chunk_id": chunk["chunk_id"]}
             )
-            embeddings.append(embedding_function(chunk["text"]))
+
+    # Embedding every chunk in one batched call keeps the model busy instead of
+    # paying per-chunk overhead once for each of them.
+    embeddings: list[list[float]] = []
+    if texts:
+        embeddings = embedding_function(texts)
+        if len(embeddings) != len(texts):
+            raise ValueError("embedding 数量与 chunk 数量不一致。")
 
     index_path = Path(output_path)
     _prepare_chroma_directory(index_path)

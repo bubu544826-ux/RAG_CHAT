@@ -7,10 +7,10 @@ import re
 import time
 from pathlib import Path
 
-from .config import LOG_LEVEL
+from .config import LOG_LEVEL, RETRIEVAL_SETTINGS, RetrievalSettings
 from .generator import Generator
 from .prompt_builder import build_prompt
-from .retriever import DEFAULT_TOP_K, retrieve
+from .retriever import retrieve
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -77,16 +77,35 @@ class RAGService:
     def __init__(
         self,
         index_path: str | Path = DEFAULT_INDEX_PATH,
-        top_k: int = DEFAULT_TOP_K,
+        top_k: int | None = None,
         generator: Generator | None = None,
+        retrieval_settings: RetrievalSettings = RETRIEVAL_SETTINGS,
     ) -> None:
         self.index_path = Path(index_path)
-        self.top_k = top_k
+        self.retrieval_settings = retrieval_settings
+        self.top_k = (
+            retrieval_settings.final_top_k if top_k is None else top_k
+        )
         self.generator = generator if generator is not None else Generator()
 
     def retrieve(self, question: str) -> list[dict[str, object]]:
         """Retrieve relevant chunks for one question."""
-        return retrieve(question, self.index_path, top_k=self.top_k)
+        settings = self.retrieval_settings
+        return retrieve(
+            question,
+            self.index_path,
+            top_k=self.top_k,
+            strategy=settings.strategy,
+            vector_top_k=settings.vector_top_k,
+            lexical_top_k=settings.lexical_top_k,
+            candidate_k=max(settings.candidate_k, self.top_k),
+            rrf_k=settings.rrf_k,
+            reranker_enabled=settings.reranker_enabled,
+            reranker_model_name=settings.reranker_model_name,
+            query_rewrite_enabled=settings.query_rewrite_enabled,
+            query_rewrite_mode=settings.query_rewrite_mode,
+            max_queries=settings.max_queries,
+        )
 
     def build_prompt(
         self,
@@ -109,14 +128,24 @@ class RAGService:
             retrieved_chunks = self.retrieve(question)
             prompt = self.build_prompt(question, retrieved_chunks)
             answer = self.generate(prompt)
-            sources = [
-                {
+            sources = []
+            for chunk in retrieved_chunks:
+                source_item = {
                     "source": chunk["source"],
                     "chunk_id": chunk["chunk_id"],
                     "score": chunk["score"],
                 }
-                for chunk in retrieved_chunks
-            ]
+                for metadata_name in (
+                    "document_id",
+                    "retrieval_score",
+                    "rerank_score",
+                    "original_rank",
+                    "final_rank",
+                    "retrieval_source",
+                ):
+                    if metadata_name in chunk:
+                        source_item[metadata_name] = chunk[metadata_name]
+                sources.append(source_item)
         except Exception as exc:
             _log_request(question, retrieved_chunks, started_at, error=exc)
             raise

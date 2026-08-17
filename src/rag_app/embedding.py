@@ -6,6 +6,9 @@ from typing import Any
 from .config import EMBEDDING_MODEL_NAME
 
 
+DEFAULT_BATCH_SIZE = 32
+
+
 class EmbeddingError(RuntimeError):
     """Raised when the embedding model cannot create a vector."""
 
@@ -54,6 +57,11 @@ def embed_text(text: str) -> list[float]:
     except AttributeError as exc:
         raise EmbeddingError("模型返回了无效的 embedding vector。") from exc
 
+    return _coerce_vector(vector)
+
+
+def _coerce_vector(vector: Any) -> list[float]:
+    """Validate one model output row and convert it to a plain float list."""
     if (
         not isinstance(vector, list)
         or not vector
@@ -65,3 +73,58 @@ def embed_text(text: str) -> list[float]:
         return [float(value) for value in vector]
     except (TypeError, ValueError) as exc:
         raise EmbeddingError("embedding vector 包含非数值元素。") from exc
+
+
+def embed_texts(
+    texts: list[str],
+    batch_size: int = DEFAULT_BATCH_SIZE,
+    show_progress: bool = False,
+) -> list[list[float]]:
+    """Embed many texts in batches.
+
+    One `model.encode` call per batch is much faster than one call per text,
+    because the model runs a single forward pass over the whole batch instead
+    of paying tokenizer and dispatch overhead for every chunk.
+    """
+    if not isinstance(texts, list):
+        raise TypeError("texts 必须是字符串列表。")
+    if batch_size <= 0:
+        raise ValueError("batch_size 必须大于 0。")
+
+    cleaned_texts = []
+    for text in texts:
+        if not isinstance(text, str):
+            raise TypeError("texts 必须是字符串列表。")
+
+        cleaned_text = text.strip()
+        if not cleaned_text:
+            raise ValueError("text 不能为空。")
+
+        cleaned_texts.append(cleaned_text)
+
+    if not cleaned_texts:
+        return []
+
+    try:
+        model = _load_model()
+        embeddings = model.encode(
+            cleaned_texts,
+            batch_size=batch_size,
+            convert_to_numpy=True,
+            normalize_embeddings=True,
+            show_progress_bar=show_progress,
+        )
+    except EmbeddingError:
+        raise
+    except Exception as exc:
+        raise EmbeddingError("生成文本向量失败。") from exc
+
+    try:
+        vectors = embeddings.tolist()
+    except AttributeError as exc:
+        raise EmbeddingError("模型返回了无效的 embedding vector。") from exc
+
+    if not isinstance(vectors, list) or len(vectors) != len(cleaned_texts):
+        raise EmbeddingError("模型返回的 embedding 数量与输入不一致。")
+
+    return [_coerce_vector(vector) for vector in vectors]

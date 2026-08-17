@@ -1,0 +1,72 @@
+- generic [ref=f3e2]:
+  - banner [ref=f3e3]:
+    - generic [ref=f3e8]: RAG Chat
+    - generic [ref=f3e9]: Knowledge base ready
+    - button "Toggle dark mode" [pressed] [ref=f3e11] [cursor=pointer]
+  - main [ref=f3e16]:
+    - heading "Ask your documents. Get a sourced answer." [level=1] [ref=f3e17]:
+      - text: Ask your documents.
+      - generic [ref=f3e18]: Get a sourced answer.
+    - generic [ref=f3e19]:
+      - generic [ref=f3e20]:
+        - generic [ref=f3e21]: What would you like to know?
+        - generic [ref=f3e22]: Answers use only retrieved context
+      - generic [ref=f3e23]:
+        - generic [ref=f3e24]:
+          - textbox "What would you like to know?" [ref=f3e25]:
+            - /placeholder: e.g. What is retrieval-augmented generation?
+            - text: What is retrieval-augmented generation?
+          - button "Clear question" [ref=f3e26] [cursor=pointer]
+        - button "Ask RAG" [ref=f3e30] [cursor=pointer]
+      - generic [ref=f3e34]:
+        - button "What is retrieval-augmented generation?" [ref=f3e35] [cursor=pointer]
+        - button "How does chunking work?" [ref=f3e36] [cursor=pointer]
+        - button "What embedding model is used?" [ref=f3e37] [cursor=pointer]
+      - generic [ref=f3e38]: Press Enter to send · / to focus
+    - generic [ref=f3e42]:
+      - region [ref=f3e43]:
+        - generic [ref=f3e44]:
+          - generic [ref=f3e49]:
+            - paragraph [ref=f3e50]: Response
+            - heading "Answer" [level=2] [ref=f3e51]
+          - generic [ref=f3e70]:
+            - generic [ref=f3e71]: 26.2s
+            - button "Copy" [ref=f3e72] [cursor=pointer]
+        - paragraph [ref=f3e77]: 根据提供的 context 无法回答该问题。 提供的 context 内容来自 RFC 文档，主要涉及网络协议相关的技术细节（如 ECN、QUIC 流管理、RFC 注册等），但不包含关于"检索增强生成（retrieval-augmented generation）"的任何信息。 如果您需要了解检索增强生成的相关信息，建议查询其他相关资源或知识库。
+      - region [ref=f3e56]:
+        - generic [ref=f3e57]:
+          - generic [ref=f3e62]:
+            - paragraph [ref=f3e63]: Retrieved context
+            - heading "Sources" [level=2] [ref=f3e64]
+          - generic [ref=f3e65]: "3"
+        - list [ref=f3e66]:
+          - button "RCF.txt RCF.txt#chunk-858 0.365 Chunk RCF.txt#chunk-858 · relevance 0.365" [expanded] [active] [ref=f3e111] [cursor=pointer]:
+            - generic [ref=f3e79]:
+              - generic [ref=f3e80]:
+                - strong [ref=f3e81]: RCF.txt
+                - generic [ref=f3e82]: RCF.txt#chunk-858
+              - generic [ref=f3e83]: "0.365"
+            - generic [ref=f3e112]: Chunk RCF.txt#chunk-858 · relevance 0.365
+          - button "RCF.txt RCF.txt#chunk-72 0.358" [ref=f3e86] [cursor=pointer]:
+            - generic [ref=f3e87]:
+              - generic [ref=f3e88]:
+                - strong [ref=f3e89]: RCF.txt
+                - generic [ref=f3e90]: RCF.txt#chunk-72
+              - generic [ref=f3e91]: "0.358"
+          - button "RCF.txt RCF.txt#chunk-823 0.342" [ref=f3e94] [cursor=pointer]:
+            - generic [ref=f3e95]:
+              - generic [ref=f3e96]:
+                - strong [ref=f3e97]: RCF.txt
+                - generic [ref=f3e98]: RCF.txt#chunk-823
+              - generic [ref=f3e99]: "0.342"
+    - region [ref=f3e102]:
+      - generic [ref=f3e103]:
+        - heading "Recent questions" [level=2] [ref=f3e104]
+        - button "Clear" [ref=f3e105] [cursor=pointer]
+      - list [ref=f3e106]:
+        - listitem [ref=f3e107]:
+          - button "What is retrieval-augmented generation?" [ref=f3e108] [cursor=pointer]
+  - contentinfo [ref=f3e68]:
+    - text: Local RAG workspace
+    - generic [ref=f3e69]: ·
+    - text: Answers stay grounded in your files

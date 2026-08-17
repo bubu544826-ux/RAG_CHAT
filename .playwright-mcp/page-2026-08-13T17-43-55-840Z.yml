@@ -1,0 +1,1327 @@
+- generic [ref=e3]:
+  - navigation [ref=e6]:
+    - generic [ref=e11]:
+      - generic [ref=e12]:
+        - navigation [ref=e13]:
+          - button "Open Navigation Menu" [ref=e14] [cursor=pointer]
+        - link "Coursera" [ref=e17] [cursor=pointer]:
+          - /url: /
+          - img "Coursera" [ref=e20]
+      - generic [ref=e22]:
+        - button "Search" [ref=e23] [cursor=pointer]
+        - button "Join for Free" [ref=e28] [cursor=pointer]
+  - main [ref=e31]:
+    - navigation "Breadcrumbs" [ref=e37]:
+      - list [ref=e38]:
+        - listitem [ref=e39]:
+          - link "Home" [ref=e40] [cursor=pointer]:
+            - /url: /
+        - listitem [ref=e43]:
+          - link "Browse" [ref=e46] [cursor=pointer]:
+            - /url: /browse
+        - listitem [ref=e47]:
+          - link "Information Technology" [ref=e50] [cursor=pointer]:
+            - /url: /browse/information-technology
+        - listitem [ref=e51]:
+          - link "Data Management" [ref=e54] [cursor=pointer]:
+            - /url: /browse/information-technology/data-management
+    - generic [ref=e57]:
+      - generic [ref=e62]:
+        - img "Meta" [ref=e66]
+        - generic [ref=e67]:
+          - heading "Programming in Python" [level=1] [ref=e68]
+          - paragraph [ref=e70]:
+            - generic [ref=e71]:
+              - text: This course is part of multiple programs.
+              - button "Learn more about the programs" [ref=e72] [cursor=pointer]:
+                - generic [ref=e73]: Learn more
+          - generic [ref=e75]:
+            - img "Taught by Meta Experts" [ref=e78]
+            - paragraph [ref=e81]:
+              - generic [ref=e82]:
+                - text: "Instructor:"
+                - link "Taught by Meta Experts" [ref=e83] [cursor=pointer]:
+                  - /url: /instructor/~30575670
+          - button "Enroll for free Starts Aug 13" [ref=e89] [cursor=pointer]:
+            - generic [ref=e91]:
+              - text: Enroll for free
+              - generic [ref=e92]: Starts Aug 13
+          - paragraph [ref=e94]:
+            - generic [ref=e95]:
+              - strong [ref=e96]: 163,581
+              - text: already enrolled
+          - paragraph [ref=e98]:
+            - generic [ref=e99]:
+              - text: Included with
+              - generic [ref=e100]:
+                - img "Coursera Plus" [ref=e101]
+                - generic [ref=e112]:
+                  - generic [ref=e113]: •
+                  - link "Learn more about Coursera Plus" [ref=e114] [cursor=pointer]:
+                    - /url: /courseraplus
+                    - text: Learn more
+        - generic [ref=e117]:
+          - paragraph [ref=e118]: Ask Coursera
+          - 'button "Ask Coursera: is this course right for me?" [ref=e120] [cursor=pointer]':
+            - generic [ref=e121]: Is this right for me?
+      - generic [ref=e131]:
+        - generic [ref=e133]:
+          - link "5 modules" [ref=e135] [cursor=pointer]:
+            - /url: "#modules"
+          - generic [ref=e136]: Gain insight into a topic and learn the fundamentals.
+        - generic [ref=e137]:
+          - img "4.6 stars" [ref=e139]: "4.6"
+          - paragraph [ref=e143]: 1,848 reviews
+        - generic [ref=e145]:
+          - generic [ref=e146]: Beginner level
+          - generic [ref=e149]:
+            - paragraph [ref=e151]: Recommended experience
+            - button "Information about difficulty level pre-requisites." [ref=e152] [cursor=pointer]
+        - generic [ref=e159]:
+          - generic [ref=e160]: Flexible schedule
+          - generic [ref=e161]:
+            - generic [ref=e162]: 5 weeks at 10 hours a week
+            - generic [ref=e163]: Learn at your own pace
+        - generic [ref=e164]:
+          - generic [ref=e165]:
+            - generic [ref=e166]: 94%
+            - generic [ref=e171]: Most learners liked this course
+          - separator [ref=e172]
+      - generic [ref=e175]:
+        - generic [ref=e176]:
+          - heading "What you'll learn" [level=2] [ref=e178]
+          - list [ref=e180]:
+            - listitem [ref=e181]:
+              - paragraph [ref=e187]:
+                - generic [ref=e188]: Foundational programming skills with basic Python Syntax.
+            - listitem [ref=e189]:
+              - paragraph [ref=e195]:
+                - generic [ref=e196]: How to use objects, classes and methods.
+        - generic [ref=e197]:
+          - generic [ref=e198]:
+            - heading "Skills you'll gain" [level=2] [ref=e200]
+            - list [ref=e201]:
+              - listitem [ref=e202]:
+                - link "Software Testing" [ref=e204] [cursor=pointer]:
+                  - /url: https://www.coursera.org/courses?query=software%20testing
+              - listitem [ref=e205]:
+                - link "Debugging" [ref=e207] [cursor=pointer]:
+                  - /url: https://www.coursera.org/courses?query=debugging
+              - listitem [ref=e208]:
+                - link "Program Development" [ref=e210] [cursor=pointer]:
+                  - /url: https://www.coursera.org/courses?query=program%20development
+              - listitem [ref=e211]:
+                - link "Cloud Hosting" [ref=e213] [cursor=pointer]:
+                  - /url: https://www.coursera.org/courses?query=cloud%20hosting
+              - listitem [ref=e214]:
+                - link "Functional Design" [ref=e216] [cursor=pointer]:
+                  - /url: https://www.coursera.org/courses?query=functional%20design
+              - listitem [ref=e217]:
+                - link "Data Structures" [ref=e219] [cursor=pointer]:
+                  - /url: https://www.coursera.org/courses?query=data%20structures
+              - listitem [ref=e220]:
+                - link "Test Driven Development (TDD)" [ref=e222] [cursor=pointer]:
+                  - /url: https://www.coursera.org/courses?query=test%20driven%20development%20(tdd)
+              - listitem [ref=e223]:
+                - link "Computer Programming" [ref=e225] [cursor=pointer]:
+                  - /url: https://www.coursera.org/courses?query=computer%20programming
+              - listitem [ref=e226]:
+                - link "Development Environment" [ref=e228] [cursor=pointer]:
+                  - /url: https://www.coursera.org/courses?query=development%20environment
+              - listitem [ref=e229]:
+                - button "Show all" [ref=e230] [cursor=pointer]
+          - generic [ref=e232]:
+            - heading "Tools you'll learn" [level=2] [ref=e234]
+            - list [ref=e235]:
+              - listitem [ref=e236]:
+                - link "Python Programming" [ref=e238] [cursor=pointer]:
+                  - /url: https://www.coursera.org/courses?query=python%20programming
+              - listitem [ref=e239]:
+                - link "Django (Web Framework)" [ref=e241] [cursor=pointer]:
+                  - /url: https://www.coursera.org/courses?query=django%20(web%20framework)
+        - generic [ref=e242]:
+          - heading "Details to know" [level=2] [ref=e244]
+          - generic [ref=e245]:
+            - generic [ref=e246]:
+              - generic [ref=e249]: Shareable certificate
+              - paragraph [ref=e250]: Add to your LinkedIn profile
+            - generic [ref=e251]:
+              - generic [ref=e254]: Assessments
+              - paragraph [ref=e255]: 22 assignments¹
+              - link "AI Graded see disclaimer" [ref=e256] [cursor=pointer]:
+                - /url: "#ai-disclaimer"
+            - generic [ref=e257]:
+              - generic [ref=e260]: Taught in English
+              - button "26 languages available" [ref=e262] [cursor=pointer]
+    - generic [ref=e273]:
+      - generic [ref=e274]:
+        - heading "See how employees at top companies are mastering in-demand skills" [level=1] [ref=e275]
+        - link "Learn more about Coursera for Business" [ref=e277] [cursor=pointer]:
+          - /url: /business?utm_medium=coursera&utm_source=xdp&utm_campaign=website&utm_content=c4b-xdp-thin-card&utm_term=out
+      - img "logos of Petrobras, TATA, Danone, Capgemini, P&G and L'Oreal" [ref=e282]
+    - generic [ref=e290]:
+      - heading "Build your subject-matter expertise" [level=2] [ref=e291]
+      - generic [ref=e293]:
+        - generic [ref=e294]:
+          - text: This course is available as part of
+          - button "multiple programs" [ref=e295] [cursor=pointer]
+        - generic [ref=e297]: When you enroll in this course, you'll also be asked to select a specific program.
+      - list [ref=e298]:
+        - listitem [ref=e299]: Learn new concepts from industry experts
+        - listitem [ref=e300]: Gain a foundational understanding of a subject or tool
+        - listitem [ref=e301]: Develop job-relevant skills with hands-on projects
+        - listitem [ref=e302]: Earn a shareable career certificate
+    - generic [ref=e311]:
+      - generic [ref=e312]:
+        - heading "There are 5 modules in this course" [level=2] [ref=e313]
+        - generic [ref=e318]:
+          - generic [ref=e320]:
+            - paragraph [ref=e321]: In this course, you will be introduced to foundational programming skills with basic Python Syntax. You’ll learn how to use code to solve problems. You’ll dive deep into the Python ecosystem and learn popular modules, libraries and tools for Python.
+            - paragraph [ref=e322]: "You’ll also get hands-on with objects, classes and methods in Python, and utilize variables, data types, control flow and loops, functions and data structures. You’ll learn how to recognize and handle errors and you’ll write unit tests for your Python code and practice test-driven development. By the end of this course, you will be able to: • Prepare your computer system for Python programming • Show understanding of Python syntax and how to control the flow of code • Demonstrate knowledge of how to handle errors and exceptions • Explain object-oriented programming and the major concepts associated with it • Explain the importance of testing in Python, and when to apply particular methods This is a beginner course for learners who would like to prepare themselves for a career in back-end development or database engineering. To succeed in this course, you do not need prior web development experience, only basic internet navigation skills and an eagerness to get started with coding."
+          - button "Read more" [ref=e324] [cursor=pointer]
+      - generic [ref=e327]:
+        - generic [ref=e328]:
+          - generic [ref=e332]:
+            - button "Getting started with Python Module 1 8 hours to complete Module details" [expanded] [ref=e334] [cursor=pointer]:
+              - generic [ref=e336]:
+                - generic [ref=e339]:
+                  - heading "Getting started with Python" [level=3] [ref=e340]
+                  - generic [ref=e341]:
+                    - text: Module 1
+                    - generic [ref=e342]: •
+                    - generic [ref=e343]: 8 hours to complete
+                - generic [ref=e344]: Module details
+            - region [ref=e1090]:
+              - generic [ref=e1092]:
+                - paragraph [ref=e1093]: Get started with the Python programming language and associated foundational concepts.
+                - generic [ref=e1094]:
+                  - heading "What's included" [level=4] [ref=e1096]
+                  - paragraph [ref=e1097]:
+                    - generic [ref=e1098]: 19 videos
+                    - generic [ref=e1104]: 17 readings
+                    - generic [ref=e1110]: 3 assignments
+                    - generic [ref=e1116]: 1 programming assignment
+                  - generic [ref=e1122]:
+                    - button "Hide info about module content" [expanded] [ref=e1128] [cursor=pointer]
+                    - region "Hide info about module content" [ref=e1132]:
+                      - generic [ref=e1133]:
+                        - heading "19 videos Total 89 minutes" [level=5] [ref=e1135]:
+                          - generic [ref=e1136]: 19 videos
+                          - generic [ref=e1142]: •
+                          - generic [ref=e1143]: Total 89 minutes
+                        - list [ref=e1144]:
+                          - listitem [ref=e1145]:
+                            - text: Introduction to the Course•
+                            - generic [ref=e1146]: 3 minutes
+                          - listitem [ref=e1147]:
+                            - text: How is Python used in the real world?•
+                            - generic [ref=e1148]: 2 minutes
+                          - listitem [ref=e1149]:
+                            - text: Introduction to Programming•
+                            - generic [ref=e1150]: 4 minutes
+                          - listitem [ref=e1151]:
+                            - text: Why Python?•
+                            - generic [ref=e1152]: 2 minutes
+                          - listitem [ref=e1153]:
+                            - text: Environment check for Windows•
+                            - generic [ref=e1154]: 3 minutes
+                          - listitem [ref=e1155]:
+                            - text: Environment check for Mac•
+                            - generic [ref=e1156]: 4 minutes
+                          - listitem [ref=e1157]:
+                            - text: Running code - Command line VS IDE•
+                            - generic [ref=e1158]: 4 minutes
+                          - listitem [ref=e1159]:
+                            - text: Python syntax, spaces matter•
+                            - generic [ref=e1160]: 4 minutes
+                          - listitem [ref=e1161]:
+                            - text: Variables•
+                            - generic [ref=e1162]: 7 minutes
+                          - listitem [ref=e1163]:
+                            - text: Basic data types•
+                            - generic [ref=e1164]: 7 minutes
+                          - listitem [ref=e1165]:
+                            - text: Strings•
+                            - generic [ref=e1166]: 5 minutes
+                          - listitem [ref=e1167]:
+                            - text: Type casting•
+                            - generic [ref=e1168]: 3 minutes
+                          - listitem [ref=e1169]:
+                            - text: User input, console output•
+                            - generic [ref=e1170]: 9 minutes
+                          - listitem [ref=e1171]:
+                            - text: Math and logical operators•
+                            - generic [ref=e1172]: 8 minutes
+                          - listitem [ref=e1173]:
+                            - text: "Control flow: If / else, else if•"
+                            - generic [ref=e1174]: 7 minutes
+                          - listitem [ref=e1175]:
+                            - text: Match statement•
+                            - generic [ref=e1176]: 6 minutes
+                          - listitem [ref=e1177]:
+                            - text: Looping constructs•
+                            - generic [ref=e1178]: 6 minutes
+                          - listitem [ref=e1179]:
+                            - text: Nested loops and the effect on algorithmic complexity•
+                            - generic [ref=e1180]: 6 minutes
+                          - listitem [ref=e1181]:
+                            - text: "Module summary: Getting started with Python•"
+                            - generic [ref=e1182]: 1 minute
+                      - generic [ref=e1183]:
+                        - heading "17 readings Total 135 minutes" [level=5] [ref=e1185]:
+                          - generic [ref=e1186]: 17 readings
+                          - generic [ref=e1192]: •
+                          - generic [ref=e1193]: Total 135 minutes
+                        - list [ref=e1194]:
+                          - listitem [ref=e1195]:
+                            - text: Course syllabus•
+                            - generic [ref=e1196]: 5 minutes
+                          - listitem [ref=e1197]:
+                            - text: How to be successful in this course•
+                            - generic [ref=e1198]: 10 minutes
+                          - listitem [ref=e1199]:
+                            - text: Visual Studio Code•
+                            - generic [ref=e1200]: 5 minutes
+                          - listitem [ref=e1201]:
+                            - text: Installing Python paths (Optional for Windows Users)•
+                            - generic [ref=e1202]: 5 minutes
+                          - listitem [ref=e1203]:
+                            - text: Installing Python paths (Optional for Mac users)•
+                            - generic [ref=e1204]: 5 minutes
+                          - listitem [ref=e1205]:
+                            - text: Required dependencies•
+                            - generic [ref=e1206]: 5 minutes
+                          - listitem [ref=e1207]:
+                            - text: Python syntax cheat sheet•
+                            - generic [ref=e1208]: 0 minutes
+                          - listitem [ref=e1209]:
+                            - text: Commenting code•
+                            - generic [ref=e1210]: 5 minutes
+                          - listitem [ref=e1211]:
+                            - text: Basic Data type and Function Cheatsheet•
+                            - generic [ref=e1212]: 10 minutes
+                          - listitem [ref=e1213]:
+                            - text: Type casting, a deeper look•
+                            - generic [ref=e1214]: 10 minutes
+                          - listitem [ref=e1215]:
+                            - text: Additional resources•
+                            - generic [ref=e1216]: 5 minutes
+                          - listitem [ref=e1217]:
+                            - text: Conditional statements•
+                            - generic [ref=e1218]: 15 minutes
+                          - listitem [ref=e1219]:
+                            - text: "Looping Constructs: Practical Examples•"
+                            - generic [ref=e1220]: 5 minutes
+                          - listitem [ref=e1221]:
+                            - text: Practicing control flow and loops•
+                            - generic [ref=e1222]: 5 minutes
+                          - listitem [ref=e1223]:
+                            - text: "Exercise: Use control flow and loops to solve a problem•"
+                            - generic [ref=e1224]: 30 minutes
+                          - listitem [ref=e1225]:
+                            - text: Use control flow and loops to solve a problem - solution•
+                            - generic [ref=e1226]: 10 minutes
+                          - listitem [ref=e1227]:
+                            - text: Additional resources•
+                            - generic [ref=e1228]: 5 minutes
+                      - generic [ref=e1229]:
+                        - heading "3 assignments Total 60 minutes" [level=5] [ref=e1231]:
+                          - generic [ref=e1232]: 3 assignments
+                          - generic [ref=e1238]: •
+                          - generic [ref=e1239]: Total 60 minutes
+                        - list [ref=e1240]:
+                          - listitem [ref=e1241]:
+                            - text: Knowledge check - Welcome to Python Programming•
+                            - generic [ref=e1242]: 20 minutes
+                          - listitem [ref=e1243]:
+                            - text: "Self-review: Use control flow and loops to solve a problem•"
+                            - generic [ref=e1244]: 10 minutes
+                          - listitem [ref=e1245]:
+                            - text: "Module quiz: Getting started with Python•"
+                            - generic [ref=e1246]: 30 minutes
+                      - generic [ref=e1247]:
+                        - heading "1 programming assignment Total 180 minutes" [level=5] [ref=e1249]:
+                          - generic [ref=e1250]: 1 programming assignment
+                          - generic [ref=e1256]: •
+                          - generic [ref=e1257]: Total 180 minutes
+                        - list [ref=e1258]:
+                          - listitem [ref=e1259]:
+                            - text: Type casting input•
+                            - generic [ref=e1260]: 180 minutes
+          - generic [ref=e351]:
+            - button "Basic Programming with Python Module 2 10 hours to complete Module details" [expanded] [ref=e353] [cursor=pointer]:
+              - generic [ref=e355]:
+                - generic [ref=e358]:
+                  - heading "Basic Programming with Python" [level=3] [ref=e359]
+                  - generic [ref=e360]:
+                    - text: Module 2
+                    - generic [ref=e361]: •
+                    - generic [ref=e362]: 10 hours to complete
+                - generic [ref=e363]: Module details
+            - region [ref=e1264]:
+              - generic [ref=e1266]:
+                - paragraph [ref=e1267]: Learn basic Python syntax, to use control flow and loops and work with functions and data structures. You will also learn how to recognise possible errors, their causes and how to handle them.
+                - generic [ref=e1268]:
+                  - heading "What's included" [level=4] [ref=e1270]
+                  - paragraph [ref=e1271]:
+                    - generic [ref=e1272]: 13 videos
+                    - generic [ref=e1278]: 9 readings
+                    - generic [ref=e1284]: 5 assignments
+                    - generic [ref=e1290]: 2 programming assignments
+                  - generic [ref=e1296]:
+                    - button "Hide info about module content" [expanded] [ref=e1302] [cursor=pointer]
+                    - region "Hide info about module content" [ref=e1306]:
+                      - generic [ref=e1307]:
+                        - heading "13 videos Total 58 minutes" [level=5] [ref=e1309]:
+                          - generic [ref=e1310]: 13 videos
+                          - generic [ref=e1316]: •
+                          - generic [ref=e1317]: Total 58 minutes
+                        - list [ref=e1318]:
+                          - listitem [ref=e1319]:
+                            - text: Functions•
+                            - generic [ref=e1320]: 5 minutes
+                          - listitem [ref=e1321]:
+                            - text: Variable scope•
+                            - generic [ref=e1322]: 5 minutes
+                          - listitem [ref=e1323]:
+                            - text: Lists•
+                            - generic [ref=e1324]: 5 minutes
+                          - listitem [ref=e1325]:
+                            - text: Tuples•
+                            - generic [ref=e1326]: 3 minutes
+                          - listitem [ref=e1327]:
+                            - text: Sets•
+                            - generic [ref=e1328]: 5 minutes
+                          - listitem [ref=e1329]:
+                            - text: Dictionaries•
+                            - generic [ref=e1330]: 7 minutes
+                          - listitem [ref=e1331]:
+                            - text: kwargs•
+                            - generic [ref=e1332]: 3 minutes
+                          - listitem [ref=e1333]:
+                            - text: What are exceptions•
+                            - generic [ref=e1334]: 2 minutes
+                          - listitem [ref=e1335]:
+                            - text: Exception handling•
+                            - generic [ref=e1336]: 5 minutes
+                          - listitem [ref=e1337]:
+                            - text: File handling in Python•
+                            - generic [ref=e1338]: 5 minutes
+                          - listitem [ref=e1339]:
+                            - text: Creating Files•
+                            - generic [ref=e1340]: 5 minutes
+                          - listitem [ref=e1341]:
+                            - text: Reading Files•
+                            - generic [ref=e1342]: 5 minutes
+                          - listitem [ref=e1343]:
+                            - text: "Module summary: Basic Programming with Python•"
+                            - generic [ref=e1344]: 2 minutes
+                      - generic [ref=e1345]:
+                        - heading "9 readings Total 120 minutes" [level=5] [ref=e1347]:
+                          - generic [ref=e1348]: 9 readings
+                          - generic [ref=e1354]: •
+                          - generic [ref=e1355]: Total 120 minutes
+                        - list [ref=e1356]:
+                          - listitem [ref=e1357]:
+                            - text: Function and variable scope•
+                            - generic [ref=e1358]: 15 minutes
+                          - listitem [ref=e1359]:
+                            - text: What are data structures?•
+                            - generic [ref=e1360]: 10 minutes
+                          - listitem [ref=e1361]:
+                            - text: Choosing and using data structures•
+                            - generic [ref=e1362]: 15 minutes
+                          - listitem [ref=e1363]:
+                            - text: Visual Studio Code on Coursera•
+                            - generic [ref=e1364]: 10 minutes
+                          - listitem [ref=e1365]:
+                            - text: Additional resources•
+                            - generic [ref=e1366]: 5 minutes
+                          - listitem [ref=e1367]:
+                            - text: "Exercise: Exceptions in Python•"
+                            - generic [ref=e1368]: 30 minutes
+                          - listitem [ref=e1369]:
+                            - text: Exceptions in Python - solution•
+                            - generic [ref=e1370]: 10 minutes
+                          - listitem [ref=e1371]:
+                            - text: Storing file contents in data structures•
+                            - generic [ref=e1372]: 20 minutes
+                          - listitem [ref=e1373]:
+                            - text: Additional resources•
+                            - generic [ref=e1374]: 5 minutes
+                      - generic [ref=e1375]:
+                        - heading "5 assignments Total 80 minutes" [level=5] [ref=e1377]:
+                          - generic [ref=e1378]: 5 assignments
+                          - generic [ref=e1384]: •
+                          - generic [ref=e1385]: Total 80 minutes
+                        - list [ref=e1386]:
+                          - listitem [ref=e1387]:
+                            - text: Functions, loops and data structures•
+                            - generic [ref=e1388]: 15 minutes
+                          - listitem [ref=e1389]:
+                            - text: "Knowledge check: Functions and Data structures•"
+                            - generic [ref=e1390]: 15 minutes
+                          - listitem [ref=e1391]:
+                            - text: Exceptions in Python•
+                            - generic [ref=e1392]: 10 minutes
+                          - listitem [ref=e1393]:
+                            - text: Read in data, store, manipulate and output new data to a file•
+                            - generic [ref=e1394]: 15 minutes
+                          - listitem [ref=e1395]:
+                            - text: "Module quiz: Basic Programming with Python•"
+                            - generic [ref=e1396]: 25 minutes
+                      - generic [ref=e1397]:
+                        - heading "2 programming assignments Total 360 minutes" [level=5] [ref=e1399]:
+                          - generic [ref=e1400]: 2 programming assignments
+                          - generic [ref=e1406]: •
+                          - generic [ref=e1407]: Total 360 minutes
+                        - list [ref=e1408]:
+                          - listitem [ref=e1409]:
+                            - text: Functions, loops and data structures•
+                            - generic [ref=e1410]: 180 minutes
+                          - listitem [ref=e1411]:
+                            - text: Read in data, store, manipulate and output new data to a file•
+                            - generic [ref=e1412]: 180 minutes
+          - generic [ref=e370]:
+            - button "Programming paradigms Module 3 15 hours to complete Module details" [expanded] [ref=e372] [cursor=pointer]:
+              - generic [ref=e374]:
+                - generic [ref=e377]:
+                  - heading "Programming paradigms" [level=3] [ref=e378]
+                  - generic [ref=e379]:
+                    - text: Module 3
+                    - generic [ref=e380]: •
+                    - generic [ref=e381]: 15 hours to complete
+                - generic [ref=e382]: Module details
+            - region [ref=e1416]:
+              - generic [ref=e1418]:
+                - paragraph [ref=e1419]: Learn about the paradigms of procedural programming and the associated logical concepts. You'll explore functional and object-oriented programming, and get an introduction to algorithms.
+                - generic [ref=e1420]:
+                  - heading "What's included" [level=4] [ref=e1422]
+                  - paragraph [ref=e1423]:
+                    - generic [ref=e1424]: 16 videos
+                    - generic [ref=e1430]: 19 readings
+                    - generic [ref=e1436]: 9 assignments
+                    - generic [ref=e1442]: 2 programming assignments
+                  - generic [ref=e1448]:
+                    - button "Hide info about module content" [expanded] [ref=e1454] [cursor=pointer]
+                    - region "Hide info about module content" [ref=e1458]:
+                      - generic [ref=e1459]:
+                        - heading "16 videos Total 75 minutes" [level=5] [ref=e1461]:
+                          - generic [ref=e1462]: 16 videos
+                          - generic [ref=e1468]: •
+                          - generic [ref=e1469]: Total 75 minutes
+                        - list [ref=e1470]:
+                          - listitem [ref=e1471]:
+                            - text: What is procedural programming?•
+                            - generic [ref=e1472]: 4 minutes
+                          - listitem [ref=e1473]:
+                            - text: Algorithms•
+                            - generic [ref=e1474]: 5 minutes
+                          - listitem [ref=e1475]:
+                            - text: Algorithmic complexity•
+                            - generic [ref=e1476]: 3 minutes
+                          - listitem [ref=e1477]:
+                            - text: What is functional programming?•
+                            - generic [ref=e1478]: 4 minutes
+                          - listitem [ref=e1479]:
+                            - text: Pure functions•
+                            - generic [ref=e1480]: 7 minutes
+                          - listitem [ref=e1481]:
+                            - text: Recursion•
+                            - generic [ref=e1482]: 4 minutes
+                          - listitem [ref=e1483]:
+                            - text: Reversing a string on Python•
+                            - generic [ref=e1484]: 5 minutes
+                          - listitem [ref=e1485]:
+                            - text: Map & filter•
+                            - generic [ref=e1486]: 5 minutes
+                          - listitem [ref=e1487]:
+                            - text: Introduction to Object Oriented Programming•
+                            - generic [ref=e1488]: 6 minutes
+                          - listitem [ref=e1489]:
+                            - text: Python classes and instances•
+                            - generic [ref=e1490]: 5 minutes
+                          - listitem [ref=e1491]:
+                            - text: Instantiate a custom Object•
+                            - generic [ref=e1492]: 5 minutes
+                          - listitem [ref=e1493]:
+                            - text: Instance methods•
+                            - generic [ref=e1494]: 5 minutes
+                          - listitem [ref=e1495]:
+                            - text: Parent classes vs. child classes•
+                            - generic [ref=e1496]: 6 minutes
+                          - listitem [ref=e1497]:
+                            - text: Abstract classes and methods•
+                            - generic [ref=e1498]: 4 minutes
+                          - listitem [ref=e1499]:
+                            - text: Method Resolution Order•
+                            - generic [ref=e1500]: 5 minutes
+                          - listitem [ref=e1501]:
+                            - text: "Module summary: Programming paradigms•"
+                            - generic [ref=e1502]: 2 minutes
+                      - generic [ref=e1503]:
+                        - heading "19 readings Total 330 minutes" [level=5] [ref=e1505]:
+                          - generic [ref=e1506]: 19 readings
+                          - generic [ref=e1512]: •
+                          - generic [ref=e1513]: Total 330 minutes
+                        - list [ref=e1514]:
+                          - listitem [ref=e1515]:
+                            - text: Writing Algorithms•
+                            - generic [ref=e1516]: 20 minutes
+                          - listitem [ref=e1517]:
+                            - text: "Exercise: Make a cup of coffee•"
+                            - generic [ref=e1518]: 10 minutes
+                          - listitem [ref=e1519]:
+                            - text: Make a cup of coffee - solution•
+                            - generic [ref=e1520]: 10 minutes
+                          - listitem [ref=e1521]:
+                            - text: Intro to Big-O notation•
+                            - generic [ref=e1522]: 15 minutes
+                          - listitem [ref=e1523]:
+                            - text: Additional resources•
+                            - generic [ref=e1524]: 5 minutes
+                          - listitem [ref=e1525]:
+                            - text: "Recursion example: Tower of Hanoi•"
+                            - generic [ref=e1526]: 10 minutes
+                          - listitem [ref=e1527]:
+                            - text: Comprehensions•
+                            - generic [ref=e1528]: 30 minutes
+                          - listitem [ref=e1529]:
+                            - text: Additional resources•
+                            - generic [ref=e1530]: 5 minutes
+                          - listitem [ref=e1531]:
+                            - text: OOP Principles•
+                            - generic [ref=e1532]: 20 minutes
+                          - listitem [ref=e1533]:
+                            - text: "Exercise: Define a Class•"
+                            - generic [ref=e1534]: 30 minutes
+                          - listitem [ref=e1535]:
+                            - text: Define a Class - solution•
+                            - generic [ref=e1536]: 10 minutes
+                          - listitem [ref=e1537]:
+                            - text: "Exercise: Instantiate a custom Object•"
+                            - generic [ref=e1538]: 30 minutes
+                          - listitem [ref=e1539]:
+                            - text: Instantiate a custom Object - solution•
+                            - generic [ref=e1540]: 10 minutes
+                          - listitem [ref=e1541]:
+                            - text: Inheritance and Multiple Inheritance•
+                            - generic [ref=e1542]: 30 minutes
+                          - listitem [ref=e1543]:
+                            - text: "Exercise: Classes and object exploration•"
+                            - generic [ref=e1544]: 30 minutes
+                          - listitem [ref=e1545]:
+                            - text: "Working with Methods: Examples•"
+                            - generic [ref=e1546]: 20 minutes
+                          - listitem [ref=e1547]:
+                            - text: "Exercise: Working with Methods•"
+                            - generic [ref=e1548]: 30 minutes
+                          - listitem [ref=e1549]:
+                            - text: Working with Methods - solution•
+                            - generic [ref=e1550]: 10 minutes
+                          - listitem [ref=e1551]:
+                            - text: Additional resources•
+                            - generic [ref=e1552]: 5 minutes
+                      - generic [ref=e1553]:
+                        - heading "9 assignments Total 127 minutes" [level=5] [ref=e1555]:
+                          - generic [ref=e1556]: 9 assignments
+                          - generic [ref=e1562]: •
+                          - generic [ref=e1563]: Total 127 minutes
+                        - list [ref=e1564]:
+                          - listitem [ref=e1565]:
+                            - text: "Self-review: Make a cup of coffee•"
+                            - generic [ref=e1566]: 10 minutes
+                          - listitem [ref=e1567]:
+                            - text: "Knowledge check: Procedural Programming•"
+                            - generic [ref=e1568]: 12 minutes
+                          - listitem [ref=e1569]:
+                            - text: Mapping key values to dictionary data structures•
+                            - generic [ref=e1570]: 12 minutes
+                          - listitem [ref=e1571]:
+                            - text: "Knowledge check: Functional Programming•"
+                            - generic [ref=e1572]: 12 minutes
+                          - listitem [ref=e1573]:
+                            - text: "Self-review: Define a Class•"
+                            - generic [ref=e1574]: 12 minutes
+                          - listitem [ref=e1575]:
+                            - text: "Self-review: Instantiate a custom Object•"
+                            - generic [ref=e1576]: 12 minutes
+                          - listitem [ref=e1577]:
+                            - text: Abstract classes and methods•
+                            - generic [ref=e1578]: 15 minutes
+                          - listitem [ref=e1579]:
+                            - text: "Self-review: Working with Methods•"
+                            - generic [ref=e1580]: 18 minutes
+                          - listitem [ref=e1581]:
+                            - text: "Module quiz: Programming Paradigms•"
+                            - generic [ref=e1582]: 24 minutes
+                      - generic [ref=e1583]:
+                        - heading "2 programming assignments Total 360 minutes" [level=5] [ref=e1585]:
+                          - generic [ref=e1586]: 2 programming assignments
+                          - generic [ref=e1592]: •
+                          - generic [ref=e1593]: Total 360 minutes
+                        - list [ref=e1594]:
+                          - listitem [ref=e1595]:
+                            - text: Mapping key-values to Dictionary data structures •
+                            - generic [ref=e1596]: 180 minutes
+                          - listitem [ref=e1597]:
+                            - text: Abstract Classes and Methods•
+                            - generic [ref=e1598]: 180 minutes
+          - generic [ref=e389]:
+            - button "Modules, packages, libraries and tools Module 4 10 hours to complete Module details" [expanded] [ref=e391] [cursor=pointer]:
+              - generic [ref=e393]:
+                - generic [ref=e396]:
+                  - heading "Modules, packages, libraries and tools" [level=3] [ref=e397]
+                  - generic [ref=e398]:
+                    - text: Module 4
+                    - generic [ref=e399]: •
+                    - generic [ref=e400]: 10 hours to complete
+                - generic [ref=e401]: Module details
+            - region [ref=e1602]:
+              - generic [ref=e1604]:
+                - paragraph [ref=e1605]: Supercharge your coding environment with popular modules libraries and tools for Python. You'll also learn about the different types of testing and how to write a test.
+                - generic [ref=e1606]:
+                  - heading "What's included" [level=4] [ref=e1608]
+                  - paragraph [ref=e1609]:
+                    - generic [ref=e1610]: 17 videos
+                    - generic [ref=e1616]: 7 readings
+                    - generic [ref=e1622]: 4 assignments
+                    - generic [ref=e1628]: 2 programming assignments
+                    - generic [ref=e1634]: 1 discussion prompt
+                  - generic [ref=e1640]:
+                    - button "Hide info about module content" [expanded] [active] [ref=e1646] [cursor=pointer]
+                    - region "Hide info about module content" [ref=e1650]:
+                      - generic [ref=e1651]:
+                        - heading "17 videos Total 73 minutes" [level=5] [ref=e1653]:
+                          - generic [ref=e1654]: 17 videos
+                          - generic [ref=e1660]: •
+                          - generic [ref=e1661]: Total 73 minutes
+                        - list [ref=e1662]:
+                          - listitem [ref=e1663]:
+                            - text: What is a module in Python?•
+                            - generic [ref=e1664]: 5 minutes
+                          - listitem [ref=e1665]:
+                            - text: Accessing modules•
+                            - generic [ref=e1666]: 4 minutes
+                          - listitem [ref=e1667]:
+                            - text: The import statement•
+                            - generic [ref=e1668]: 5 minutes
+                          - listitem [ref=e1669]:
+                            - text: Writing import statements•
+                            - generic [ref=e1670]: 5 minutes
+                          - listitem [ref=e1671]:
+                            - text: Namespacing and scoping•
+                            - generic [ref=e1672]: 7 minutes
+                          - listitem [ref=e1673]:
+                            - text: reload() function•
+                            - generic [ref=e1674]: 4 minutes
+                          - listitem [ref=e1675]:
+                            - text: "Popular packages: NumPy, pandas, Matplotlib, etc•"
+                            - generic [ref=e1676]: 4 minutes
+                          - listitem [ref=e1677]:
+                            - text: Data analysis packages•
+                            - generic [ref=e1678]: 4 minutes
+                          - listitem [ref=e1679]:
+                            - text: "Machine learning, deep learning and AI: PyTorch, TensorFlow•"
+                            - generic [ref=e1680]: 3 minutes
+                          - listitem [ref=e1681]:
+                            - text: Python web frameworks•
+                            - generic [ref=e1682]: 4 minutes
+                          - listitem [ref=e1683]:
+                            - text: What is testing?•
+                            - generic [ref=e1684]: 5 minutes
+                          - listitem [ref=e1685]:
+                            - text: Types of testing•
+                            - generic [ref=e1686]: 5 minutes
+                          - listitem [ref=e1687]:
+                            - text: Test automation packages•
+                            - generic [ref=e1688]: 4 minutes
+                          - listitem [ref=e1689]:
+                            - text: Writing tests with PyTest•
+                            - generic [ref=e1690]: 5 minutes
+                          - listitem [ref=e1691]:
+                            - text: Test-driven development (TDD)•
+                            - generic [ref=e1692]: 3 minutes
+                          - listitem [ref=e1693]:
+                            - text: Applying TDD•
+                            - generic [ref=e1694]: 4 minutes
+                          - listitem [ref=e1695]:
+                            - text: "Module summary: Modules, packages, libraries and tools•"
+                            - generic [ref=e1696]: 3 minutes
+                      - generic [ref=e1697]:
+                        - heading "7 readings Total 105 minutes" [level=5] [ref=e1699]:
+                          - generic [ref=e1700]: 7 readings
+                          - generic [ref=e1706]: •
+                          - generic [ref=e1707]: Total 105 minutes
+                        - list [ref=e1708]:
+                          - listitem [ref=e1709]:
+                            - text: Module Use-cases•
+                            - generic [ref=e1710]: 30 minutes
+                          - listitem [ref=e1711]:
+                            - text: Additional resources•
+                            - generic [ref=e1712]: 5 minutes
+                          - listitem [ref=e1713]:
+                            - text: "Popular Packages: Examples•"
+                            - generic [ref=e1714]: 30 minutes
+                          - listitem [ref=e1715]:
+                            - text: Big Data and Analysis with Python•
+                            - generic [ref=e1716]: 15 minutes
+                          - listitem [ref=e1717]:
+                            - text: Additional Resources•
+                            - generic [ref=e1718]: 10 minutes
+                          - listitem [ref=e1719]:
+                            - text: PyTest cheat sheet•
+                            - generic [ref=e1720]: 10 minutes
+                          - listitem [ref=e1721]:
+                            - text: Additional resources•
+                            - generic [ref=e1722]: 5 minutes
+                      - generic [ref=e1723]:
+                        - heading "4 assignments Total 72 minutes" [level=5] [ref=e1725]:
+                          - generic [ref=e1726]: 4 assignments
+                          - generic [ref=e1732]: •
+                          - generic [ref=e1733]: Total 72 minutes
+                        - list [ref=e1734]:
+                          - listitem [ref=e1735]:
+                            - text: "Knowledge check: Modules•"
+                            - generic [ref=e1736]: 18 minutes
+                          - listitem [ref=e1737]:
+                            - text: "Knowledge check: Popular Packages, Libraries and Frameworks•"
+                            - generic [ref=e1738]: 15 minutes
+                          - listitem [ref=e1739]:
+                            - text: Testing quiz•
+                            - generic [ref=e1740]: 15 minutes
+                          - listitem [ref=e1741]:
+                            - text: "Module quiz: Modules, packages, libraries and tools•"
+                            - generic [ref=e1742]: 24 minutes
+                      - generic [ref=e1743]:
+                        - heading "2 programming assignments Total 360 minutes" [level=5] [ref=e1745]:
+                          - generic [ref=e1746]: 2 programming assignments
+                          - generic [ref=e1752]: •
+                          - generic [ref=e1753]: Total 360 minutes
+                        - list [ref=e1754]:
+                          - listitem [ref=e1755]:
+                            - text: Import and Scope•
+                            - generic [ref=e1756]: 180 minutes
+                          - listitem [ref=e1757]:
+                            - text: Writing PyTest Test Cases for String Validation•
+                            - generic [ref=e1758]: 180 minutes
+                      - generic [ref=e1759]:
+                        - heading "1 discussion prompt Total 10 minutes" [level=5] [ref=e1761]:
+                          - generic [ref=e1762]: 1 discussion prompt
+                          - generic [ref=e1768]: •
+                          - generic [ref=e1769]: Total 10 minutes
+                        - list [ref=e1770]:
+                          - listitem [ref=e1771]:
+                            - text: What do you consider to be the difference between machine learning and AI?•
+                            - generic [ref=e1772]: 10 minutes
+          - button "End-of-Course Graded Assessment Module 5 1 hour to complete Module details" [ref=e410] [cursor=pointer]:
+            - generic [ref=e412]:
+              - generic [ref=e415]:
+                - heading "End-of-Course Graded Assessment" [level=3] [ref=e416]
+                - generic [ref=e417]:
+                  - text: Module 5
+                  - generic [ref=e418]: •
+                  - generic [ref=e419]: 1 hour to complete
+              - generic [ref=e420]: Module details
+        - generic [ref=e431]:
+          - heading "Earn a career certificate" [level=3] [ref=e432]
+          - paragraph [ref=e433]: Add this credential to your LinkedIn profile, resume, or CV. Share it on social media and in your performance review.
+      - generic [ref=e435]:
+        - generic [ref=e436]:
+          - generic [ref=e437]:
+            - heading "Instructor" [level=3] [ref=e438]
+            - generic [ref=e439]:
+              - generic [ref=e440]:
+                - generic [ref=e441]: Instructor ratings
+                - button "Information about instructor ratings" [ref=e442] [cursor=pointer]
+              - generic [ref=e446]:
+                - img "4.6 stars" [ref=e447]:
+                  - generic [ref=e448]: "4.6"
+                - generic [ref=e451]:
+                  - text: (
+                  - generic [ref=e452]: 536 ratings
+                  - text: )
+          - generic [ref=e454]:
+            - img "Taught by Meta Experts" [ref=e456]
+            - generic [ref=e457]:
+              - link "Taught by Meta Experts" [ref=e459] [cursor=pointer]:
+                - /url: /instructor/~30575670
+              - generic [ref=e460]: Meta
+              - generic [ref=e461]:
+                - generic [ref=e462]: 136 Courses
+                - generic [ref=e463]: •
+                - generic [ref=e464]: 1,366,479 learners
+        - generic [ref=e465]:
+          - heading "Offered by" [level=3] [ref=e467]
+          - generic [ref=e471]:
+            - link "Meta" [ref=e472] [cursor=pointer]:
+              - /url: /partners/meta
+            - button "Learn more about Meta" [ref=e473] [cursor=pointer]:
+              - generic [ref=e474]: Learn more
+    - generic [ref=e482]:
+      - heading "Explore more from Data Management" [level=2] [ref=e485]
+      - generic [ref=e487]:
+        - tablist "Filter By" [ref=e488]:
+          - tab "Recommended" [selected] [ref=e489] [cursor=pointer]
+          - tab "Degrees" [ref=e492] [cursor=pointer]
+        - tabpanel [ref=e495]:
+          - region "Collection" [ref=e498]:
+            - list [ref=e499]:
+              - listitem [ref=e500]:
+                - generic [ref=e505] [cursor=pointer]:
+                  - generic [ref=e507]:
+                    - generic [ref=e508]: "Status: Preview"
+                    - generic [ref=e509]: Preview
+                  - generic [ref=e512]:
+                    - generic [ref=e513]:
+                      - generic "University of Leeds" [ref=e516]:
+                        - paragraph [ref=e519]: University of Leeds
+                      - link "An Introduction to Programming using Python, offered by University of Leeds, COURSE" [ref=e521]:
+                        - /url: /learn/an-introduction-to-programming-using-python
+                        - heading "An Introduction to Programming using Python" [level=3] [ref=e522]
+                    - paragraph [ref=e525]: Course
+              - listitem [ref=e526]:
+                - generic [ref=e534] [cursor=pointer]:
+                  - generic [ref=e535]:
+                    - generic "Packt" [ref=e538]:
+                      - paragraph [ref=e541]: Packt
+                    - link "Introduction to Programming Using Python, offered by Packt, COURSE" [ref=e543]:
+                      - /url: /learn/packt-introduction-to-programming-using-python-kjpjh
+                      - heading "Introduction to Programming Using Python" [level=3] [ref=e544]
+                  - paragraph [ref=e547]: Course
+            - button "Show 8 more," [ref=e549] [cursor=pointer]:
+              - generic [ref=e550]: Show 8 more
+    - generic [ref=e559]:
+      - heading "Why people choose Coursera for their career" [level=2] [ref=e560]
+      - generic "Testimonials" [ref=e561]:
+        - generic [ref=e566]:
+          - generic "Go to previous testimonials" [ref=e567]:
+            - button "Previous" [ref=e568] [cursor=pointer]
+          - group "Slides" [ref=e572]:
+            - group [ref=e573]
+            - group "Slide 3" [ref=e574]:
+              - generic [ref=e577]:
+                - generic [ref=e579]:
+                  - heading "Felipe M." [level=3] [ref=e580]
+                  - generic [ref=e581]: Learner since 2018
+                - generic [ref=e582]: "\"To be able to take courses at my own pace and rhythm has been an amazing experience. I can learn whenever it fits my schedule and mood.\""
+            - group [ref=e583]:
+              - generic [ref=e586]:
+                - generic [ref=e588]:
+                  - heading [level=3] [ref=e589]: Jennifer J.
+                  - generic [ref=e590]: Learner since 2020
+                - generic [ref=e591]: "\"I directly applied the concepts and skills I learned from my courses to an exciting new project at work.\""
+            - group [ref=e592]
+            - group [ref=e593]
+            - group [ref=e594]:
+              - generic [ref=e597]:
+                - generic [ref=e599]:
+                  - heading [level=3] [ref=e600]: Felipe M.
+                  - generic [ref=e601]: Learner since 2018
+                - generic [ref=e602]: "\"To be able to take courses at my own pace and rhythm has been an amazing experience. I can learn whenever it fits my schedule and mood.\""
+            - group [ref=e603]:
+              - generic [ref=e606]:
+                - generic [ref=e608]:
+                  - heading [level=3] [ref=e609]: Jennifer J.
+                  - generic [ref=e610]: Learner since 2020
+                - generic [ref=e611]: "\"I directly applied the concepts and skills I learned from my courses to an exciting new project at work.\""
+            - group [ref=e612]
+            - group [ref=e613]
+          - generic "Go to next testimonials" [ref=e614]:
+            - button "Next" [ref=e615] [cursor=pointer]
+          - list "slides" [ref=e618] [cursor=pointer]:
+            - listitem [ref=e619]:
+              - button "slide 1" [ref=e620]
+            - listitem [ref=e621]:
+              - button "slide 2" [ref=e622]
+            - listitem [ref=e623]:
+              - button "slide 3" [ref=e624]
+            - listitem [ref=e625]:
+              - button "slide 4" [ref=e626]
+    - generic [ref=e631]:
+      - generic [ref=e633]:
+        - img "4.6 stars, 1,848 reviews" [ref=e635]:
+          - text: "4.6"
+          - paragraph [ref=e638]:
+            - generic [ref=e639]: 1,848 reviews
+        - list [ref=e641]:
+          - listitem [ref=e642]:
+            - generic [ref=e643]: 5 stars
+            - paragraph [ref=e648]: 74.31%
+          - listitem [ref=e649]:
+            - generic [ref=e650]: 4 stars
+            - paragraph [ref=e655]: 18%
+          - listitem [ref=e656]:
+            - generic [ref=e657]: 3 stars
+            - paragraph [ref=e662]: 4.11%
+          - listitem [ref=e663]:
+            - generic [ref=e664]: 2 stars
+            - paragraph [ref=e669]: 1.73%
+          - listitem [ref=e670]:
+            - generic [ref=e671]: 1 star
+            - paragraph [ref=e676]: 1.83%
+      - generic [ref=e678]:
+        - generic [ref=e679]:
+          - generic [ref=e680]: DG
+          - generic [ref=e682]:
+            - generic [ref=e683]:
+              - img "5 stars" [ref=e684]:
+                - generic [ref=e687]: "5"
+              - generic [ref=e688]: ·
+              - paragraph [ref=e689]: Reviewed on Aug 2, 2022
+            - paragraph [ref=e694]: Thanks Meta for a very comprehensive course.Not only are fundamental computer science topics taught, but the job-ready skills needed for Python by covering it in breadth, but also depth.
+        - generic [ref=e695]:
+          - generic [ref=e696]: NU
+          - generic [ref=e698]:
+            - generic [ref=e699]:
+              - img "4 stars" [ref=e700]:
+                - generic [ref=e703]: "4"
+              - generic [ref=e704]: ·
+              - paragraph [ref=e705]: Reviewed on May 12, 2025
+            - paragraph [ref=e710]: It's not as extensive as a newbie might need, but the graded assessments force you to learn by actually coding. I recommend combining this course with other ones, whenever you hit a block.
+        - generic [ref=e711]:
+          - generic [ref=e712]: AH
+          - generic [ref=e714]:
+            - generic [ref=e715]:
+              - img "5 stars" [ref=e716]:
+                - generic [ref=e719]: "5"
+              - generic [ref=e720]: ·
+              - paragraph [ref=e721]: Reviewed on Nov 13, 2022
+            - paragraph [ref=e726]: this course is great for covering many aspects of python, but it requires more study form other resources as well. the lab was a little challenging. overall it was great experience.
+        - link "View more reviews" [ref=e728] [cursor=pointer]:
+          - /url: /learn/programming-in-python/reviews
+    - list [ref=e742]:
+      - listitem [ref=e743]:
+        - generic [ref=e746]:
+          - heading [level=3] [ref=e750]:
+            - link "Unlock access to 10,000+ courses with a subscription" [ref=e752] [cursor=pointer]:
+              - /url: /courseraplus
+          - button [ref=e754] [cursor=pointer]:
+            - generic [ref=e755]: Start trial
+      - listitem [ref=e759]:
+        - generic [ref=e762]:
+          - generic [ref=e763]:
+            - heading [level=3] [ref=e764]:
+              - link "Advance your career with an online degree" [ref=e766] [cursor=pointer]:
+                - /url: /degrees
+            - generic [ref=e767]: Earn a degree from world-class universities - 100% online
+          - button [ref=e769] [cursor=pointer]:
+            - generic [ref=e770]: Explore degrees
+      - listitem [ref=e774]:
+        - generic [ref=e777]:
+          - heading [level=3] [ref=e781]:
+            - link "Join over 4,700 global companies that choose Coursera for Business" [ref=e783] [cursor=pointer]:
+              - /url: /business?utm_medium=coursera&utm_source=xdp&utm_campaign=website&utm_content=c4b-xdp-upsell-card&utm_term=out
+          - button [ref=e785] [cursor=pointer]:
+            - generic [ref=e786]: Learn more
+    - generic [ref=e798]:
+      - heading "Frequently asked questions" [level=2] [ref=e800]
+      - list [ref=e807]:
+        - listitem [ref=e808]:
+          - heading [level=3] [ref=e812]:
+            - button "When will I have access to the lectures and assignments?" [ref=e813] [cursor=pointer]
+        - listitem [ref=e820]:
+          - heading [level=3] [ref=e824]:
+            - button "What will I get if I subscribe to this Certificate?" [ref=e825] [cursor=pointer]
+      - generic [ref=e833]:
+        - generic [ref=e837]:
+          - heading "More questions" [level=3] [ref=e839]
+          - link "Visit the learner help center" [ref=e840] [cursor=pointer]:
+            - /url: https://learner.coursera.help/hc/
+        - paragraph [ref=e843]:
+          - generic [ref=e844]:
+            - text: Financial aid available,
+            - button "learn more" [ref=e845] [cursor=pointer]
+    - paragraph [ref=e849]:
+      - generic [ref=e850]:
+        - text: ¹ Some assignments in this course are AI-graded. For these assignments, your data will be used in accordance with
+        - link "Coursera's Privacy Notice" [ref=e851] [cursor=pointer]:
+          - /url: /about/privacy
+        - text: .
+    - button "Enroll for free Starts Aug 13" [ref=e856] [cursor=pointer]:
+      - generic [ref=e858]:
+        - text: Enroll for free
+        - generic [ref=e859]: Starts Aug 13
+  - contentinfo [ref=e861]:
+    - contentinfo [ref=e862]:
+      - paragraph [ref=e864]: Coursera Footer
+      - generic [ref=e867]:
+        - generic [ref=e868]:
+          - heading "Skills" [level=2] [ref=e869]
+          - list [ref=e870]:
+            - listitem [ref=e871]:
+              - link "Accounting" [ref=e872] [cursor=pointer]:
+                - /url: https://www.coursera.org/courses?query=accounting
+            - listitem [ref=e873]:
+              - link "Artificial Intelligence (AI)" [ref=e874] [cursor=pointer]:
+                - /url: https://www.coursera.org/courses?query=artificial%20intelligence
+            - listitem [ref=e875]:
+              - link "Cybersecurity" [ref=e876] [cursor=pointer]:
+                - /url: https://www.coursera.org/courses?query=cybersecurity
+            - listitem [ref=e877]:
+              - link "Data Analytics" [ref=e878] [cursor=pointer]:
+                - /url: https://www.coursera.org/courses?query=data%20analytics
+            - listitem [ref=e879]:
+              - link "Digital Marketing" [ref=e880] [cursor=pointer]:
+                - /url: https://www.coursera.org/courses?query=digital%20marketing
+            - listitem [ref=e881]:
+              - link "Human Resources (HR)" [ref=e882] [cursor=pointer]:
+                - /url: https://www.coursera.org/courses?query=hr
+            - listitem [ref=e883]:
+              - link "Microsoft Excel" [ref=e884] [cursor=pointer]:
+                - /url: https://www.coursera.org/courses?query=microsoft%20excel
+            - listitem [ref=e885]:
+              - link "Project Management" [ref=e886] [cursor=pointer]:
+                - /url: https://www.coursera.org/courses?query=project%20management
+            - listitem [ref=e887]:
+              - link "Python" [ref=e888] [cursor=pointer]:
+                - /url: https://www.coursera.org/courses?query=python
+            - listitem [ref=e889]:
+              - link "SQL" [ref=e890] [cursor=pointer]:
+                - /url: https://www.coursera.org/courses?query=sql
+        - generic [ref=e891]:
+          - heading "Professional Certificates" [level=2] [ref=e892]
+          - list [ref=e893]:
+            - listitem [ref=e894]:
+              - link "Google AI Certificate" [ref=e895] [cursor=pointer]:
+                - /url: https://www.coursera.org/professional-certificates/google-ai
+            - listitem [ref=e896]:
+              - link "Google Cybersecurity Certificate" [ref=e897] [cursor=pointer]:
+                - /url: https://www.coursera.org/professional-certificates/google-cybersecurity
+            - listitem [ref=e898]:
+              - link "Google Data Analytics Certificate" [ref=e899] [cursor=pointer]:
+                - /url: https://www.coursera.org/professional-certificates/google-data-analytics
+            - listitem [ref=e900]:
+              - link "Google IT Support Certificate" [ref=e901] [cursor=pointer]:
+                - /url: https://www.coursera.org/professional-certificates/google-it-support
+            - listitem [ref=e902]:
+              - link "Google Project Management Certificate" [ref=e903] [cursor=pointer]:
+                - /url: https://www.coursera.org/professional-certificates/google-project-management
+            - listitem [ref=e904]:
+              - link "Google UX Design Certificate" [ref=e905] [cursor=pointer]:
+                - /url: https://www.coursera.org/professional-certificates/google-ux-design
+            - listitem [ref=e906]:
+              - link "IBM AI Engineering Certificate" [ref=e907] [cursor=pointer]:
+                - /url: https://www.coursera.org/professional-certificates/ai-engineer
+            - listitem [ref=e908]:
+              - link "IBM AI Product Manager Certificate" [ref=e909] [cursor=pointer]:
+                - /url: https://www.coursera.org/professional-certificates/ibm-ai-product-manager
+            - listitem [ref=e910]:
+              - link "IBM Data Science Certificate" [ref=e911] [cursor=pointer]:
+                - /url: https://www.coursera.org/professional-certificates/ibm-data-science
+            - listitem [ref=e912]:
+              - link "Intuit Academy Bookkeeping Certificate" [ref=e913] [cursor=pointer]:
+                - /url: https://www.coursera.org/professional-certificates/intuit-bookkeeping
+        - generic [ref=e914]:
+          - heading "Courses & Specializations" [level=2] [ref=e915]
+          - list [ref=e916]:
+            - listitem [ref=e917]:
+              - link "AI Essentials Specialization" [ref=e918] [cursor=pointer]:
+                - /url: https://www.coursera.org/specializations/ai-essentials-google
+            - listitem [ref=e919]:
+              - link "AI For Business Specialization" [ref=e920] [cursor=pointer]:
+                - /url: https://www.coursera.org/specializations/ai-for-business-wharton
+            - listitem [ref=e921]:
+              - link "AI For Everyone Course" [ref=e922] [cursor=pointer]:
+                - /url: https://www.coursera.org/learn/ai-for-everyone
+            - listitem [ref=e923]:
+              - link "AI in Healthcare Specialization" [ref=e924] [cursor=pointer]:
+                - /url: https://www.coursera.org/specializations/ai-healthcare
+            - listitem [ref=e925]:
+              - link "Deep Learning Specialization" [ref=e926] [cursor=pointer]:
+                - /url: https://www.coursera.org/specializations/deep-learning
+            - listitem [ref=e927]:
+              - link "Excel Skills for Business Specialization" [ref=e928] [cursor=pointer]:
+                - /url: https://www.coursera.org/specializations/excel
+            - listitem [ref=e929]:
+              - link "Financial Markets Course" [ref=e930] [cursor=pointer]:
+                - /url: https://www.coursera.org/learn/financial-markets-global
+            - listitem [ref=e931]:
+              - link "Machine Learning Specialization" [ref=e932] [cursor=pointer]:
+                - /url: https://www.coursera.org/specializations/machine-learning-introduction
+            - listitem [ref=e933]:
+              - link "Prompt Engineering for ChatGPT Course" [ref=e934] [cursor=pointer]:
+                - /url: https://www.coursera.org/learn/prompt-engineering
+            - listitem [ref=e935]:
+              - link "Python for Everybody Specialization" [ref=e936] [cursor=pointer]:
+                - /url: https://www.coursera.org/specializations/python
+        - generic [ref=e937]:
+          - heading "Career Resources" [level=2] [ref=e938]
+          - list [ref=e939]:
+            - listitem [ref=e940]:
+              - link "Career Aptitude Test" [ref=e941] [cursor=pointer]:
+                - /url: https://www.coursera.org/resources/career-quiz
+            - listitem [ref=e942]:
+              - link "CAPM Certification Requirements" [ref=e943] [cursor=pointer]:
+                - /url: https://www.coursera.org/articles/capm-certification-guide
+            - listitem [ref=e944]:
+              - link "CompTIA A+ Certification Requirements" [ref=e945] [cursor=pointer]:
+                - /url: https://www.coursera.org/articles/what-is-the-comptia-a-certification-what-to-know
+            - listitem [ref=e946]:
+              - link "CompTIA Security+ Certification Requirements" [ref=e947] [cursor=pointer]:
+                - /url: https://www.coursera.org/articles/what-is-the-comptia-security-plus-certification
+            - listitem [ref=e948]:
+              - link "Essential IT Certifications" [ref=e949] [cursor=pointer]:
+                - /url: https://www.coursera.org/articles/essential-it-certifications-entry-level-and-beginner
+            - listitem [ref=e950]:
+              - link "High-Income Skills to Learn" [ref=e951] [cursor=pointer]:
+                - /url: https://www.coursera.org/articles/high-income-skills
+            - listitem [ref=e952]:
+              - link "How to Learn Artificial Intelligence" [ref=e953] [cursor=pointer]:
+                - /url: https://www.coursera.org/articles/how-to-learn-artificial-intelligence
+            - listitem [ref=e954]:
+              - link "PMP Certification Requirements" [ref=e955] [cursor=pointer]:
+                - /url: https://www.coursera.org/articles/the-pmp-certification-a-guide-to-getting-started
+            - listitem [ref=e956]:
+              - link "Popular Cybersecurity Certifications" [ref=e957] [cursor=pointer]:
+                - /url: https://www.coursera.org/articles/popular-cybersecurity-certifications
+            - listitem [ref=e958]:
+              - link "Share your Coursera learning story" [ref=e959] [cursor=pointer]:
+                - /url: https://airtable.com/appxSsG2Dz9CjSpF8/pagCDDP2Uinw59CNP/form?prefill_utm_source=product&prefill_utm_campaign=seo_footer&prefill_utm_medium=written
+        - generic [ref=e960]:
+          - heading "Coursera" [level=2] [ref=e961]
+          - list [ref=e962]:
+            - listitem [ref=e963]:
+              - link "About" [ref=e964] [cursor=pointer]:
+                - /url: /about
+            - listitem [ref=e965]:
+              - link "What We Offer" [ref=e966] [cursor=pointer]:
+                - /url: /about/how-coursera-works/
+            - listitem [ref=e967]:
+              - link "Leadership" [ref=e968] [cursor=pointer]:
+                - /url: https://www.coursera.org/about/leadership
+            - listitem [ref=e969]:
+              - link "Careers" [ref=e970] [cursor=pointer]:
+                - /url: https://careers.coursera.com/
+            - listitem [ref=e971]:
+              - link "Catalog" [ref=e972] [cursor=pointer]:
+                - /url: /browse
+            - listitem [ref=e973]:
+              - link "Coursera Plus" [ref=e974] [cursor=pointer]:
+                - /url: /courseraplus
+            - listitem [ref=e975]:
+              - link "Professional Certificates" [ref=e976] [cursor=pointer]:
+                - /url: /professional-certificates
+            - listitem [ref=e977]:
+              - link "MasterTrack® Certificates" [ref=e978] [cursor=pointer]:
+                - /url: /mastertrack
+            - listitem [ref=e979]:
+              - link "Degrees" [ref=e980] [cursor=pointer]:
+                - /url: /degrees
+            - listitem [ref=e981]:
+              - link "For Enterprise" [ref=e982] [cursor=pointer]:
+                - /url: /business?utm_campaign=website&utm_content=corp-to-home-footer-for-enterprise&utm_medium=coursera&utm_source=enterprise
+            - listitem [ref=e983]:
+              - link "For Government" [ref=e984] [cursor=pointer]:
+                - /url: /government?utm_campaign=website&utm_content=corp-to-home-footer-for-government&utm_medium=coursera&utm_source=enterprise
+            - listitem [ref=e985]:
+              - link "For Campus" [ref=e986] [cursor=pointer]:
+                - /url: /campus?utm_campaign=website&utm_content=corp-to-home-footer-for-campus&utm_medium=coursera&utm_source=enterprise
+            - listitem [ref=e987]:
+              - link "Become a Partner" [ref=e988] [cursor=pointer]:
+                - /url: https://partnerships.coursera.org/?utm_medium=coursera&utm_source=partnerships&utm_campaign=website&utm_content=corp-to-home-footer-become-a-partner
+            - listitem [ref=e989]:
+              - link "Social Impact" [ref=e990] [cursor=pointer]:
+                - /url: /social-impact
+            - listitem [ref=e991]:
+              - link "Free Courses" [ref=e992] [cursor=pointer]:
+                - /url: https://www.coursera.org/courses?query=free
+            - listitem [ref=e993]:
+              - link "Udemy" [ref=e994] [cursor=pointer]:
+                - /url: https://www.udemy.com/
+        - generic [ref=e995]:
+          - heading "Community" [level=2] [ref=e996]
+          - list [ref=e997]:
+            - listitem [ref=e998]:
+              - link "Learners" [ref=e999] [cursor=pointer]:
+                - /url: https://www.coursera.community
+            - listitem [ref=e1000]:
+              - link "Partners" [ref=e1001] [cursor=pointer]:
+                - /url: https://www.coursera.org/partners
+            - listitem [ref=e1002]:
+              - link "Beta Testers" [ref=e1003] [cursor=pointer]:
+                - /url: https://www.coursera.support/s/article/360000152926-Become-a-Coursera-beta-tester
+            - listitem [ref=e1004]:
+              - link "Blog" [ref=e1005] [cursor=pointer]:
+                - /url: https://blog.coursera.org
+            - listitem [ref=e1006]:
+              - link "The Coursera Podcast" [ref=e1007] [cursor=pointer]:
+                - /url: https://open.spotify.com/show/58M36bneU7REOofdPZxe6A
+            - listitem [ref=e1008]:
+              - link "Tech Blog" [ref=e1009] [cursor=pointer]:
+                - /url: https://medium.com/coursera-engineering
+        - generic [ref=e1010]:
+          - heading "More" [level=2] [ref=e1011]
+          - list [ref=e1012]:
+            - listitem [ref=e1013]:
+              - link "Press" [ref=e1014] [cursor=pointer]:
+                - /url: https://www.coursera.org/about/press
+            - listitem [ref=e1015]:
+              - link "Investors" [ref=e1016] [cursor=pointer]:
+                - /url: https://investor.coursera.com
+            - listitem [ref=e1017]:
+              - link "Terms" [ref=e1018] [cursor=pointer]:
+                - /url: https://www.coursera.org/about/terms
+            - listitem [ref=e1019]:
+              - link "Privacy" [ref=e1020] [cursor=pointer]:
+                - /url: https://www.coursera.org/about/privacy
+            - listitem [ref=e1021]:
+              - link "Help" [ref=e1022] [cursor=pointer]:
+                - /url: https://learner.coursera.help/hc
+            - listitem [ref=e1023]:
+              - link "Accessibility" [ref=e1024] [cursor=pointer]:
+                - /url: https://learner.coursera.help/hc/articles/360050668591-Accessibility-Statement
+            - listitem [ref=e1025]:
+              - link "Contact" [ref=e1026] [cursor=pointer]:
+                - /url: https://www.coursera.org/about/contact
+            - listitem [ref=e1027]:
+              - link "Articles" [ref=e1028] [cursor=pointer]:
+                - /url: https://www.coursera.org/articles
+            - listitem [ref=e1029]:
+              - link "Directory" [ref=e1030] [cursor=pointer]:
+                - /url: /directory
+            - listitem [ref=e1031]:
+              - link "Affiliates" [ref=e1032] [cursor=pointer]:
+                - /url: /about/affiliates
+            - listitem [ref=e1033]:
+              - link "Modern Slavery Statement" [ref=e1034] [cursor=pointer]:
+                - /url: https://coursera_assets.s3.amazonaws.com/footer/Modern+Slavery+Statement+(June%2C+2026).pdf
+            - listitem [ref=e1035]:
+              - link "Cookies Preference Center" [ref=e1036] [cursor=pointer]:
+                - /url: /about/cookies-manage
+        - generic [ref=e1037]:
+          - generic [ref=e1038]:
+            - link [ref=e1039] [cursor=pointer]:
+              - /url: https://itunes.apple.com/app/apple-store/id736535961?pt=2334150&ct=Coursera%20Web%20Promo%20Banner&mt=8
+              - img "Download on the App Store" [ref=e1042]
+            - link [ref=e1043] [cursor=pointer]:
+              - /url: http://play.google.com/store/apps/details?id=org.coursera.android
+              - img "Get it on Google Play" [ref=e1046]
+          - img "Logo of Certified B Corporation" [ref=e1050]
+        - generic [ref=e1052]:
+          - generic [ref=e1053]: © 2026 Coursera Inc. All rights reserved.
+          - list [ref=e1056]:
+            - listitem [ref=e1057]:
+              - link [ref=e1058] [cursor=pointer]:
+                - /url: https://www.facebook.com/Coursera
+                - img "Coursera Facebook" [ref=e1061]
+            - listitem [ref=e1062]:
+              - link [ref=e1063] [cursor=pointer]:
+                - /url: https://www.linkedin.com/company/coursera
+                - img "Coursera Linkedin" [ref=e1066]
+            - listitem [ref=e1067]:
+              - link [ref=e1068] [cursor=pointer]:
+                - /url: https://twitter.com/coursera
+                - img "Coursera Twitter" [ref=e1071]
+            - listitem [ref=e1072]:
+              - link [ref=e1073] [cursor=pointer]:
+                - /url: https://www.youtube.com/user/coursera
+                - img "Coursera YouTube" [ref=e1076]
+            - listitem [ref=e1077]:
+              - link [ref=e1078] [cursor=pointer]:
+                - /url: https://www.instagram.com/coursera/
+                - img "Coursera Instagram" [ref=e1081]
+            - listitem [ref=e1082]:
+              - link [ref=e1083] [cursor=pointer]:
+                - /url: https://www.tiktok.com/@coursera
+                - img "Coursera TikTok" [ref=e1086]

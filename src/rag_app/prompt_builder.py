@@ -1,11 +1,17 @@
 """Build a prompt from a question and retrieved knowledge chunks."""
 
 
-SYSTEM_INSTRUCTION = """你是一个基于知识库回答问题的助手。
-请遵循以下规则：
-1. 优先根据提供的 context 回答问题。
-2. 如果 context 中没有足够信息回答问题，请明确说明“根据提供的 context 无法回答该问题”。
-3. 不要编造 context 中不存在的信息。"""
+SYSTEM_INSTRUCTION = """You are an assistant that answers questions from a knowledge base.
+Follow these rules:
+1. Write the entire answer in English, even when the question or the context is
+   in another language. Translate what you need from the context rather than
+   quoting it in its original language.
+2. Answer from the provided context first.
+3. If the context does not hold enough information to answer, say plainly that
+   the provided context does not contain enough information to answer the question.
+4. Do not invent information that is not in the context."""
+
+ANSWER_LANGUAGE_REMINDER = "Answer in English."
 
 
 def build_prompt(question: str, retrieved_chunks: list[dict[str, object]]) -> str:
@@ -27,23 +33,24 @@ def build_prompt(question: str, retrieved_chunks: list[dict[str, object]]) -> st
         if not isinstance(text, str):
             raise ValueError("每个 chunk 必须包含字符串类型的 text 字段。")
 
-        source = chunk.get("source", "未知来源")
-        chunk_id = chunk.get("chunk_id", "未知编号")
+        source = chunk.get("source", "unknown source")
+        chunk_id = chunk.get("chunk_id", "unknown id")
         context_parts.append(
             f"[Chunk {position}]\n"
-            f"来源：{source}\n"
-            f"编号：{chunk_id}\n"
-            f"内容：{text}"
+            f"source: {source}\n"
+            f"chunk_id: {chunk_id}\n"
+            f"content: {text}"
         )
 
     context = (
         "\n\n".join(context_parts)
         if context_parts
-        else "（没有检索到相关内容）"
+        else "(no relevant content retrieved)"
     )
 
     return (
         f"{SYSTEM_INSTRUCTION}\n\n"
         f"context:\n{context}\n\n"
-        f"question:\n{question}"
+        f"question:\n{question}\n\n"
+        f"{ANSWER_LANGUAGE_REMINDER}"
     )

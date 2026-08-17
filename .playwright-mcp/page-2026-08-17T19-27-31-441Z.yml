@@ -1,0 +1,34 @@
+- generic [ref=e2]:
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e10]: RAG Chat
+        - generic [ref=e11]: Knowledge base ready
+      - paragraph [ref=e13]: Grounded answers, made simple
+      - heading "Ask your documents. Get a sourced answer." [level=1] [ref=e14]: Ask your documents.Get a sourced answer.
+      - paragraph [ref=e15]: Search your local knowledge base and see exactly which passages shaped the response.
+    - generic [ref=e16]:
+      - generic [ref=e17]:
+        - generic [ref=e18]: What would you like to know?
+        - generic [ref=e19]: Answers use only retrieved context
+      - generic [ref=e20]:
+        - textbox "What would you like to know?" [ref=e22]:
+          - /placeholder: e.g. What is retrieval-augmented generation?
+        - button "Ask RAG" [ref=e23] [cursor=pointer]
+      - generic [ref=e27]: Press Enter to send
+    - generic [ref=e29]:
+      - region [ref=e30]:
+        - generic [ref=e36]:
+          - paragraph [ref=e37]: Response
+          - heading "Answer" [level=2] [ref=e38]
+        - paragraph [ref=e39]: Your answer will appear here.
+      - region [ref=e40]:
+        - generic [ref=e46]:
+          - paragraph [ref=e47]: Retrieved context
+          - heading "Sources" [level=2] [ref=e48]
+        - list [ref=e49]:
+          - listitem [ref=e50]: No sources yet.
+  - contentinfo [ref=e51]:
+    - text: Local RAG workspace
+    - generic [ref=e52]: ·
+    - text: Answers stay grounded in your files

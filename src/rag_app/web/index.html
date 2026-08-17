@@ -9,28 +9,33 @@
       content="Ask questions and get answers grounded in your local knowledge base."
     >
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231b5e55'/%3E%3Cpath d='M18 19h28v6H18zm0 10h21v6H18zm0 10h16v6H18z' fill='white'/%3E%3C/svg%3E">
-    <link rel="stylesheet" href="/static/styles.css?v=3">
+    <link rel="stylesheet" href="/static/styles.css?v=4">
   </head>
   <body>
     <div class="page-shell">
+      <header class="topbar">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M6.5 5.5h8a3 3 0 0 1 3 3v9h-8a3 3 0 0 1-3-3v-9Z"></path>
+            <path d="M9.5 8.5h8v9h-8a3 3 0 0 1-3-3v-3a3 3 0 0 1 3-3Z"></path>
+          </svg>
+        </div>
+        <span class="brand-name">RAG Chat</span>
+        <span class="status-pill"><span aria-hidden="true"></span>Knowledge base ready</span>
+        <button id="theme-toggle" class="icon-button" type="button" aria-pressed="false" title="Toggle dark mode">
+          <span class="sr-only">Toggle dark mode</span>
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="4.2"></circle>
+            <path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4l1.6 1.6M17 17l1.6 1.6M18.6 5.4 17 7M7 17l-1.6 1.6"></path>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M20 14.2A8.2 8.2 0 0 1 9.8 4a8.2 8.2 0 1 0 10.2 10.2Z"></path>
+          </svg>
+        </button>
+      </header>
+
       <main class="app">
-        <header class="hero">
-          <div class="brand-row">
-            <div class="brand-mark" aria-hidden="true">
-              <svg viewBox="0 0 24 24" focusable="false">
-                <path d="M6.5 5.5h8a3 3 0 0 1 3 3v9h-8a3 3 0 0 1-3-3v-9Z"></path>
-                <path d="M9.5 8.5h8v9h-8a3 3 0 0 1-3-3v-3a3 3 0 0 1 3-3Z"></path>
-              </svg>
-            </div>
-            <span class="brand-name">RAG Chat</span>
-            <span class="status-pill"><span aria-hidden="true"></span>Knowledge base ready</span>
-          </div>
-          <p class="eyebrow">Grounded answers, made simple</p>
-          <h1>Ask your documents.<br><span>Get a sourced answer.</span></h1>
-          <p class="hero-copy">
-            Search your local knowledge base and see exactly which passages shaped the response.
-          </p>
-        </header>
+        <h1>Ask your documents. <span>Get a sourced answer.</span></h1>
 
         <form id="chat-form" class="composer">
           <div class="composer-heading">
@@ -51,6 +56,12 @@
                 autocomplete="off"
                 required
               >
+              <button id="clear-question" class="input-clear" type="button" hidden>
+                <span class="sr-only">Clear question</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d="m7 7 10 10M17 7 7 17"></path>
+                </svg>
+              </button>
             </div>
             <button id="send-button" type="submit">
               <span>Ask RAG</span>
@@ -59,8 +70,13 @@
               </svg>
             </button>
           </div>
+          <div id="examples" class="chips">
+            <button class="chip" type="button">What is retrieval-augmented generation?</button>
+            <button class="chip" type="button">How does chunking work?</button>
+            <button class="chip" type="button">What embedding model is used?</button>
+          </div>
           <div class="composer-footer">
-            <span>Press Enter to send</span>
+            <span>Press <kbd>Enter</kbd> to send <span aria-hidden="true">·</span> <kbd>/</kbd> to focus</span>
             <p id="loading" role="status" hidden>
               <span class="loading-dot" aria-hidden="true"></span>Searching your documents...
             </p>
@@ -81,8 +97,23 @@
                 <p>Response</p>
                 <h2 id="answer-heading">Answer</h2>
               </div>
+              <div class="card-actions">
+                <span id="latency" class="meta"></span>
+                <button id="copy-answer" class="ghost-button" type="button" hidden>
+                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <rect x="9" y="9" width="11" height="11" rx="2.5"></rect>
+                    <path d="M15 5.5A2.5 2.5 0 0 0 12.5 4h-6A2.5 2.5 0 0 0 4 6.5v6A2.5 2.5 0 0 0 5.5 15"></path>
+                  </svg>
+                  <span class="copy-label">Copy</span>
+                </button>
+              </div>
             </div>
-            <p id="answer">Your answer will appear here.</p>
+            <div id="answer-skeleton" class="skeleton" aria-hidden="true" hidden>
+              <span class="skeleton-bar"></span>
+              <span class="skeleton-bar"></span>
+              <span class="skeleton-bar"></span>
+            </div>
+            <p id="answer" data-placeholder="Your answer will appear here."></p>
           </section>
 
           <section class="result-card sources-card" aria-labelledby="sources-heading">
@@ -97,16 +128,26 @@
                 <p>Retrieved context</p>
                 <h2 id="sources-heading">Sources</h2>
               </div>
+              <span id="source-count" class="count-badge">0</span>
             </div>
             <ul id="sources">
-              <li>No sources yet.</li>
+              <li class="source-empty">No sources yet.</li>
             </ul>
           </section>
         </div>
+
+        <section id="history-panel" class="history" aria-labelledby="history-heading" hidden>
+          <div class="history-heading">
+            <h2 id="history-heading">Recent questions</h2>
+            <button id="clear-history" class="ghost-button" type="button">Clear</button>
+          </div>
+          <ul id="history"></ul>
+        </section>
       </main>
+
       <footer>Local RAG workspace <span aria-hidden="true">·</span> Answers stay grounded in your files</footer>
     </div>
 
-    <script src="/static/app.js?v=3" defer></script>
+    <script src="/static/app.js?v=4" defer></script>
   </body>
 </html>

@@ -52,7 +52,21 @@ class RAGServiceTest(unittest.TestCase):
         self.assertEqual(
             flow.mock_calls,
             [
-                call.retrieve("什么是 RAG？", Path("custom-index.json"), top_k=2),
+                call.retrieve(
+                    "什么是 RAG？",
+                    Path("custom-index.json"),
+                    top_k=2,
+                    strategy="hybrid",
+                    vector_top_k=30,
+                    lexical_top_k=30,
+                    candidate_k=30,
+                    rrf_k=60,
+                    reranker_enabled=True,
+                    reranker_model_name="cross-encoder/ms-marco-MiniLM-L6-v2",
+                    query_rewrite_enabled=True,
+                    query_rewrite_mode="multi_query",
+                    max_queries=3,
+                ),
                 call.build_prompt("什么是 RAG？", chunks),
                 call.generate("built prompt"),
             ],

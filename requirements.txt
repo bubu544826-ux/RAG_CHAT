@@ -1,5 +1,6 @@
 # Qwen3-Embedding requires these minimum versions according to its model card.
 numpy
+matplotlib
 sentence-transformers>=2.7.0
 transformers>=4.51.0
 anthropic
