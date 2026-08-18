@@ -22,11 +22,11 @@ class Generator:
         client: Anthropic | None = None,
     ) -> None:
         if not isinstance(model_name, str) or not model_name.strip():
-            raise ValueError("model_name 不能为空。")
+            raise ValueError("model_name must not be empty.")
         if not isinstance(max_tokens, int) or isinstance(max_tokens, bool):
-            raise TypeError("max_tokens 必须是整数。")
+            raise TypeError("max_tokens must be an integer.")
         if max_tokens <= 0:
-            raise ValueError("max_tokens 必须大于 0。")
+            raise ValueError("max_tokens must be greater than 0.")
 
         self.model_name = model_name
         self.max_tokens = max_tokens
@@ -34,14 +34,14 @@ class Generator:
         try:
             self.client = client if client is not None else Anthropic()
         except AnthropicError as exc:
-            raise GenerationError("无法初始化 Anthropic 客户端。") from exc
+            raise GenerationError("Failed to initialize the Anthropic client.") from exc
 
     def generate(self, prompt: str) -> str:
         """Send one prompt to Anthropic and return its text answer."""
         if not isinstance(prompt, str):
-            raise TypeError("prompt 必须是字符串。")
+            raise TypeError("prompt must be a string.")
         if not prompt.strip():
-            raise ValueError("prompt 不能为空。")
+            raise ValueError("prompt must not be empty.")
 
         try:
             message = self.client.messages.create(
@@ -50,7 +50,7 @@ class Generator:
                 messages=[{"role": "user", "content": prompt}],
             )
         except AnthropicError as exc:
-            raise GenerationError("调用 Anthropic API 生成回答失败。") from exc
+            raise GenerationError("Failed to generate an answer through the Anthropic API.") from exc
 
         try:
             text_parts = [
@@ -58,9 +58,9 @@ class Generator:
             ]
             answer = "".join(text_parts).strip()
         except (AttributeError, TypeError) as exc:
-            raise GenerationError("Anthropic API 返回了无效的响应。") from exc
+            raise GenerationError("The Anthropic API returned an invalid response.") from exc
 
         if not answer:
-            raise GenerationError("Anthropic API 没有返回文本回答。")
+            raise GenerationError("The Anthropic API did not return any text answer.")
 
         return answer

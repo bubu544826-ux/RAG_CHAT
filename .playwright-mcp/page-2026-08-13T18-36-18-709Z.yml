@@ -1,0 +1,304 @@
+- generic [ref=f21e4]:
+  - region "Marketing notification from Udemy" [ref=f21e5]:
+    - img "Loading" [ref=f21e7]
+  - banner [ref=f21e9]:
+    - navigation "Skip to content":
+      - link "Skip to content":
+        - /url: "#main-content-anchor"
+    - link [ref=f21e12] [cursor=pointer]:
+      - /url: /
+      - img "Udemy" [ref=f21e13]
+    - generic [ref=f21e17]:
+      - img "Submit search" [ref=f21e19]
+      - combobox [ref=f21e20]
+  - generic [ref=f21e21]:
+    - generic [ref=f21e22]: The Complete Python Bootcamp From Zero to Hero in Python
+    - generic [ref=f21e23]:
+      - generic [ref=f21e25]:
+        - generic [ref=f21e27]:
+          - generic [ref=f21e28]: "Rating: 4.6 out of 5"
+          - generic [ref=f21e29]: "4.6"
+        - link "(565,051 ratings)" [ref=f21e31] [cursor=pointer]:
+          - /url: "#reviews"
+      - generic [ref=f21e32]: 2,191,948 students
+  - generic [ref=f21e35]:
+    - generic [ref=f21e41]:
+      - navigation "Course topics" [ref=f21e42]:
+        - list [ref=f21e43]:
+          - listitem [ref=f21e44]:
+            - link "Development" [ref=f21e45] [cursor=pointer]:
+              - /url: https://www.udemy.com/courses/development
+          - listitem [ref=f21e47]:
+            - link "Programming Languages" [ref=f21e48] [cursor=pointer]:
+              - /url: https://www.udemy.com/courses/development/programming-languages
+          - listitem [ref=f21e50]:
+            - link "Python" [ref=f21e51] [cursor=pointer]:
+              - /url: https://www.udemy.com/topic/python
+      - heading "The Complete Python Bootcamp From Zero to Hero in Python" [level=1] [ref=f21e52]
+      - generic [ref=f21e53]: Learn Python like a Professional Start from the basics and go all the way to creating your own applications and games
+      - generic [ref=f21e55]:
+        - generic [ref=f21e56]: Created by
+        - link "Jose Portilla" [ref=f21e57] [cursor=pointer]:
+          - /url: /user/joseportilla/
+        - text: ","
+        - link "Pierian Training" [ref=f21e59] [cursor=pointer]:
+          - /url: /user/pierian-training-2/
+      - generic [ref=f21e61]:
+        - generic [ref=f21e62]:
+          - img "Last updated 8/2025" [ref=f21e63]
+          - generic [ref=f21e64]: Last updated 8/2025
+        - generic [ref=f21e65]:
+          - img "Course Language" [ref=f21e66]
+          - generic [ref=f21e67]: English
+        - generic [ref=f21e69]:
+          - img "Closed Captions" [ref=f21e70]
+          - generic [ref=f21e71]: Arabic [Auto],
+          - generic [ref=f21e72]: Bulgarian [Auto],
+          - button "21 more" [ref=f21e73] [cursor=pointer]
+    - generic [ref=f21e76]:
+      - button "Play course preview" [ref=f21e81] [cursor=pointer]:
+        - generic [ref=f21e86]: Preview this course
+      - generic [ref=f21e90]:
+        - paragraph [ref=f21e92]
+        - paragraph [ref=f21e96]
+        - paragraph [ref=f21e100]
+        - paragraph [ref=f21e104]
+    - generic [ref=f21e111]:
+      - generic [ref=f21e112]:
+        - heading "What you'll learn" [level=2] [ref=f21e113]
+        - generic [ref=f21e114]:
+          - list [ref=f21e117]:
+            - listitem [ref=f21e118]:
+              - generic [ref=f21e119]: You will learn how to leverage the power of Python to solve tasks.
+            - listitem [ref=f21e123]:
+              - generic [ref=f21e124]: You will build games and programs that use Python libraries.
+            - listitem [ref=f21e128]:
+              - generic [ref=f21e129]: You will be able to use Python for your own work problems or personal projects.
+            - listitem [ref=f21e133]:
+              - generic [ref=f21e134]: You will create a portfolio of Python based projects you can share.
+            - listitem [ref=f21e138]:
+              - generic [ref=f21e139]: Learn to use Python professionally, learning both Python 2 and Python 3!
+            - listitem [ref=f21e143]:
+              - generic [ref=f21e144]: Create games with Python, like Tic Tac Toe and Blackjack!
+            - listitem [ref=f21e148]:
+              - generic [ref=f21e149]: Learn advanced Python features, like the collections module and how to work with timestamps!
+            - listitem [ref=f21e153]:
+              - generic [ref=f21e154]: Learn to use Object Oriented Programming with classes!
+            - listitem [ref=f21e158]:
+              - generic [ref=f21e159]: Understand complex topics, like decorators.
+            - listitem [ref=f21e163]:
+              - generic [ref=f21e164]: Understand how to use both the Jupyter Notebook and create .py files
+            - listitem [ref=f21e168]:
+              - generic [ref=f21e169]: Get an understanding of how to create GUIs in the Jupyter Notebook system!
+            - listitem [ref=f21e173]:
+              - generic [ref=f21e174]: Build a complete understanding of Python from the ground up!
+          - button "Show more" [ref=f21e178] [cursor=pointer]
+      - generic [ref=f21e182]:
+        - heading "Explore related topics" [level=2] [ref=f21e183]
+        - navigation "Explore related topics" [ref=f21e184]:
+          - listitem [ref=f21e185]:
+            - link "Python" [ref=f21e186] [cursor=pointer]:
+              - /url: https://www.udemy.com/topic/python
+          - listitem [ref=f21e188]:
+            - link "Programming Languages" [ref=f21e189] [cursor=pointer]:
+              - /url: https://www.udemy.com/courses/development/programming-languages
+          - listitem [ref=f21e191]:
+            - link "Development" [ref=f21e192] [cursor=pointer]:
+              - /url: https://www.udemy.com/courses/development
+      - generic [ref=f21e195]:
+        - generic [ref=f21e196]:
+          - heading "Coding Exercises" [level=2] [ref=f21e197]
+          - paragraph [ref=f21e198]: This course includes our updated coding exercises so you can practice your skills as you learn.
+          - generic [ref=f21e199] [cursor=pointer]: See a demo
+        - button "This image is also treated as a button to track image enlargement interest" [ref=f21e202]
+      - generic [ref=f21e205]:
+        - heading "Course content" [level=2] [ref=f21e206]
+        - generic [ref=f21e207]:
+          - generic [ref=f21e209]:
+            - text: 23 sections • 170 lectures •
+            - generic [ref=f21e210]: 22h 23m total length
+          - button "Expand all sections" [ref=f21e211] [cursor=pointer]
+        - generic [ref=f21e213]:
+          - generic [ref=f21e214]:
+            - heading [level=3] [ref=f21e216] [cursor=pointer]:
+              - button "Course Overview 5 lectures • 19min" [expanded] [ref=f21e217]:
+                - generic [ref=f21e218]:
+                  - generic [ref=f21e219]: Course Overview
+                  - generic [ref=f21e220]: 5 lectures • 19min
+            - group "Course Overview 5 lectures • 19min" [ref=f21e222]:
+              - list [ref=f21e224]:
+                - listitem [ref=f21e225]:
+                  - generic [ref=f21e230]:
+                    - generic [ref=f21e231]: Auto-Welcome Message
+                    - button [ref=f21e232] [cursor=pointer]:
+                      - img "Show lecture description" [ref=f21e233]
+                    - generic [ref=f21e234]: 0:44
+                - listitem [ref=f21e235]:
+                  - generic [ref=f21e240]:
+                    - generic [ref=f21e241]: Course Introduction
+                    - button [ref=f21e242] [cursor=pointer]:
+                      - img "Show lecture description" [ref=f21e243]
+                    - button "Preview" [ref=f21e244] [cursor=pointer]
+                    - generic [ref=f21e247]: 6:39
+                - listitem [ref=f21e248]:
+                  - generic [ref=f21e253]:
+                    - generic [ref=f21e254]: Course Curriculum Overview
+                    - button [ref=f21e255] [cursor=pointer]:
+                      - img "Show lecture description" [ref=f21e256]
+                    - generic [ref=f21e257]: 4:00
+                - listitem [ref=f21e258]:
+                  - generic [ref=f21e263]:
+                    - generic [ref=f21e264]: Why Python?
+                    - button [ref=f21e265] [cursor=pointer]:
+                      - img "Show lecture description" [ref=f21e266]
+                    - generic [ref=f21e267]: 5:17
+                - listitem [ref=f21e268]:
+                  - generic [ref=f21e273]:
+                    - generic [ref=f21e274]: Course FAQs
+                    - button [ref=f21e275] [cursor=pointer]:
+                      - img "Show lecture description" [ref=f21e276]
+                    - generic [ref=f21e277]: 2:33
+          - heading [level=3] [ref=f21e280] [cursor=pointer]:
+            - button "Python Setup 10 lectures • 1hr 2min" [ref=f21e281]:
+              - generic [ref=f21e282]:
+                - generic [ref=f21e283]: Python Setup
+                - generic [ref=f21e284]: 10 lectures • 1hr 2min
+          - heading [level=3] [ref=f21e288] [cursor=pointer]:
+            - button "Python Object and Data Structure Basics 21 lectures • 2hr 2min" [ref=f21e289]:
+              - generic [ref=f21e290]:
+                - generic [ref=f21e291]: Python Object and Data Structure Basics
+                - generic [ref=f21e292]: 21 lectures • 2hr 2min
+          - heading [level=3] [ref=f21e296] [cursor=pointer]:
+            - button "Python Comparison Operators 2 lectures • 9min" [ref=f21e297]:
+              - generic [ref=f21e298]:
+                - generic [ref=f21e299]: Python Comparison Operators
+                - generic [ref=f21e300]: 2 lectures • 9min
+          - heading [level=3] [ref=f21e304] [cursor=pointer]:
+            - button "Python Statements 7 lectures • 1hr 15min" [ref=f21e305]:
+              - generic [ref=f21e306]:
+                - generic [ref=f21e307]: Python Statements
+                - generic [ref=f21e308]: 7 lectures • 1hr 15min
+          - heading [level=3] [ref=f21e312] [cursor=pointer]:
+            - button "Methods and Functions 19 lectures • 2hr 54min" [ref=f21e313]:
+              - generic [ref=f21e314]:
+                - generic [ref=f21e315]: Methods and Functions
+                - generic [ref=f21e316]: 19 lectures • 2hr 54min
+          - heading [level=3] [ref=f21e320] [cursor=pointer]:
+            - button "Milestone Project - 1 9 lectures • 1hr 40min" [ref=f21e321]:
+              - generic [ref=f21e322]:
+                - generic [ref=f21e323]: Milestone Project - 1
+                - generic [ref=f21e324]: 9 lectures • 1hr 40min
+          - heading [level=3] [ref=f21e328] [cursor=pointer]:
+            - button "Object Oriented Programming 9 lectures • 1hr 21min" [ref=f21e329]:
+              - generic [ref=f21e330]:
+                - generic [ref=f21e331]: Object Oriented Programming
+                - generic [ref=f21e332]: 9 lectures • 1hr 21min
+          - heading [level=3] [ref=f21e336] [cursor=pointer]:
+            - button "Modules and Packages 4 lectures • 29min" [ref=f21e337]:
+              - generic [ref=f21e338]:
+                - generic [ref=f21e339]: Modules and Packages
+                - generic [ref=f21e340]: 4 lectures • 29min
+          - heading [level=3] [ref=f21e344] [cursor=pointer]:
+            - button "Errors and Exceptions Handling 6 lectures • 46min" [ref=f21e345]:
+              - generic [ref=f21e346]:
+                - generic [ref=f21e347]: Errors and Exceptions Handling
+                - generic [ref=f21e348]: 6 lectures • 46min
+        - button "13 more sections" [ref=f21e350] [cursor=pointer]
+      - generic [ref=f21e352]:
+        - heading "Requirements" [level=2] [ref=f21e353]
+        - list [ref=f21e354]:
+          - listitem [ref=f21e355]:
+            - generic [ref=f21e356]: Access to a computer with an internet connection.
+      - generic [ref=f21e359]:
+        - heading "Description" [level=2] [ref=f21e360]
+        - generic [ref=f21e361]:
+          - generic [ref=f21e363]:
+            - generic [ref=f21e364]:
+              - paragraph [ref=f21e365]:
+                - strong [ref=f21e366]: Become a Python Programmer and learn one of employer's most requested skills of 2023!
+              - paragraph [ref=f21e367]:
+                - text: This is the
+                - strong [ref=f21e368]: most comprehensive, yet straight-forward, course for the Python programming language on Udemy!
+                - text: Whether you have never programmed before, already know basic syntax, or want to learn about the advanced features of Python, this course is for you! In this course we will
+                - strong [ref=f21e369]: teach you Python 3.
+              - paragraph [ref=f21e370]:
+                - text: With
+                - strong [ref=f21e371]: over 100 lectures
+                - text: and more than 21 hours of video this comprehensive course leaves no stone unturned! This course includes quizzes, tests, coding exercises and homework assignments as well as 3 major projects to create a Python project portfolio!
+              - paragraph [ref=f21e372]:
+                - strong [ref=f21e373]: Learn how to use Python for real-world tasks, such as working with PDF Files, sending emails, reading Excel files, Scraping websites for informations, working with image files, and much more!
+              - paragraph [ref=f21e374]: This course will teach you Python in a practical manner, with every lecture comes a full coding screencast and a corresponding code notebook! Learn in whatever manner is best for you!
+              - paragraph [ref=f21e375]: We will start by helping you get Python installed on your computer, regardless of your operating system, whether its Linux, MacOS, or Windows, we've got you covered.
+              - paragraph [ref=f21e376]: "We cover a wide variety of topics, including:"
+              - list [ref=f21e377]:
+                - listitem [ref=f21e378]:
+                  - paragraph [ref=f21e379]: Command Line Basics
+                - listitem [ref=f21e380]:
+                  - paragraph [ref=f21e381]: Installing Python
+                - listitem [ref=f21e382]:
+                  - paragraph [ref=f21e383]: Running Python Code
+                - listitem [ref=f21e384]:
+                  - paragraph [ref=f21e385]: Strings
+                - listitem [ref=f21e386]:
+                  - paragraph [ref=f21e387]: Lists
+                - listitem [ref=f21e388]:
+                  - paragraph [ref=f21e389]: Dictionaries
+                - listitem [ref=f21e390]:
+                  - paragraph [ref=f21e391]: Tuples
+                - listitem [ref=f21e392]:
+                  - paragraph [ref=f21e393]: Sets
+                - listitem [ref=f21e394]:
+                  - paragraph [ref=f21e395]: Number Data Types
+                - listitem [ref=f21e396]:
+                  - paragraph [ref=f21e397]: Print Formatting
+                - listitem [ref=f21e398]:
+                  - paragraph [ref=f21e399]: Functions
+                - listitem [ref=f21e400]:
+                  - paragraph [ref=f21e401]: Scope
+                - listitem [ref=f21e402]:
+                  - paragraph [ref=f21e403]: args/kwargs
+                - listitem [ref=f21e404]:
+                  - paragraph [ref=f21e405]: Built-in Functions
+                - listitem [ref=f21e406]:
+                  - paragraph [ref=f21e407]: Debugging and Error Handling
+                - listitem [ref=f21e408]:
+                  - paragraph [ref=f21e409]: Modules
+                - listitem [ref=f21e410]:
+                  - paragraph [ref=f21e411]: External Modules
+                - listitem [ref=f21e412]:
+                  - paragraph [ref=f21e413]: Object Oriented Programming
+                - listitem [ref=f21e414]:
+                  - paragraph [ref=f21e415]: Inheritance
+                - listitem [ref=f21e416]:
+                  - paragraph [ref=f21e417]: Polymorphism
+                - listitem [ref=f21e418]:
+                  - paragraph [ref=f21e419]: File I/O
+                - listitem [ref=f21e420]:
+                  - paragraph [ref=f21e421]: Advanced Methods
+                - listitem [ref=f21e422]:
+                  - paragraph [ref=f21e423]: Unit Tests
+                - listitem [ref=f21e424]:
+                  - paragraph [ref=f21e425]: and much more!
+              - paragraph [ref=f21e426]:
+                - strong [ref=f21e427]: You will get lifetime access to over 100 lectures plus corresponding Notebooks for the lectures!
+              - paragraph [ref=f21e428]:
+                - text: This course comes with a
+                - strong [ref=f21e429]: 30 day money back guarantee!
+                - text: If you are not satisfied in any way, you'll get your money back. Plus you will keep access to the Notebooks as a thank you for trying out the course!
+              - paragraph [ref=f21e430]:
+                - strong [ref=f21e431]: So what are you waiting for? Learn Python in a way that will advance your career and increase your knowledge, all in a fun and practical way!
+            - generic [ref=f21e432]:
+              - heading "Who this course is for:" [level=2] [ref=f21e433]
+              - list [ref=f21e434]:
+                - listitem [ref=f21e435]: Beginners who have never programmed before.
+                - listitem [ref=f21e436]: Programmers switching languages to Python.
+                - listitem [ref=f21e437]: Intermediate Python programmers who want to level up their skills!
+          - button "Show more description" [ref=f21e438] [cursor=pointer]:
+            - generic [ref=f21e439]: Show more
+      - generic [ref=f21e445]:
+        - paragraph [ref=f21e449]
+        - paragraph [ref=f21e459]
+        - paragraph [ref=f21e469]
+        - paragraph [ref=f21e479]
+      - link "Report abuse" [ref=f21e488] [cursor=pointer]:
+        - /url: /join/passwordless-auth/?locale=en_US&next=%2Ffeedback%2Freport%2F%3Frelated_object_type%3Dcourse%26related_object_id%3D567828%26source%3Dcourse_landing_page%26return_link%3D%252F&response_type=json&action=login&mode=

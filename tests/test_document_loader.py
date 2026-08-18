@@ -13,7 +13,7 @@ class DocumentLoaderTest(unittest.TestCase):
             raw_directory = Path(temporary_directory) / "raw"
             raw_directory.mkdir()
             (raw_directory / "rag_notes.md").write_text(
-                "# RAG 学习笔记\n\nDocument Loader 负责读取原始文档。\n",
+                "# RAG study notes\n\nThe document loader reads the raw documents.\n",
                 encoding="utf-8",
             )
             (raw_directory / "rag_overview.txt").write_text(
@@ -27,7 +27,7 @@ class DocumentLoaderTest(unittest.TestCase):
             documents,
             [
                 {
-                    "text": "# RAG 学习笔记\n\nDocument Loader 负责读取原始文档。\n",
+                    "text": "# RAG study notes\n\nThe document loader reads the raw documents.\n",
                     "source": "rag_notes.md",
                 },
                 {

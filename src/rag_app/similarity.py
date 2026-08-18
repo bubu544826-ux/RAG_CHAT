@@ -14,17 +14,17 @@ def cosine_similarity(
     embedding_b = np.asarray(vector_b, dtype=float)
 
     if embedding_a.ndim != 1 or embedding_b.ndim != 1:
-        raise ValueError("embedding vector 必须是一维向量。")
+        raise ValueError("Embedding vectors must be one-dimensional.")
     if embedding_a.shape != embedding_b.shape:
-        raise ValueError("两个 embedding vector 的维度必须相同。")
+        raise ValueError("Both embedding vectors must have the same dimension.")
     if not np.all(np.isfinite(embedding_a)) or not np.all(
         np.isfinite(embedding_b)
     ):
-        raise ValueError("embedding vector 必须只包含有限数值。")
+        raise ValueError("Embedding vectors must contain only finite values.")
 
     norm_a = np.linalg.norm(embedding_a)
     norm_b = np.linalg.norm(embedding_b)
     if norm_a == 0 or norm_b == 0:
-        raise ValueError("embedding vector 不能是零向量。")
+        raise ValueError("Embedding vectors must not be zero vectors.")
 
     return float(np.dot(embedding_a, embedding_b) / (norm_a * norm_b))

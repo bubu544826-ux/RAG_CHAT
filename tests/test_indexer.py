@@ -18,7 +18,7 @@ class BuildIndexTest(unittest.TestCase):
             (input_directory / "a.txt").write_text("abcdef", encoding="utf-8")
             (input_directory / "b.md").write_text("xyz", encoding="utf-8")
             embedding_function = Mock(
-                side_effect=lambda text: [float(len(text)), 1.0]
+                side_effect=lambda texts: [[float(len(text)), 1.0] for text in texts]
             )
 
             summary = build_index(
@@ -66,7 +66,12 @@ class BuildIndexTest(unittest.TestCase):
             )
             self.assertEqual(records_by_id["a.txt#chunk-1"]["text"], "ef")
             self.assertEqual(records_by_id["b.md#chunk-0"]["text"], "xyz")
-            self.assertEqual(embedding_function.call_count, 3)
+            # All chunks are embedded in a single batched call.
+            self.assertEqual(embedding_function.call_count, 1)
+            self.assertEqual(
+                sorted(embedding_function.call_args.args[0]),
+                ["abcd", "ef", "xyz"],
+            )
 
     def test_creates_empty_collection_for_whitespace_only_document(self) -> None:
         with temporary_chroma_directory() as temporary_path:
@@ -74,7 +79,7 @@ class BuildIndexTest(unittest.TestCase):
             output_path = temporary_path / "processed" / "index.json"
             input_directory.mkdir()
             (input_directory / "empty.txt").write_text("   ", encoding="utf-8")
-            embedding_function = Mock(return_value=[1.0])
+            embedding_function = Mock(return_value=[[1.0]])
 
             summary = build_index(
                 input_directory,
@@ -105,7 +110,7 @@ class BuildIndexTest(unittest.TestCase):
             build_index(
                 input_directory,
                 output_path,
-                embedding_function=lambda text: [1.0],
+                embedding_function=lambda texts: [[1.0] for _ in texts],
             )
             first_document.unlink()
             (input_directory / "second.txt").write_text("second", encoding="utf-8")
@@ -113,7 +118,7 @@ class BuildIndexTest(unittest.TestCase):
             build_index(
                 input_directory,
                 output_path,
-                embedding_function=lambda text: [1.0],
+                embedding_function=lambda texts: [[1.0] for _ in texts],
             )
 
             client = chromadb.PersistentClient(path=str(output_path))
@@ -134,7 +139,7 @@ class BuildIndexTest(unittest.TestCase):
             build_index(
                 input_directory,
                 output_path,
-                embedding_function=lambda text: [1.0],
+                embedding_function=lambda texts: [[1.0] for _ in texts],
             )
 
             self.assertTrue(output_path.is_dir())

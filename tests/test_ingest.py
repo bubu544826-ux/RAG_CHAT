@@ -25,17 +25,22 @@ class IngestCommandTest(unittest.TestCase):
         self.assertEqual(
             output.getvalue().splitlines(),
             [
-                "文件数量：2",
-                "chunk 数量：4",
-                "embedding 数量：4",
-                "Chroma index 目录："
+                "files: 2",
+                "chunks: 4",
+                "embeddings: 4",
+                "Chroma index directory: "
                 f"{ingest.OUTPUT_PATH.relative_to(ingest.PROJECT_ROOT)}",
             ],
         )
-        build_index_mock.assert_called_once_with(
-            ingest.INPUT_DIRECTORY,
-            ingest.OUTPUT_PATH,
+        build_index_mock.assert_called_once()
+        positional_args = build_index_mock.call_args.args
+        self.assertEqual(
+            positional_args,
+            (ingest.INPUT_DIRECTORY, ingest.OUTPUT_PATH),
         )
+        embedding_function = build_index_mock.call_args.kwargs["embedding_function"]
+        self.assertIs(embedding_function.func, ingest.embed_texts)
+        self.assertEqual(embedding_function.keywords, {"show_progress": True})
 
 
 if __name__ == "__main__":

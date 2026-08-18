@@ -1,42 +1,42 @@
 [
   {
-    "question": "忘记公司账号密码后，员工应该如何重置？",
+    "question": "How should an employee reset a forgotten company account password?",
     "expected_source": "rag.txt"
   },
   {
-    "question": "IT 服务台的正常工作时间是什么时候？",
+    "question": "What are the normal working hours of the IT service desk?",
     "expected_source": "rag.txt"
   },
   {
-    "question": "新员工入职后多久会自动创建公司邮箱？",
+    "question": "How long after onboarding is a company mailbox created automatically for a new employee?",
     "expected_source": "rag.txt"
   },
   {
-    "question": "可以用个人电脑登录公司邮箱吗？需要满足什么条件？",
+    "question": "Can I sign in to the company mailbox from a personal computer, and what conditions must be met?",
     "expected_source": "rag.txt"
   },
   {
-    "question": "申请公司 VPN 权限需要经过哪些步骤？",
+    "question": "Which steps are required to request company VPN access?",
     "expected_source": "rag.txt"
   },
   {
-    "question": "VPN 密码连续输错五次后会怎样？",
+    "question": "What happens after five consecutive wrong VPN password attempts?",
     "expected_source": "rag.txt"
   },
   {
-    "question": "公司电脑硬件损坏后如何提交维修申请？",
+    "question": "How do I submit a repair request for damaged company computer hardware?",
     "expected_source": "rag.txt"
   },
   {
-    "question": "公司的标准办公笔记本通常几年更换一次？",
+    "question": "How often is a standard company office laptop usually replaced?",
     "expected_source": "rag.txt"
   },
   {
-    "question": "员工正式离职后，公司邮箱和邮件会如何处理？",
+    "question": "What happens to the company mailbox and its email after an employee formally leaves?",
     "expected_source": "rag.txt"
   },
   {
-    "question": "收到疑似钓鱼邮件时应该怎么处理？",
+    "question": "What should I do when I receive a suspected phishing email?",
     "expected_source": "rag.txt"
   }
 ]

@@ -1,44 +1,43 @@
 # AGENTS.md
 
-## 项目定位
+## Project intent
 
-这是一个学习型 RAG（Retrieval-Augmented Generation，检索增强生成）项目。
+This is a learning-oriented RAG (Retrieval-Augmented Generation) project.
 
-项目的首要目标是帮助开发者理解 RAG 的核心原理和各模块之间的关系。因此，实现时应优先选择直观、简单、易讲解的方案，而不是追求复杂架构或高级抽象。
+Its first goal is to help developers understand the core principles of RAG and how the modules relate to each other. Implementations should therefore favour straightforward, simple, easy-to-explain solutions over complex architecture or advanced abstractions.
 
-本文件中的规则适用于整个仓库。
+The rules in this file apply to the whole repository.
 
-## 开发原则
+## Development principles
 
-1. 优先编写简单、直接、容易理解的代码。
-2. 第一版不使用 LangChain；除非用户明确允许，否则不要引入 LangChain。
-3. 每次只实现当前指定的模块，不提前扩展后续模块或额外功能。
-4. 新功能必须配套测试。纯文档修改不要求新增测试。
-5. 完成代码修改后必须运行相关测试；条件允许时运行完整测试套件。
-6. 不要在未经用户允许的情况下重构、改名或整理其他模块。
-7. API key、密码和其他敏感信息不得写入代码或提交到仓库。应通过环境变量读取，并在需要时更新 `.env.example`，其中只能包含占位值。
-8. 核心逻辑必须保持清晰可读。优先使用明确的变量名、小而专一的函数，以及必要且简洁的注释。
-9. 优先帮助用户理解原理。能够用基础代码清楚实现时，不使用会隐藏关键流程的高级封装、框架或魔法式抽象。
+1. Prefer simple, direct, easy-to-follow code.
+2. The first version does not use LangChain; do not introduce LangChain unless the user explicitly allows it.
+3. Implement only the module currently asked for; do not build later modules or extra features ahead of time.
+4. Every new feature needs matching tests. Documentation-only changes do not require new tests.
+5. After changing code, run the relevant tests; run the full test suite when circumstances allow.
+6. Do not refactor, rename, or tidy other modules without the user's permission.
+7. API keys, passwords, and other secrets must never be written into the code or committed to the repository. Read them from environment variables and update `.env.example` when needed, with placeholder values only.
+8. Core logic must stay clear and readable. Prefer explicit variable names, small single-purpose functions, and comments that are necessary and concise.
+9. Prioritise helping the user understand the principles. When plain code expresses something clearly, do not reach for advanced wrappers, frameworks, or magic abstractions that hide the key steps.
 
-## 工作范围
+## Scope of work
 
-- 修改前先确认当前模块、现有实现和相关测试。
-- 只修改完成当前任务所必需的文件。
-- 保留仓库中与当前任务无关的现有改动。
-- 如需扩大任务范围、引入重要依赖或重构其他模块，必须先征得用户同意。
+- Before changing anything, check the current module, its existing implementation, and its tests.
+- Only touch the files required to finish the current task.
+- Preserve existing changes in the repository that are unrelated to the current task.
+- Widening the task, adding a significant dependency, or refactoring other modules all require the user's agreement first.
 
-## 测试要求
+## Testing requirements
 
-- 每个新功能至少包含覆盖主要正常流程的测试，并在适用时覆盖关键错误路径或边界情况。
-- 修复缺陷时，应尽可能添加能够复现该缺陷的回归测试。
-- 完成代码后，必须实际运行相关测试，不能只说明测试“应该通过”。
-- 如果测试因环境、依赖或外部服务而无法运行，应明确说明未运行的测试、原因和已完成的验证，不得声称测试通过。
+- Every new feature needs at least one test covering the main happy path, plus key error paths or edge cases where they apply.
+- When fixing a defect, add a regression test that reproduces it whenever possible.
+- After finishing the code, the relevant tests must actually be run — never just claim the tests "should pass".
+- If tests cannot run because of the environment, dependencies, or an external service, state clearly which tests did not run, why, and what verification was done instead. Never claim the tests passed.
 
-## 完成标准
+## Definition of done
 
-任务只有同时满足以下条件才算完成：
+A task is finished only when all of the following hold:
 
-1. 代码能够运行。
-2. 相关测试已经运行并通过。
-3. 向用户清楚说明修改了什么、测试了什么，以及测试结果。
-
+1. The code runs.
+2. The relevant tests have been run and pass.
+3. The user has been told clearly what changed, what was tested, and what the test results were.

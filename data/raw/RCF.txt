@@ -1,0 +1,1095 @@
+
+
+
+
+Internet Engineering Task Force (IETF)                   J. Iyengar, Ed.
+Request for Comments: 9000                                        Fastly
+Category: Standards Track                                M. Thomson, Ed.
+ISSN: 2070-1721                                                  Mozilla
+                                                                May 2021
+
+
+           QUIC: A UDP-Based Multiplexed and Secure Transport
+
+Abstract
+
+   This document defines the core of the QUIC transport protocol.  QUIC
+   provides applications with flow-controlled streams for structured
+   communication, low-latency connection establishment, and network path
+   migration.  QUIC includes security measures that ensure
+   confidentiality, integrity, and availability in a range of deployment
+   circumstances.  Accompanying documents describe the integration of
+   TLS for key negotiation, loss detection, and an exemplary congestion
+   control algorithm.
+
+Status of This Memo
+
+   This is an Internet Standards Track document.
+
+   This document is a product of the Internet Engineering Task Force
+   (IETF).  It represents the consensus of the IETF community.  It has
+   received public review and has been approved for publication by the
+   Internet Engineering Steering Group (IESG).  Further information on
+   Internet Standards is available in Section 2 of RFC 7841.
+
+   Information about the current status of this document, any errata,
+   and how to provide feedback on it may be obtained at
+   https://www.rfc-editor.org/info/rfc9000.
+
+Copyright Notice
+
+   Copyright (c) 2021 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (https://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Simplified BSD License text as described in Section 4.e of
+   the Trust Legal Provisions and are provided without warranty as
+   described in the Simplified BSD License.
+
+Table of Contents
+
+   1.  Overview
+     1.1.  Document Structure
+     1.2.  Terms and Definitions
+     1.3.  Notational Conventions
+   2.  Streams
+     2.1.  Stream Types and Identifiers
+     2.2.  Sending and Receiving Data
+     2.3.  Stream Prioritization
+     2.4.  Operations on Streams
+   3.  Stream States
+     3.1.  Sending Stream States
+     3.2.  Receiving Stream States
+     3.3.  Permitted Frame Types
+     3.4.  Bidirectional Stream States
+     3.5.  Solicited State Transitions
+   4.  Flow Control
+     4.1.  Data Flow Control
+     4.2.  Increasing Flow Control Limits
+     4.3.  Flow Control Performance
+     4.4.  Handling Stream Cancellation
+     4.5.  Stream Final Size
+     4.6.  Controlling Concurrency
+   5.  Connections
+     5.1.  Connection ID
+       5.1.1.  Issuing Connection IDs
+       5.1.2.  Consuming and Retiring Connection IDs
+     5.2.  Matching Packets to Connections
+       5.2.1.  Client Packet Handling
+       5.2.2.  Server Packet Handling
+       5.2.3.  Considerations for Simple Load Balancers
+     5.3.  Operations on Connections
+   6.  Version Negotiation
+     6.1.  Sending Version Negotiation Packets
+     6.2.  Handling Version Negotiation Packets
+     6.3.  Using Reserved Versions
+   7.  Cryptographic and Transport Handshake
+     7.1.  Example Handshake Flows
+     7.2.  Negotiating Connection IDs
+     7.3.  Authenticating Connection IDs
+     7.4.  Transport Parameters
+       7.4.1.  Values of Transport Parameters for 0-RTT
+       7.4.2.  New Transport Parameters
+     7.5.  Cryptographic Message Buffering
+   8.  Address Validation
+     8.1.  Address Validation during Connection Establishment
+       8.1.1.  Token Construction
+       8.1.2.  Address Validation Using Retry Packets
+       8.1.3.  Address Validation for Future Connections
+       8.1.4.  Address Validation Token Integrity
+     8.2.  Path Validation
+       8.2.1.  Initiating Path Validation
+       8.2.2.  Path Validation Responses
+       8.2.3.  Successful Path Validation
+       8.2.4.  Failed Path Validation
+   9.  Connection Migration
+     9.1.  Probing a New Path
+     9.2.  Initiating Connection Migration
+     9.3.  Responding to Connection Migration
+       9.3.1.  Peer Address Spoofing
+       9.3.2.  On-Path Address Spoofing
+       9.3.3.  Off-Path Packet Forwarding
+     9.4.  Loss Detection and Congestion Control
+     9.5.  Privacy Implications of Connection Migration
+     9.6.  Server's Preferred Address
+       9.6.1.  Communicating a Preferred Address
+       9.6.2.  Migration to a Preferred Address
+       9.6.3.  Interaction of Client Migration and Preferred Address
+     9.7.  Use of IPv6 Flow Label and Migration
+   10. Connection Termination
+     10.1.  Idle Timeout
+       10.1.1.  Liveness Testing
+       10.1.2.  Deferring Idle Timeout
+     10.2.  Immediate Close
+       10.2.1.  Closing Connection State
+       10.2.2.  Draining Connection State
+       10.2.3.  Immediate Close during the Handshake
+     10.3.  Stateless Reset
+       10.3.1.  Detecting a Stateless Reset
+       10.3.2.  Calculating a Stateless Reset Token
+       10.3.3.  Looping
+   11. Error Handling
+     11.1.  Connection Errors
+     11.2.  Stream Errors
+   12. Packets and Frames
+     12.1.  Protected Packets
+     12.2.  Coalescing Packets
+     12.3.  Packet Numbers
+     12.4.  Frames and Frame Types
+     12.5.  Frames and Number Spaces
+   13. Packetization and Reliability
+     13.1.  Packet Processing
+     13.2.  Generating Acknowledgments
+       13.2.1.  Sending ACK Frames
+       13.2.2.  Acknowledgment Frequency
+       13.2.3.  Managing ACK Ranges
+       13.2.4.  Limiting Ranges by Tracking ACK Frames
+       13.2.5.  Measuring and Reporting Host Delay
+       13.2.6.  ACK Frames and Packet Protection
+       13.2.7.  PADDING Frames Consume Congestion Window
+     13.3.  Retransmission of Information
+     13.4.  Explicit Congestion Notification
+       13.4.1.  Reporting ECN Counts
+       13.4.2.  ECN Validation
+   14. Datagram Size
+     14.1.  Initial Datagram Size
+     14.2.  Path Maximum Transmission Unit
+       14.2.1.  Handling of ICMP Messages by PMTUD
+     14.3.  Datagram Packetization Layer PMTU Discovery
+       14.3.1.  DPLPMTUD and Initial Connectivity
+       14.3.2.  Validating the Network Path with DPLPMTUD
+       14.3.3.  Handling of ICMP Messages by DPLPMTUD
+     14.4.  Sending QUIC PMTU Probes
+       14.4.1.  PMTU Probes Containing Source Connection ID
+   15. Versions
+   16. Variable-Length Integer Encoding
+   17. Packet Formats
+     17.1.  Packet Number Encoding and Decoding
+     17.2.  Long Header Packets
+       17.2.1.  Version Negotiation Packet
+       17.2.2.  Initial Packet
+       17.2.3.  0-RTT
+       17.2.4.  Handshake Packet
+       17.2.5.  Retry Packet
+     17.3.  Short Header Packets
+       17.3.1.  1-RTT Packet
+     17.4.  Latency Spin Bit
+   18. Transport Parameter Encoding
+     18.1.  Reserved Transport Parameters
+     18.2.  Transport Parameter Definitions
+   19. Frame Types and Formats
+     19.1.  PADDING Frames
+     19.2.  PING Frames
+     19.3.  ACK Frames
+       19.3.1.  ACK Ranges
+       19.3.2.  ECN Counts
+     19.4.  RESET_STREAM Frames
+     19.5.  STOP_SENDING Frames
+     19.6.  CRYPTO Frames
+     19.7.  NEW_TOKEN Frames
+     19.8.  STREAM Frames
+     19.9.  MAX_DATA Frames
+     19.10. MAX_STREAM_DATA Frames
+     19.11. MAX_STREAMS Frames
+     19.12. DATA_BLOCKED Frames
+     19.13. STREAM_DATA_BLOCKED Frames
+     19.14. STREAMS_BLOCKED Frames
+     19.15. NEW_CONNECTION_ID Frames
+     19.16. RETIRE_CONNECTION_ID Frames
+     19.17. PATH_CHALLENGE Frames
+     19.18. PATH_RESPONSE Frames
+     19.19. CONNECTION_CLOSE Frames
+     19.20. HANDSHAKE_DONE Frames
+     19.21. Extension Frames
+   20. Error Codes
+     20.1.  Transport Error Codes
+     20.2.  Application Protocol Error Codes
+   21. Security Considerations
+     21.1.  Overview of Security Properties
+       21.1.1.  Handshake
+       21.1.2.  Protected Packets
+       21.1.3.  Connection Migration
+     21.2.  Handshake Denial of Service
+     21.3.  Amplification Attack
+     21.4.  Optimistic ACK Attack
+     21.5.  Request Forgery Attacks
+       21.5.1.  Control Options for Endpoints
+       21.5.2.  Request Forgery with Client Initial Packets
+       21.5.3.  Request Forgery with Preferred Addresses
+       21.5.4.  Request Forgery with Spoofed Migration
+       21.5.5.  Request Forgery with Version Negotiation
+       21.5.6.  Generic Request Forgery Countermeasures
+     21.6.  Slowloris Attacks
+     21.7.  Stream Fragmentation and Reassembly Attacks
+     21.8.  Stream Commitment Attack
+     21.9.  Peer Denial of Service
+     21.10. Explicit Congestion Notification Attacks
+     21.11. Stateless Reset Oracle
+     21.12. Version Downgrade
+     21.13. Targeted Attacks by Routing
+     21.14. Traffic Analysis
+   22. IANA Considerations
+     22.1.  Registration Policies for QUIC Registries
+       22.1.1.  Provisional Registrations
+       22.1.2.  Selecting Codepoints
+       22.1.3.  Reclaiming Provisional Codepoints
+       22.1.4.  Permanent Registrations
+     22.2.  QUIC Versions Registry
+     22.3.  QUIC Transport Parameters Registry
+     22.4.  QUIC Frame Types Registry
+     22.5.  QUIC Transport Error Codes Registry
+   23. References
+     23.1.  Normative References
+     23.2.  Informative References
+   Appendix A.  Pseudocode
+     A.1.  Sample Variable-Length Integer Decoding
+     A.2.  Sample Packet Number Encoding Algorithm
+     A.3.  Sample Packet Number Decoding Algorithm
+     A.4.  Sample ECN Validation Algorithm
+   Contributors
+   Authors' Addresses
+
+1.  Overview
+
+   QUIC is a secure general-purpose transport protocol.  This document
+   defines version 1 of QUIC, which conforms to the version-independent
+   properties of QUIC defined in [QUIC-INVARIANTS].
+
+   QUIC is a connection-oriented protocol that creates a stateful
+   interaction between a client and server.
+
+   The QUIC handshake combines negotiation of cryptographic and
+   transport parameters.  QUIC integrates the TLS handshake [TLS13],
+   although using a customized framing for protecting packets.  The
+   integration of TLS and QUIC is described in more detail in
+   [QUIC-TLS].  The handshake is structured to permit the exchange of
+   application data as soon as possible.  This includes an option for
+   clients to send data immediately (0-RTT), which requires some form of
+   prior communication or configuration to enable.
+
+   Endpoints communicate in QUIC by exchanging QUIC packets.  Most
+   packets contain frames, which carry control information and
+   application data between endpoints.  QUIC authenticates the entirety
+   of each packet and encrypts as much of each packet as is practical.
+   QUIC packets are carried in UDP datagrams [UDP] to better facilitate
+   deployment in existing systems and networks.
+
+   Application protocols exchange information over a QUIC connection via
+   streams, which are ordered sequences of bytes.  Two types of streams
+   can be created: bidirectional streams, which allow both endpoints to
+   send data; and unidirectional streams, which allow a single endpoint
+   to send data.  A credit-based scheme is used to limit stream creation
+   and to bound the amount of data that can be sent.
+
+   QUIC provides the necessary feedback to implement reliable delivery
+   and congestion control.  An algorithm for detecting and recovering
+   from loss of data is described in Section 6 of [QUIC-RECOVERY].  QUIC
+   depends on congestion control to avoid network congestion.  An
+   exemplary congestion control algorithm is described in Section 7 of
+   [QUIC-RECOVERY].
+
+   QUIC connections are not strictly bound to a single network path.
+   Connection migration uses connection identifiers to allow connections
+   to transfer to a new network path.  Only clients are able to migrate
+   in this version of QUIC.  This design also allows connections to
+   continue after changes in network topology or address mappings, such
+   as might be caused by NAT rebinding.
+
+   Once established, multiple options are provided for connection
+   termination.  Applications can manage a graceful shutdown, endpoints
+   can negotiate a timeout period, errors can cause immediate connection
+   teardown, and a stateless mechanism provides for termination of
+   connections after one endpoint has lost state.
+
+1.1.  Document Structure
+
+   This document describes the core QUIC protocol and is structured as
+   follows:
+
+   *  Streams are the basic service abstraction that QUIC provides.
+
+      -  Section 2 describes core concepts related to streams,
+
+      -  Section 3 provides a reference model for stream states, and
+
+      -  Section 4 outlines the operation of flow control.
+
+   *  Connections are the context in which QUIC endpoints communicate.
+
+      -  Section 5 describes core concepts related to connections,
+
+      -  Section 6 describes version negotiation,
+
+      -  Section 7 details the process for establishing connections,
+
+      -  Section 8 describes address validation and critical denial-of-
+         service mitigations,
+
+      -  Section 9 describes how endpoints migrate a connection to a new
+         network path,
+
+      -  Section 10 lists the options for terminating an open
+         connection, and
+
+      -  Section 11 provides guidance for stream and connection error
+         handling.
+
+   *  Packets and frames are the basic unit used by QUIC to communicate.
+
+      -  Section 12 describes concepts related to packets and frames,
+
+      -  Section 13 defines models for the transmission, retransmission,
+         and acknowledgment of data, and
+
+      -  Section 14 specifies rules for managing the size of datagrams
+         carrying QUIC packets.
+
+   *  Finally, encoding details of QUIC protocol elements are described
+      in:
+
+      -  Section 15 (versions),
+
+      -  Section 16 (integer encoding),
+
+      -  Section 17 (packet headers),
+
+      -  Section 18 (transport parameters),
+
+      -  Section 19 (frames), and
+
+      -  Section 20 (errors).
+
+   Accompanying documents describe QUIC's loss detection and congestion
+   control [QUIC-RECOVERY], and the use of TLS and other cryptographic
+   mechanisms [QUIC-TLS].
+
+   This document defines QUIC version 1, which conforms to the protocol
+   invariants in [QUIC-INVARIANTS].
+
+   To refer to QUIC version 1, cite this document.  References to the
+   limited set of version-independent properties of QUIC can cite
+   [QUIC-INVARIANTS].
+
+1.2.  Terms and Definitions
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in BCP
+   14 [RFC2119] [RFC8174] when, and only when, they appear in all
+   capitals, as shown here.
+
+   Commonly used terms in this document are described below.
+
+   QUIC:  The transport protocol described by this document.  QUIC is a
+      name, not an acronym.
+
+   Endpoint:  An entity that can participate in a QUIC connection by
+      generating, receiving, and processing QUIC packets.  There are
+      only two types of endpoints in QUIC: client and server.
+
+   Client:  The endpoint that initiates a QUIC connection.
+
+   Server:  The endpoint that accepts a QUIC connection.
+
+   QUIC packet:  A complete processable unit of QUIC that can be
+      encapsulated in a UDP datagram.  One or more QUIC packets can be
+      encapsulated in a single UDP datagram.
+
+   Ack-eliciting packet:  A QUIC packet that contains frames other than
+      ACK, PADDING, and CONNECTION_CLOSE.  These cause a recipient to
+      send an acknowledgment; see Section 13.2.1.
+
+   Frame:  A unit of structured protocol information.  There are
+      multiple frame types, each of which carries different information.
+      Frames are contained in QUIC packets.
+
+   Address:  When used without qualification, the tuple of IP version,
+      IP address, and UDP port number that represents one end of a
+      network path.
+
+   Connection ID:  An identifier that is used to identify a QUIC
+      connection at an endpoint.  Each endpoint selects one or more
+      connection IDs for its peer to include in packets sent towards the
+      endpoint.  This value is opaque to the peer.
+
+   Stream:  A unidirectional or bidirectional channel of ordered bytes
+      within a QUIC connection.  A QUIC connection can carry multiple
+      simultaneous streams.
+
+   Application:  An entity that uses QUIC to send and receive data.
+
+   This document uses the terms "QUIC packets", "UDP datagrams", and "IP
+   packets" to refer to the units of the respective protocols.  That is,
+   one or more QUIC packets can be encapsulated in a UDP datagram, which
+   is in turn encapsulated in an IP packet.
+
+1.3.  Notational Conventions
+
+   Packet and frame diagrams in this document use a custom format.  The
+   purpose of this format is to summarize, not define, protocol
+   elements.  Prose defines the complete semantics and details of
+   structures.
+
+   Complex fields are named and then followed by a list of fields
+   surrounded by a pair of matching braces.  Each field in this list is
+   separated by commas.
+
+   Individual fields include length information, plus indications about
+   fixed value, optionality, or repetitions.  Individual fields use the
+   following notational conventions, with all lengths in bits:
+
+   x (A):  Indicates that x is A bits long
+
+   x (i):  Indicates that x holds an integer value using the variable-
+      length encoding described in Section 16
+
+   x (A..B):  Indicates that x can be any length from A to B; A can be
+      omitted to indicate a minimum of zero bits, and B can be omitted
+      to indicate no set upper limit; values in this format always end
+      on a byte boundary
+
+   x (L) = C:  Indicates that x has a fixed value of C; the length of x
+      is described by L, which can use any of the length forms above
+
+   x (L) = C..D:  Indicates that x has a value in the range from C to D,
+      inclusive, with the length described by L, as above
+
+   [x (L)]:  Indicates that x is optional and has a length of L
+
+   x (L) ...:  Indicates that x is repeated zero or more times and that
+      each instance has a length of L
+
+   This document uses network byte order (that is, big endian) values.
+   Fields are placed starting from the high-order bits of each byte.
+
+   By convention, individual fields reference a complex field by using
+   the name of the complex field.
+
+   Figure 1 provides an example:
+
+   Example Structure {
+     One-bit Field (1),
+     7-bit Field with Fixed Value (7) = 61,
+     Field with Variable-Length Integer (i),
+     Arbitrary-Length Field (..),
+     Variable-Length Field (8..24),
+     Field With Minimum Length (16..),
+     Field With Maximum Length (..128),
+     [Optional Field (64)],
+     Repeated Field (8) ...,
+   }
+
+                          Figure 1: Example Format
+
+   When a single-bit field is referenced in prose, the position of that
+   field can be clarified by using the value of the byte that carries
+   the field with the field's value set.  For example, the value 0x80
+   could be used to refer to the single-bit field in the most
+   significant bit of the byte, such as One-bit Field in Figure 1.
+
+2.  Streams
+
+   Streams in QUIC provide a lightweight, ordered byte-stream
+   abstraction to an application.  Streams can be unidirectional or
+   bidirectional.
+
+   Streams can be created by sending data.  Other processes associated
+   with stream management -- ending, canceling, and managing flow
+   control -- are all designed to impose minimal overheads.  For
+   instance, a single STREAM frame (Section 19.8) can open, carry data
+   for, and close a stream.  Streams can also be long-lived and can last
+   the entire duration of a connection.
+
+   Streams can be created by either endpoint, can concurrently send data
+   interleaved with other streams, and can be canceled.  QUIC does not
+   provide any means of ensuring ordering between bytes on different
+   streams.
+
+   QUIC allows for an arbitrary number of streams to operate
+   concurrently and for an arbitrary amount of data to be sent on any
+   stream, subject to flow control constraints and stream limits; see
+   Section 4.
+
+2.1.  Stream Types and Identifiers
+
+   Streams can be unidirectional or bidirectional.  Unidirectional
+   streams carry data in one direction: from the initiator of the stream
+   to its peer.  Bidirectional streams allow for data to be sent in both
+   directions.
+
+   Streams are identified within a connection by a numeric value,
+   referred to as the stream ID.  A stream ID is a 62-bit integer (0 to
+   2^62-1) that is unique for all streams on a connection.  Stream IDs
+   are encoded as variable-length integers; see Section 16.  A QUIC
+   endpoint MUST NOT reuse a stream ID within a connection.
+
+   The least significant bit (0x01) of the stream ID identifies the
+   initiator of the stream.  Client-initiated streams have even-numbered
+   stream IDs (with the bit set to 0), and server-initiated streams have
+   odd-numbered stream IDs (with the bit set to 1).
+
+   The second least significant bit (0x02) of the stream ID
+   distinguishes between bidirectional streams (with the bit set to 0)
+   and unidirectional streams (with the bit set to 1).
+
+   The two least significant bits from a stream ID therefore identify a
+   stream as one of four types, as summarized in Table 1.
+
+                +======+==================================+
+                | Bits | Stream Type                      |
+                +======+==================================+
+                | 0x00 | Client-Initiated, Bidirectional  |
+                +------+----------------------------------+
+                | 0x01 | Server-Initiated, Bidirectional  |
+                +------+----------------------------------+
+                | 0x02 | Client-Initiated, Unidirectional |
+                +------+----------------------------------+
+                | 0x03 | Server-Initiated, Unidirectional |
+                +------+----------------------------------+
+
+                          Table 1: Stream ID Types
+
+   The stream space for each type begins at the minimum value (0x00
+   through 0x03, respectively); successive streams of each type are
+   created with numerically increasing stream IDs.  A stream ID that is
+   used out of order results in all streams of that type with lower-
+   numbered stream IDs also being opened.
+
+2.2.  Sending and Receiving Data
+
+   STREAM frames (Section 19.8) encapsulate data sent by an application.
+   An endpoint uses the Stream ID and Offset fields in STREAM frames to
+   place data in order.
+
+   Endpoints MUST be able to deliver stream data to an application as an
+   ordered byte stream.  Delivering an ordered byte stream requires that
+   an endpoint buffer any data that is received out of order, up to the
+   advertised flow control limit.
+
+   QUIC makes no specific allowances for delivery of stream data out of
+   order.  However, implementations MAY choose to offer the ability to
+   deliver data out of order to a receiving application.
+
+   An endpoint could receive data for a stream at the same stream offset
+   multiple times.  Data that has already been received can be
+   discarded.  The data at a given offset MUST NOT change if it is sent
+   multiple times; an endpoint MAY treat receipt of different data at
+   the same offset within a stream as a connection error of type
+   PROTOCOL_VIOLATION.
+
+   Streams are an ordered byte-stream abstraction with no other
+   structure visible to QUIC.  STREAM frame boundaries are not expected
+   to be preserved when data is transmitted, retransmitted after packet
+   loss, or delivered to the application at a receiver.
+
+   An endpoint MUST NOT send data on any stream without ensuring that it
+   is within the flow control limits set by its peer.  Flow control is
+   described in detail in Section 4.
+
+2.3.  Stream Prioritization
+
+   Stream multiplexing can have a significant effect on application
+   performance if resources allocated to streams are correctly
+   prioritized.
+
+   QUIC does not provide a mechanism for exchanging prioritization
+   information.  Instead, it relies on receiving priority information
+   from the application.
+
+   A QUIC implementation SHOULD provide ways in which an application can
+   indicate the relative priority of streams.  An implementation uses
+   information provided by the application to determine how to allocate
+   resources to active streams.
+
+2.4.  Operations on Streams
+
+   This document does not define an API for QUIC; it instead defines a
+   set of functions on streams that application protocols can rely upon.
+   An application protocol can assume that a QUIC implementation
+   provides an interface that includes the operations described in this
+   section.  An implementation designed for use with a specific
+   application protocol might provide only those operations that are
+   used by that protocol.
+
+   On the sending part of a stream, an application protocol can:
+
+   *  write data, understanding when stream flow control credit
+      (Section 4.1) has successfully been reserved to send the written
+      data;
+
+   *  end the stream (clean termination), resulting in a STREAM frame
+      (Section 19.8) with the FIN bit set; and
+
+   *  reset the stream (abrupt termination), resulting in a RESET_STREAM
+      frame (Section 19.4) if the stream was not already in a terminal
+      state.
+
+   On the receiving part of a stream, an application protocol can:
+
+   *  read data; and
+
+   *  abort reading of the stream and request closure, possibly
+      resulting in a STOP_SENDING frame (Section 19.5).
+
+   An application protocol can also request to be informed of state
+   changes on streams, including when the peer has opened or reset a
+   stream, when a peer aborts reading on a stream, when new data is
+   available, and when data can or cannot be written to the stream due
+   to flow control.
+
+3.  Stream States
+
+   This section describes streams in terms of their send or receive
+   components.  Two state machines are described: one for the streams on
+   which an endpoint transmits data (Section 3.1) and another for
+   streams on which an endpoint receives data (Section 3.2).
+
+   Unidirectional streams use either the sending or receiving state
+   machine, depending on the stream type and endpoint role.
+   Bidirectional streams use both state machines at both endpoints.  For
+   the most part, the use of these state machines is the same whether
+   the stream is unidirectional or bidirectional.  The conditions for
+   opening a stream are slightly more complex for a bidirectional stream
+   because the opening of either the send or receive side causes the
+   stream to open in both directions.
+
+   The state machines shown in this section are largely informative.
+   This document uses stream states to describe rules for when and how
+   different types of frames can be sent and the reactions that are
+   expected when different types of frames are received.  Though these
+   state machines are intended to be useful in implementing QUIC, these
+   states are not intended to constrain implementations.  An
+   implementation can define a different state machine as long as its
+   behavior is consistent with an implementation that implements these
+   states.
+
+      |  Note: In some cases, a single event or action can cause a
+      |  transition through multiple states.  For instance, sending
+      |  STREAM with a FIN bit set can cause two state transitions for a
+      |  sending stream: from the "Ready" state to the "Send" state, and
+      |  from the "Send" state to the "Data Sent" state.
+
+3.1.  Sending Stream States
+
+   Figure 2 shows the states for the part of a stream that sends data to
+   a peer.
+
+          o
+          | Create Stream (Sending)
+          | Peer Creates Bidirectional Stream
+          v
+      +-------+
+      | Ready | Send RESET_STREAM
+      |       |-----------------------.
+      +-------+                       |
+          |                           |
+          | Send STREAM /             |
+          |      STREAM_DATA_BLOCKED  |
+          v                           |
+      +-------+                       |
+      | Send  | Send RESET_STREAM     |
+      |       |---------------------->|
+      +-------+                       |
+          |                           |
+          | Send STREAM + FIN         |
+          v                           v
+      +-------+                   +-------+
+      | Data  | Send RESET_STREAM | Reset |
+      | Sent  |------------------>| Sent  |
+      +-------+                   +-------+
+          |                           |
+          | Recv All ACKs             | Recv ACK
+          v                           v
+      +-------+                   +-------+
+      | Data  |                   | Reset |
+      | Recvd |                   | Recvd |
+      +-------+                   +-------+
+
+               Figure 2: States for Sending Parts of Streams
+
+   The sending part of a stream that the endpoint initiates (types 0 and
+   2 for clients, 1 and 3 for servers) is opened by the application.
+   The "Ready" state represents a newly created stream that is able to
+   accept data from the application.  Stream data might be buffered in
+   this state in preparation for sending.
+
+   Sending the first STREAM or STREAM_DATA_BLOCKED frame causes a
+   sending part of a stream to enter the "Send" state.  An
+   implementation might choose to defer allocating a stream ID to a
+   stream until it sends the first STREAM frame and enters this state,
+   which can allow for better stream prioritization.
+
+   The sending part of a bidirectional stream initiated by a peer (type
+   0 for a server, type 1 for a client) starts in the "Ready" state when
+   the receiving part is created.
+
+   In the "Send" state, an endpoint transmits -- and retransmits as
+   necessary -- stream data in STREAM frames.  The endpoint respects the
+   flow control limits set by its peer and continues to accept and
+   process MAX_STREAM_DATA frames.  An endpoint in the "Send" state
+   generates STREAM_DATA_BLOCKED frames if it is blocked from sending by
+   stream flow control limits (Section 4.1).
+
+   After the application indicates that all stream data has been sent
+   and a STREAM frame containing the FIN bit is sent, the sending part
+   of the stream enters the "Data Sent" state.  From this state, the
+   endpoint only retransmits stream data as necessary.  The endpoint
+   does not need to check flow control limits or send
+   STREAM_DATA_BLOCKED frames for a stream in this state.
+   MAX_STREAM_DATA frames might be received until the peer receives the
+   final stream offset.  The endpoint can safely ignore any
+   MAX_STREAM_DATA frames it receives from its peer for a stream in this
+   state.
+
+   Once all stream data has been successfully acknowledged, the sending
+   part of the stream enters the "Data Recvd" state, which is a terminal
+   state.
+
+   From any state that is one of "Ready", "Send", or "Data Sent", an
+   application can signal that it wishes to abandon transmission of
+   stream data.  Alternatively, an endpoint might receive a STOP_SENDING
+   frame from its peer.  In either case, the endpoint sends a
+   RESET_STREAM frame, which causes the stream to enter the "Reset Sent"
+   state.
+
+   An endpoint MAY send a RESET_STREAM as the first frame that mentions
+   a stream; this causes the sending part of that stream to open and
+   then immediately transition to the "Reset Sent" state.
+
+   Once a packet containing a RESET_STREAM has been acknowledged, the
+   sending part of the stream enters the "Reset Recvd" state, which is a
+   terminal state.
+
+3.2.  Receiving Stream States
+
+   Figure 3 shows the states for the part of a stream that receives data
+   from a peer.  The states for a receiving part of a stream mirror only
+   some of the states of the sending part of the stream at the peer.
+   The receiving part of a stream does not track states on the sending
+   part that cannot be observed, such as the "Ready" state.  Instead,
+   the receiving part of a stream tracks the delivery of data to the
+   application, some of which cannot be observed by the sender.
+
+          o
+          | Recv STREAM / STREAM_DATA_BLOCKED / RESET_STREAM
+          | Create Bidirectional Stream (Sending)
+          | Recv MAX_STREAM_DATA / STOP_SENDING (Bidirectional)
+          | Create Higher-Numbered Stream
+          v
+      +-------+
+      | Recv  | Recv RESET_STREAM
+      |       |-----------------------.
+      +-------+                       |
+          |                           |
+          | Recv STREAM + FIN         |
+          v                           |
+      +-------+                       |
+      | Size  | Recv RESET_STREAM     |
+      | Known |---------------------->|
+      +-------+                       |
+          |                           |
+          | Recv All Data             |
+          v                           v
+      +-------+ Recv RESET_STREAM +-------+
+      | Data  |--- (optional) --->| Reset |
+      | Recvd |  Recv All Data    | Recvd |
+      +-------+<-- (optional) ----+-------+
+          |                           |
+          | App Read All Data         | App Read Reset
+          v                           v
+      +-------+                   +-------+
+      | Data  |                   | Reset |
+      | Read  |                   | Read  |
+      +-------+                   +-------+
+
+              Figure 3: States for Receiving Parts of Streams
+
+   The receiving part of a stream initiated by a peer (types 1 and 3 for
+   a client, or 0 and 2 for a server) is created when the first STREAM,
+   STREAM_DATA_BLOCKED, or RESET_STREAM frame is received for that
+   stream.  For bidirectional streams initiated by a peer, receipt of a
+   MAX_STREAM_DATA or STOP_SENDING frame for the sending part of the
+   stream also creates the receiving part.  The initial state for the
+   receiving part of a stream is "Recv".
+
+   For a bidirectional stream, the receiving part enters the "Recv"
+   state when the sending part initiated by the endpoint (type 0 for a
+   client, type 1 for a server) enters the "Ready" state.
+
+   An endpoint opens a bidirectional stream when a MAX_STREAM_DATA or
+   STOP_SENDING frame is received from the peer for that stream.
+   Receiving a MAX_STREAM_DATA frame for an unopened stream indicates
+   that the remote peer has opened the stream and is providing flow
+   control credit.  Receiving a STOP_SENDING frame for an unopened
+   stream indicates that the remote peer no longer wishes to receive
+   data on this stream.  Either frame might arrive before a STREAM or
+   STREAM_DATA_BLOCKED frame if packets are lost or reordered.
+
+   Before a stream is created, all streams of the same type with lower-
+   numbered stream IDs MUST be created.  This ensures that the creation
+   order for streams is consistent on both endpoints.
+
+   In the "Recv" state, the endpoint receives STREAM and
+   STREAM_DATA_BLOCKED frames.  Incoming data is buffered and can be
+   reassembled into the correct order for delivery to the application.
+   As data is consumed by the application and buffer space becomes
+   available, the endpoint sends MAX_STREAM_DATA frames to allow the
+   peer to send more data.
+
+   When a STREAM frame with a FIN bit is received, the final size of the
+   stream is known; see Section 4.5.  The receiving part of the stream
+   then enters the "Size Known" state.  In this state, the endpoint no
+   longer needs to send MAX_STREAM_DATA frames; it only receives any
+   retransmissions of stream data.
+
+   Once all data for the stream has been received, the receiving part
+   enters the "Data Recvd" state.  This might happen as a result of
+   receiving the same STREAM frame that causes the transition to "Size
+   Known".  After all data has been received, any STREAM or
+   STREAM_DATA_BLOCKED frames for the stream can be discarded.
+
+   The "Data Recvd" state persists until stream data has been delivered
+   to the application.  Once stream data has been delivered, the stream
+   enters the "Data Read" state, which is a terminal state.
+
+   Receiving a RESET_STREAM frame in the "Recv" or "Size Known" state
+   causes the stream to enter the "Reset Recvd" state.  This might cause
+   the delivery of stream data to the application to be interrupted.
+
+   It is possible that all stream data has already been received when a
+   RESET_STREAM is received (that is, in the "Data Recvd" state).
+   Similarly, it is possible for remaining stream data to arrive after
+   receiving a RESET_STREAM frame (the "Reset Recvd" state).  An
+   implementation is free to manage this situation as it chooses.
+
+   Sending a RESET_STREAM means that an endpoint cannot guarantee
+   delivery of stream data; however, there is no requirement that stream
+   data not be delivered if a RESET_STREAM is received.  An
+   implementation MAY interrupt delivery of stream data, discard any
+   data that was not consumed, and signal the receipt of the
+   RESET_STREAM.  A RESET_STREAM signal might be suppressed or withheld
+   if stream data is completely received and is buffered to be read by
+   the application.  If the RESET_STREAM is suppressed, the receiving
+   part of the stream remains in "Data Recvd".
+
+   Once the application receives the signal indicating that the stream
+   was reset, the receiving part of the stream transitions to the "Reset
+   Read" state, which is a terminal state.
+
+3.3.  Permitted Frame Types
+
+   The sender of a stream sends just three frame types that affect the
+   state of a stream at either the sender or the receiver: STREAM
+   (Section 19.8), STREAM_DATA_BLOCKED (Section 19.13), and RESET_STREAM
+   (Section 19.4).
+
+   A sender MUST NOT send any of these frames from a terminal state
+   ("Data Recvd" or "Reset Recvd").  A sender MUST NOT send a STREAM or
+   STREAM_DATA_BLOCKED frame for a stream in the "Reset Sent" state or
+   any terminal state -- that is, after sending a RESET_STREAM frame.  A
+   receiver could receive any of these three frames in any state, due to
+   the possibility of delayed delivery of packets carrying them.
+
+   The receiver of a stream sends MAX_STREAM_DATA frames (Section 19.10)
+   and STOP_SENDING frames (Section 19.5).
+
+   The receiver only sends MAX_STREAM_DATA frames in the "Recv" state.
+   A receiver MAY send a STOP_SENDING frame in any state where it has
+   not received a RESET_STREAM frame -- that is, states other than
+   "Reset Recvd" or "Reset Read".  However, there is little value in
+   sending a STOP_SENDING frame in the "Data Recvd" state, as all stream
+   data has been received.  A sender could receive either of these two
+   types of frames in any state as a result of delayed delivery of
+   packets.
+
+3.4.  Bidirectional Stream States
+
+   A bidirectional stream is composed of sending and receiving parts.
+   Implementations can represent states of the bidirectional stream as
+   composites of sending and receiving stream states.  The simplest
+   model presents the stream as "open" when either sending or receiving
+   parts are in a non-terminal state and "closed" when both sending and
+   receiving streams are in terminal states.
+
+   Table 2 shows a more complex mapping of bidirectional stream states
+   that loosely correspond to the stream states defined in HTTP/2
+   [HTTP2].  This shows that multiple states on sending or receiving
+   parts of streams are mapped to the same composite state.  Note that
+   this is just one possibility for such a mapping; this mapping
+   requires that data be acknowledged before the transition to a
+   "closed" or "half-closed" state.
+
+      +===================+=======================+=================+
+      | Sending Part      | Receiving Part        | Composite State |
+      +===================+=======================+=================+
+      | No Stream / Ready | No Stream / Recv (*1) | idle            |
+      +-------------------+-----------------------+-----------------+
+      | Ready / Send /    | Recv / Size Known     | open            |
+      | Data Sent         |                       |                 |
+      +-------------------+-----------------------+-----------------+
+      | Ready / Send /    | Data Recvd / Data     | half-closed     |
+      | Data Sent         | Read                  | (remote)        |
+      +-------------------+-----------------------+-----------------+
+      | Ready / Send /    | Reset Recvd / Reset   | half-closed     |
+      | Data Sent         | Read                  | (remote)        |
+      +-------------------+-----------------------+-----------------+
+      | Data Recvd        | Recv / Size Known     | half-closed     |
+      |                   |                       | (local)         |
+      +-------------------+-----------------------+-----------------+
+      | Reset Sent /      | Recv / Size Known     | half-closed     |
+      | Reset Recvd       |                       | (local)         |
+      +-------------------+-----------------------+-----------------+
+      | Reset Sent /      | Data Recvd / Data     | closed          |
+      | Reset Recvd       | Read                  |                 |
+      +-------------------+-----------------------+-----------------+
+      | Reset Sent /      | Reset Recvd / Reset   | closed          |
+      | Reset Recvd       | Read                  |                 |
+      +-------------------+-----------------------+-----------------+
+      | Data Recvd        | Data Recvd / Data     | closed          |
+      |                   | Read                  |                 |
+      +-------------------+-----------------------+-----------------+
+      | Data Recvd        | Reset Recvd / Reset   | closed          |
+      |                   | Read                  |                 |
+      +-------------------+-----------------------+-----------------+
+
+            Table 2: Possible Mapping of Stream States to HTTP/2
+
+      |  Note (*1): A stream is considered "idle" if it has not yet been
+      |  created or if the receiving part of the stream is in the "Recv"
+      |  state without yet having received any frames.
+
+3.5.  Solicited State Transitions
+
+   If an application is no longer interested in the data it is receiving
+   on a stream, it can abort reading the stream and specify an
+   application error code.
+
+   If the stream is in the "Recv" or "Size Known" state, the transport
+   SHOULD signal this by sending a STOP_SENDING frame to prompt closure
+   of the stream in the opposite direction.  This typically indicates
+   that the receiving application is no longer reading data it receives
+   from the stream, but it is not a guarantee that incoming data will be
+   ignored.
+
+   STREAM frames received after sending a STOP_SENDING frame are still
+   counted toward connection and stream flow control, even though these
+   frames can be discarded upon receipt.
+
+   A STOP_SENDING frame requests that the receiving endpoint send a
+   RESET_STREAM frame.  An endpoint that receives a STOP_SENDING frame
+   MUST send a RESET_STREAM frame if the stream is in the "Ready" or
+   "Send" state.  If the stream is in the "Data Sent" state, the
+   endpoint MAY defer sending the RESET_STREAM frame until the packets
+   containing outstanding data are acknowledged or declared lost.  If
+   any outstanding data is declared lost, the endpoint SHOULD send a
+   RESET_STREAM frame instead of retransmitting the data.
+
+   An endpoint SHOULD copy the error code from the STOP_SENDING frame to
+   the RESET_STREAM frame it sends, but it can use any application error
+   code.  An endpoint that sends a STOP_SENDING frame MAY ignore the
+   error code in any RESET_STREAM frames subsequently received for that
+   stream.
+
+   STOP_SENDING SHOULD only be sent for a stream that has not been reset
+   by the peer.  STOP_SENDING is most useful for streams in the "Recv"
+   or "Size Known" state.
+
+   An endpoint is expected to send another STOP_SENDING frame if a
+   packet containing a previous STOP_SENDING is lost.  However, once
+   either all stream data or a RESET_STREAM frame has been received for
+   the stream -- that is, the stream is in any state other than "Recv"
+   or "Size Known" -- sending a STOP_SENDING frame is unnecessary.
+
+   An endpoint that wishes to terminate both directions of a
+   bidirectional stream can terminate one direction by sending a
+   RESET_STREAM frame, and it can encourage prompt termination in the
+   opposite direction by sending a STOP_SENDING frame.
+
+4.  Flow Control
+
+   Receivers need to limit the amount of data that they are required to
+   buffer, in order to prevent a fast sender from overwhelming them or a
+   malicious sender from consuming a large amount of memory.  To enable
+   a receiver to limit memory commitments for a connection, streams are
+   flow controlled both individually and across a connection as a whole.
+   A QUIC receiver controls the maximum amount of data the sender can
+   send on a stream as well as across all streams at any time, as
+   described in Sections 4.1 and 4.2.
+
+   Similarly, to limit concurrency within a connection, a QUIC endpoint
+   controls the maximum cumulative number of streams that its peer can
+   initiate, as described in Section 4.6.
+
+   Data sent in CRYPTO frames is not flow controlled in the same way as
+   stream data.  QUIC relies on the cryptographic protocol
+   implementation to avoid excessive buffering of data; see [QUIC-TLS].
+   To avoid excessive buffering at multiple layers, QUIC implementations
+   SHOULD provide an interface for the cryptographic protocol
+   implementation to communicate its buffering limits.
+
+4.1.  Data Flow Control
+
+   QUIC employs a limit-based flow control scheme where a receiver
+   advertises the limit of total bytes it is prepared to receive on a
+   given stream or for the entire connection.  This leads to two levels
+   of data flow control in QUIC:
+
+   *  Stream flow control, which prevents a single stream from consuming
+      the entire receive buffer for a connection by limiting the amount
+      of data that can be sent on each stream.
+
+   *  Connection flow control, which prevents senders from exceeding a
+      receiver's buffer capacity for the connection by limiting the
+      total bytes of stream data sent in STREAM frames on all streams.
+
+   Senders MUST NOT send data in excess of either limit.
+
+   A receiver sets initial limits for all streams through transport
+   parameters during the handshake (Section 7.4).  Subsequently, a
+   receiver sends MAX_STREAM_DATA frames (Section 19.10) or MAX_DATA
+   frames (Section 19.9) to the sender to advertise larger limits.
+
+   A receiver can advertise a larger limit for a stream by sending a
+   MAX_STREAM_DATA frame with the corresponding stream ID.  A
+   MAX_STREAM_DATA frame indicates the maximum absolute byte offset of a
+   stream.  A receiver could determine the flow control offset to be
+   advertised based on the current offset of data consumed on that
+   stream.
+
+   A receiver can advertise a larger limit for a connection by sending a
+   MAX_DATA frame, which indicates the maximum of the sum of the
+   absolute byte offsets of all streams.  A receiver maintains a
+   cumulative sum of bytes received on all streams, which is used to
+   check for violations of the advertised connection or stream data
+   limits.  A receiver could determine the maximum data limit to be
+   advertised based on the sum of bytes consumed on all streams.
+
+   Once a receiver advertises a limit for the connection or a stream, it
+   is not an error to advertise a smaller limit, but the smaller limit
+   has no effect.
+
+   A receiver MUST close the connection with an error of type
+   FLOW_CONTROL_ERROR if the sender violates the advertised connection
+   or stream data limits; see Section 11 for details on error handling.
+
+   A sender MUST ignore any MAX_STREAM_DATA or MAX_DATA frames that do
+   not increase flow control limits.
+
+   If a sender has sent data up to the limit, it will be unable to send
+   new data and is considered blocked.  A sender SHOULD send a
+   STREAM_DATA_BLOCKED or DATA_BLOCKED frame to indicate to the receiver
+   that it has data to write but is blocked by flow control limits.  If
+   a sender is blocked for a period longer than the idle timeout
+   (Section 10.1), the receiver might close the connection even when the
+   sender has data that is available for transmission.  To keep the
+   connection from closing, a sender that is flow control limited SHOULD
+   periodically send a STREAM_DATA_BLOCKED or DATA_BLOCKED frame when it
+   has no ack-eliciting packets in flight.
+
+
+

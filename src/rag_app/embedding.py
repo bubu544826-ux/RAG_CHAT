@@ -6,6 +6,9 @@ from typing import Any
 from .config import EMBEDDING_MODEL_NAME
 
 
+DEFAULT_BATCH_SIZE = 32
+
+
 class EmbeddingError(RuntimeError):
     """Raised when the embedding model cannot create a vector."""
 
@@ -17,25 +20,25 @@ def _load_model() -> Any:
         from sentence_transformers import SentenceTransformer
     except ImportError as exc:
         raise EmbeddingError(
-            "缺少 sentence-transformers，请先安装 requirements.txt 中的依赖。"
+            "sentence-transformers is missing; install the dependencies listed in requirements.txt first."
         ) from exc
 
     try:
         return SentenceTransformer(EMBEDDING_MODEL_NAME)
     except Exception as exc:
         raise EmbeddingError(
-            f"无法加载 embedding 模型 {EMBEDDING_MODEL_NAME!r}。"
+            f"Failed to load the embedding model {EMBEDDING_MODEL_NAME!r}."
         ) from exc
 
 
 def embed_text(text: str) -> list[float]:
     """Convert one non-empty text string into a normalized embedding vector."""
     if not isinstance(text, str):
-        raise TypeError("text 必须是字符串。")
+        raise TypeError("text must be a string.")
 
     cleaned_text = text.strip()
     if not cleaned_text:
-        raise ValueError("text 不能为空。")
+        raise ValueError("text must not be empty.")
 
     try:
         model = _load_model()
@@ -47,21 +50,81 @@ def embed_text(text: str) -> list[float]:
     except EmbeddingError:
         raise
     except Exception as exc:
-        raise EmbeddingError("生成文本向量失败。") from exc
+        raise EmbeddingError("Failed to generate the text embedding.") from exc
 
     try:
         vector = embedding.tolist()
     except AttributeError as exc:
-        raise EmbeddingError("模型返回了无效的 embedding vector。") from exc
+        raise EmbeddingError("The model returned an invalid embedding vector.") from exc
 
+    return _coerce_vector(vector)
+
+
+def _coerce_vector(vector: Any) -> list[float]:
+    """Validate one model output row and convert it to a plain float list."""
     if (
         not isinstance(vector, list)
         or not vector
         or any(isinstance(value, list) for value in vector)
     ):
-        raise EmbeddingError("模型返回了无效的 embedding vector。")
+        raise EmbeddingError("The model returned an invalid embedding vector.")
 
     try:
         return [float(value) for value in vector]
     except (TypeError, ValueError) as exc:
-        raise EmbeddingError("embedding vector 包含非数值元素。") from exc
+        raise EmbeddingError("The embedding vector contains non-numeric elements.") from exc
+
+
+def embed_texts(
+    texts: list[str],
+    batch_size: int = DEFAULT_BATCH_SIZE,
+    show_progress: bool = False,
+) -> list[list[float]]:
+    """Embed many texts in batches.
+
+    One `model.encode` call per batch is much faster than one call per text,
+    because the model runs a single forward pass over the whole batch instead
+    of paying tokenizer and dispatch overhead for every chunk.
+    """
+    if not isinstance(texts, list):
+        raise TypeError("texts must be a list of strings.")
+    if batch_size <= 0:
+        raise ValueError("batch_size must be greater than 0.")
+
+    cleaned_texts = []
+    for text in texts:
+        if not isinstance(text, str):
+            raise TypeError("texts must be a list of strings.")
+
+        cleaned_text = text.strip()
+        if not cleaned_text:
+            raise ValueError("text must not be empty.")
+
+        cleaned_texts.append(cleaned_text)
+
+    if not cleaned_texts:
+        return []
+
+    try:
+        model = _load_model()
+        embeddings = model.encode(
+            cleaned_texts,
+            batch_size=batch_size,
+            convert_to_numpy=True,
+            normalize_embeddings=True,
+            show_progress_bar=show_progress,
+        )
+    except EmbeddingError:
+        raise
+    except Exception as exc:
+        raise EmbeddingError("Failed to generate the text embedding.") from exc
+
+    try:
+        vectors = embeddings.tolist()
+    except AttributeError as exc:
+        raise EmbeddingError("The model returned an invalid embedding vector.") from exc
+
+    if not isinstance(vectors, list) or len(vectors) != len(cleaned_texts):
+        raise EmbeddingError("The model returned a different number of embeddings than inputs.")
+
+    return [_coerce_vector(vector) for vector in vectors]
