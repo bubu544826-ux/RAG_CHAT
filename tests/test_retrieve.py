@@ -8,6 +8,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import retrieve
+from src.rag_app.retriever import production_retrieval_options
 
 
 class RetrieveCommandTest(unittest.TestCase):
@@ -31,7 +32,10 @@ class RetrieveCommandTest(unittest.TestCase):
         self.assertEqual(exit_code, 0)
         self.assertEqual(json.loads(output.getvalue()), retrieve_mock.return_value)
         retrieve_mock.assert_called_once_with(
-            "什么是 RAG？", Path("custom.json"), top_k=1
+            "什么是 RAG？",
+            Path("custom.json"),
+            top_k=1,
+            **production_retrieval_options(1),
         )
 
 

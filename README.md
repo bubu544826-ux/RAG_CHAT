@@ -225,11 +225,23 @@ python evaluate_retrieval.py
 ```
 
 脚本默认读取 `RAG_test.json`，每个问题只检索一次，并按显式标注的相关
-chunk 计算排名指标。默认 `K=3`，可以通过参数调整测试集、index 和 K：
+chunk 计算排名指标。默认 `K=5`，**并且默认走和 `RAGService` 完全一致的生产检索
+管线**（`vector + BM25 -> RRF -> CrossEncoder rerank -> 邻居扩展`），配置来自
+`config.RETRIEVAL_SETTINGS`，因此评估结果和线上问答用的是同一条管线。
 
 ```powershell
 python evaluate_retrieval.py --test-set RAG_test.json --index data/processed/index.json --top-k 5
+
+# 只评估旧的 vector-only 基线，便于和历史数字对比
+python evaluate_retrieval.py --baseline
 ```
+
+在当前 20 条测试样本上：
+
+| 管线 | Recall@5 | MRR@5 | NDCG@5 |
+| --- | --- | --- | --- |
+| `--baseline`（vector-only） | 69.17% | 61.83% | 59.20% |
+| 默认生产管线 | **84.17%** | **81.67%** | **77.53%** |
 
 测试集是非空 JSON 数组。每条样本必须有唯一的非空 `id`、非空 `question`，
 以及由唯一、非空字符串组成的 `relevant_chunk_ids`；`ground_truth`、`evidence`
@@ -247,7 +259,10 @@ python evaluate_retrieval.py --test-set RAG_test.json --index data/processed/ind
 四项指标先逐题计算，再对全部问题做宏平均，并以 `0` 到 `100` 的百分数输出：
 
 - `Recall@K = 前 K 条中的相关 chunk 数 / 该题全部标注相关 chunk 数`
-- `Precision@K = 前 K 条中的相关 chunk 数 / K`
+- `Precision@K = 前 K 条中的相关 chunk 数 / K`。分母是 `K` 而不是标注数量，
+  所以只标了 1 个相关 chunk 的题目在 `K=5` 时最高只能拿 20%。当前测试集平均
+  每题 1.5 个标注，`Precision@5` 的理论上限是 30%，脚本会把这个上限一起打印，
+  避免把接近上限的数字误读成失败。`NDCG@K` 做了归一化，更适合当主指标
 - `MRR@K = 1 / 第一个相关 chunk 的排名`；前 K 条无命中时为 `0`
 - `NDCG@K = DCG@K / IDCG@K`，其中二元相关性 `rel` 为 `0` 或 `1`，
   `DCG@K = Σ rel(rank) / log2(rank + 1)`
@@ -259,13 +274,53 @@ python evaluate_retrieval.py --test-set RAG_test.json --index data/processed/ind
 
 ### 对比完整检索管线
 
-应用默认使用 `query rewrite -> vector + BM25 -> RRF -> CrossEncoder rerank`。
-直接调用 `retriever.retrieve()` 时仍保持原来的 vector-only 默认行为，便于旧代码兼容。
-运行四组使用同一标签和 cutoff 的对照实验：
+应用默认使用 `vector + BM25 -> RRF -> CrossEncoder rerank -> 邻居扩展`。
+直接调用 `retriever.retrieve()` 时仍保持原来的 vector-only 默认行为，便于旧代码兼容；
+所有生产入口（`RAGService`、`retrieve.py`、`evaluate_retrieval.py`）都通过
+`retriever.production_retrieval_options()` 读取同一份配置，不会再各自漂移。
+
+运行使用同一标签和 cutoff 的对照实验：
 
 ```powershell
 python evaluate_retrieval.py --compare --output retrieval_evaluation_report.json
+
+# 额外评测多个 reranker 模型（首次运行会下载模型）
+python evaluate_retrieval.py --compare --compare-rerankers
 ```
+
+#### 邻居扩展（neighbour expansion）
+
+chunker 按固定 500 字符硬切、只重叠 50 字符，一个事实经常被切到相邻两个 chunk 里
+（20 条测试样本中有 8 条的标注就是相邻 chunk 对）。因此重排之后会把命中 chunk 的
+前后邻居一起纳入结果，再截断到 `top_k`。这是当前单项收益最大的改动：
+`Recall@5 74.17% -> 84.17%`、`NDCG@5 71.45% -> 77.53%`。
+
+`NEIGHBOUR_RADIUS=2` 在这个测试集上更高（`Recall@5 86.67%`、`NDCG@5 78.85%`），
+但 `top_k=5` 时结果会退化成"一个命中点 ± 2 个邻居"的连续窗口，牺牲了跨小节取证的
+能力，所以默认保持 `1`。
+
+#### 关于 reranker 模型选型
+
+在同一测试集上对比过三个 CrossEncoder（`--compare-rerankers`，CPU）：
+
+| 模型 | NDCG@5 | median 延迟 |
+| --- | --- | --- |
+| `cross-encoder/ms-marco-MiniLM-L6-v2`（默认） | **77.53%** | **890ms** |
+| `cross-encoder/ms-marco-MiniLM-L12-v2` | 74.68% | 1378ms |
+| `BAAI/bge-reranker-base` | 78.33% | 2733ms |
+
+L12 反而比 L6 差，bge-base 只多 0.8 个点却慢 3 倍，因此保持 L6 不变。换句话说，
+排序阶段的剩余损失不是靠换更大的 reranker 能解决的：候选池里已经有 98.33% 的标注
+chunk，真正的瓶颈是 500 字符硬切造成的 chunk 片段（很多 chunk 从半个单词开始），
+cross-encoder 也很难对这种片段打分。下一步真正值得做的是改切分，但那会让
+`RAG_test.json` 里所有 `relevant_chunk_ids` 失效，需要先重新标注。
+
+#### 关于 query rewrite
+
+`QUERY_REWRITE_ENABLED` 默认已改为 `false`。`rule_based_rewrite` 是关键词裁剪而不是
+LLM 改写，而且 `is_precise_query()` 会在包含 `MAX_STREAM_DATA` 这类 token 的 QUIC
+问题上直接短路，实测四项指标与关闭时完全一致，却让每次查询多花约 500ms。
+代码路径和环境变量都保留，换语料后可以重新开启再测。
 
 报告包含 Recall@1/@3/@5/@10、Precision、MRR、NDCG，以及 mean/median/P95
 检索延迟。CrossEncoder 首次运行会下载并缓存
@@ -283,7 +338,9 @@ RERANKER_ENABLED=true
 RERANKER_MODEL_NAME=cross-encoder/ms-marco-MiniLM-L6-v2
 RETRIEVAL_CANDIDATE_K=30
 FINAL_TOP_K=5
-QUERY_REWRITE_ENABLED=true
+NEIGHBOUR_EXPANSION_ENABLED=true
+NEIGHBOUR_RADIUS=1
+QUERY_REWRITE_ENABLED=false
 QUERY_REWRITE_MODE=multi_query
 MAX_QUERIES=3
 ```

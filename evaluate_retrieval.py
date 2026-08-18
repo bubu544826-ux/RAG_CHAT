@@ -9,7 +9,11 @@ from collections.abc import Callable, Sequence
 from pathlib import Path
 
 from src.rag_app.embedding import EmbeddingError
-from src.rag_app.retriever import retrieve
+from src.rag_app.retriever import (
+    BASELINE_RETRIEVAL_OPTIONS,
+    production_retrieval_options,
+    retrieve,
+)
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent
@@ -92,11 +96,24 @@ def _retrieved_chunk_ids(results: object) -> list[str]:
     return chunk_ids
 
 
+def precision_ceiling(cases: list[dict[str, object]], top_k: int) -> float:
+    """Highest Precision@k these labels allow, as a percentage.
+
+    ``Precision@k`` divides by the raw cutoff, so a case with one relevant
+    chunk caps at ``1/k``. Printing the ceiling keeps the metric readable.
+    """
+    total = sum(
+        min(len(case["relevant_chunk_ids"]), top_k) for case in cases  # type: ignore[arg-type]
+    )
+    return total / (len(cases) * top_k) * 100
+
+
 def evaluate_retrieval(
     cases: list[dict[str, object]],
     index_path: str | Path,
-    top_k: int = 3,
+    top_k: int = 5,
     retrieve_function: Callable[..., list[dict[str, object]]] = retrieve,
+    retrieval_options: dict[str, object] | None = None,
 ) -> dict[str, float]:
     """Macro-average Recall, Precision, MRR, and binary NDCG at ``top_k``."""
     if not isinstance(top_k, int) or isinstance(top_k, bool):
@@ -104,6 +121,11 @@ def evaluate_retrieval(
     if top_k <= 0:
         raise ValueError("top_k 必须大于 0。")
     _validate_evaluation_cases(cases)
+    options = (
+        production_retrieval_options(top_k)
+        if retrieval_options is None
+        else dict(retrieval_options)
+    )
 
     recall_total = 0.0
     precision_total = 0.0
@@ -113,7 +135,7 @@ def evaluate_retrieval(
     for case in cases:
         question = case["question"]
         relevant_ids = set(case["relevant_chunk_ids"])
-        results = retrieve_function(question, index_path, top_k=top_k)
+        results = retrieve_function(question, index_path, top_k=top_k, **options)
         ranked_ids = _retrieved_chunk_ids(results)[:top_k]
 
         relevant_ranks = [
@@ -192,44 +214,65 @@ def calculate_metrics_at_cutoffs(
     return metrics
 
 
+RERANKER_MODELS_TO_COMPARE = (
+    "cross-encoder/ms-marco-MiniLM-L6-v2",
+    "cross-encoder/ms-marco-MiniLM-L12-v2",
+    "BAAI/bge-reranker-base",
+)
+
+
 def evaluate_pipeline_comparison(
     cases: list[dict[str, object]],
     index_path: str | Path,
+    reranker_models: Sequence[str] = (),
 ) -> dict[str, dict[str, object]]:
-    """Run vector, hybrid, reranked, and rewritten retrieval experiments."""
-    experiments = {
+    """Run vector, hybrid, reranked, expanded, and rewritten experiments."""
+    fusion = {
+        "strategy": "hybrid",
+        "vector_top_k": 30,
+        "lexical_top_k": 30,
+        "candidate_k": 30,
+        "rrf_k": 60,
+    }
+    experiments: dict[str, dict[str, object]] = {
         "vector_baseline": {
             "strategy": "vector_only",
             "vector_top_k": 30,
             "candidate_k": 30,
         },
-        "hybrid": {
-            "strategy": "hybrid",
-            "vector_top_k": 30,
-            "lexical_top_k": 30,
-            "candidate_k": 30,
-            "rrf_k": 60,
-        },
-        "hybrid_reranker": {
-            "strategy": "hybrid",
-            "vector_top_k": 30,
-            "lexical_top_k": 30,
-            "candidate_k": 30,
-            "rrf_k": 60,
+        "hybrid": dict(fusion),
+        "hybrid_reranker": {**fusion, "reranker_enabled": True},
+        "hybrid_reranker_neighbours": {
+            **fusion,
             "reranker_enabled": True,
+            "neighbour_expansion": True,
+            "neighbour_radius": 1,
+        },
+        "hybrid_reranker_neighbours_r2": {
+            **fusion,
+            "reranker_enabled": True,
+            "neighbour_expansion": True,
+            "neighbour_radius": 2,
         },
         "full_pipeline": {
-            "strategy": "hybrid",
-            "vector_top_k": 30,
-            "lexical_top_k": 30,
-            "candidate_k": 30,
-            "rrf_k": 60,
+            **fusion,
             "reranker_enabled": True,
+            "neighbour_expansion": True,
+            "neighbour_radius": 1,
             "query_rewrite_enabled": True,
             "query_rewrite_mode": "multi_query",
             "max_queries": 3,
         },
     }
+    for model_name in reranker_models:
+        label = model_name.rsplit("/", 1)[-1]
+        experiments[f"reranker_{label}"] = {
+            **fusion,
+            "reranker_enabled": True,
+            "reranker_model_name": model_name,
+            "neighbour_expansion": True,
+            "neighbour_radius": 1,
+        }
     report: dict[str, dict[str, object]] = {}
     for experiment_name, options in experiments.items():
         rankings: list[list[str]] = []
@@ -273,19 +316,35 @@ def _parse_arguments(arguments: Sequence[str] | None = None) -> argparse.Namespa
     parser.add_argument(
         "--top-k",
         type=int,
-        default=3,
-        help="参与评估的排名结果数量（默认：3）",
+        default=5,
+        help="参与评估的排名结果数量（默认：5）",
+    )
+    parser.add_argument(
+        "--baseline",
+        action="store_true",
+        help="只评估旧的 vector-only 基线，便于和历史数字对比",
+    )
+    parser.add_argument(
+        "--reranker-model",
+        dest="reranker_model",
+        default=None,
+        help="覆盖 CrossEncoder reranker 模型名",
     )
     parser.add_argument(
         "--compare",
         action="store_true",
-        help="运行 vector/hybrid/reranker/rewrite 四组对照实验",
+        help="运行 vector/hybrid/reranker/neighbour/rewrite 对照实验",
+    )
+    parser.add_argument(
+        "--compare-rerankers",
+        action="store_true",
+        help="在对照实验中额外评测多个 reranker 模型（首次运行会下载模型）",
     )
     parser.add_argument(
         "--output",
         type=Path,
         default=DEFAULT_REPORT_PATH,
-        help="四组实验 JSON 报告路径",
+        help="对照实验 JSON 报告路径",
     )
     return parser.parse_args(arguments)
 
@@ -297,7 +356,13 @@ def main(arguments: Sequence[str] | None = None) -> int:
     try:
         cases = load_evaluation_cases(args.test_set)
         if args.compare:
-            report = evaluate_pipeline_comparison(cases, args.index)
+            report = evaluate_pipeline_comparison(
+                cases,
+                args.index,
+                reranker_models=(
+                    RERANKER_MODELS_TO_COMPARE if args.compare_rerankers else ()
+                ),
+            )
             args.output.write_text(
                 json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8"
             )
@@ -311,18 +376,35 @@ def main(arguments: Sequence[str] | None = None) -> int:
                     f"Precision@5={metrics['Precision@5']:.2f}% "
                     f"MRR@10={metrics['MRR@10']:.2f}% "
                     f"NDCG@5={metrics['NDCG@5']:.2f}% "
-                    f"mean_latency={latency['mean']:.2f}ms"
+                    f"median_latency={latency['median']:.2f}ms"
                 )
             print(f"报告：{args.output}")
             return 0
-        metrics = evaluate_retrieval(cases, args.index, top_k=args.top_k)
+
+        if args.baseline:
+            options = dict(BASELINE_RETRIEVAL_OPTIONS)
+            pipeline_label = "vector-only 基线"
+        else:
+            options = production_retrieval_options(args.top_k)
+            pipeline_label = "生产检索管线（与 RAGService 一致）"
+        if args.reranker_model:
+            options["reranker_model_name"] = args.reranker_model
+        metrics = evaluate_retrieval(
+            cases, args.index, top_k=args.top_k, retrieval_options=options
+        )
     except (OSError, json.JSONDecodeError, TypeError, ValueError, EmbeddingError) as exc:
         print(f"评估失败：{exc}")
         return 1
 
     print(f"问题数量：{len(cases)}")
+    print(f"检索管线：{pipeline_label}")
+    ceiling = precision_ceiling(cases, args.top_k)
     for metric_name, value in metrics.items():
-        print(f"{metric_name}: {value:.2f}%")
+        if metric_name.startswith("Precision@"):
+            # Precision@k divides by k, so these labels cap it below 100%.
+            print(f"{metric_name}: {value:.2f}%（本测试集上限 {ceiling:.2f}%）")
+        else:
+            print(f"{metric_name}: {value:.2f}%")
     return 0
 
 

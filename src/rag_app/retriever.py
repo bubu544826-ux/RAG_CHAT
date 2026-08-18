@@ -13,7 +13,7 @@ from typing import Any
 
 import chromadb
 
-from .config import DEFAULT_RERANKER_MODEL_NAME
+from .config import DEFAULT_RERANKER_MODEL_NAME, RETRIEVAL_SETTINGS, RetrievalSettings
 from .embedding import embed_text
 from .indexer import COLLECTION_NAME
 
@@ -269,6 +269,131 @@ def _ranked_fallback(
         item["retrieval_source"] = [source_name]
         fallback.append(item)
     return fallback
+
+
+BASELINE_RETRIEVAL_OPTIONS: dict[str, object] = {"strategy": "vector_only"}
+
+
+def production_retrieval_options(
+    top_k: int, settings: RetrievalSettings = RETRIEVAL_SETTINGS
+) -> dict[str, object]:
+    """Map application settings onto :func:`retrieve` keyword arguments.
+
+    ``retrieve`` keeps vector-only defaults so older direct callers stay
+    compatible. Every production entry point goes through here instead, so the
+    service, the CLI, and the evaluator cannot drift apart.
+    """
+    return {
+        "strategy": settings.strategy,
+        "vector_top_k": settings.vector_top_k,
+        "lexical_top_k": settings.lexical_top_k,
+        "candidate_k": max(settings.candidate_k, top_k),
+        "rrf_k": settings.rrf_k,
+        "reranker_enabled": settings.reranker_enabled,
+        "reranker_model_name": settings.reranker_model_name,
+        "neighbour_expansion": settings.neighbour_expansion_enabled,
+        "neighbour_radius": settings.neighbour_radius,
+        "query_rewrite_enabled": settings.query_rewrite_enabled,
+        "query_rewrite_mode": settings.query_rewrite_mode,
+        "max_queries": settings.max_queries,
+    }
+
+
+CHUNK_ID_PATTERN = re.compile(r"^(?P<source>.+)#chunk-(?P<index>\d+)$")
+
+
+def _neighbour_chunk_ids(chunk_id: str, radius: int) -> list[str]:
+    """Return the ids that sit within ``radius`` positions of ``chunk_id``."""
+    match = CHUNK_ID_PATTERN.match(chunk_id)
+    if match is None:
+        return []
+    source = match.group("source")
+    index = int(match.group("index"))
+    neighbours: list[str] = []
+    for offset in range(1, radius + 1):
+        neighbours.append(f"{source}#chunk-{index + offset}")
+        if index - offset >= 0:
+            neighbours.append(f"{source}#chunk-{index - offset}")
+    return neighbours
+
+
+def expand_with_neighbours(
+    results: list[dict[str, object]],
+    index_path: str | Path,
+    *,
+    limit: int,
+    radius: int = 1,
+) -> list[dict[str, object]]:
+    """Admit chunks adjacent to each ranked hit, keeping the ranked order.
+
+    The chunker cuts on fixed character boundaries, so one fact often straddles
+    two chunks. Pulling in the neighbours of a hit recovers the other half.
+    """
+    if not isinstance(radius, int) or isinstance(radius, bool) or radius <= 0:
+        raise ValueError("neighbour_radius 必须是正整数。")
+    if not isinstance(limit, int) or isinstance(limit, bool) or limit <= 0:
+        raise ValueError("limit 必须是正整数。")
+    if not results:
+        return []
+
+    # Each wanted id remembers the seed that pulled it in, so a neighbour can
+    # inherit its seed's score instead of dropping to zero.
+    wanted: list[tuple[str, dict[str, object]]] = []
+    seen: set[str] = set()
+    for result in results:
+        chunk_id = result.get("chunk_id")
+        if not isinstance(chunk_id, str):
+            raise ValueError("Retriever 的每条结果都必须包含 chunk_id。")
+        if chunk_id not in seen:
+            seen.add(chunk_id)
+            wanted.append((chunk_id, result))
+        for neighbour_id in _neighbour_chunk_ids(chunk_id, radius):
+            if neighbour_id not in seen:
+                seen.add(neighbour_id)
+                wanted.append((neighbour_id, result))
+        # No early exit on ``limit``: some wanted ids are boundary neighbours the
+        # index does not hold, and stopping here would return fewer than ``limit``.
+
+    known = {str(result["chunk_id"]): result for result in results}
+    missing = [chunk_id for chunk_id, _seed in wanted if chunk_id not in known]
+    fetched: dict[str, tuple[str, dict[str, Any]]] = {}
+    if missing:
+        try:
+            records = _open_collection(index_path).get(
+                ids=missing, include=["documents", "metadatas"]
+            )
+        except Exception as exc:  # index unavailable: keep the original ranking
+            logger.warning("Neighbour expansion failed; using ranking as-is: %s", exc)
+            return results[:limit]
+        for chunk_id, document, metadata in zip(
+            records.get("ids") or [],
+            records.get("documents") or [],
+            records.get("metadatas") or [],
+        ):
+            fetched[chunk_id] = (document or "", dict(metadata or {}))
+
+    expanded: list[dict[str, object]] = []
+    for chunk_id, seed in wanted:
+        if len(expanded) >= limit:
+            break
+        existing = known.get(chunk_id)
+        if existing is not None:
+            expanded.append(dict(existing))
+            continue
+        record = fetched.get(chunk_id)
+        if record is None:
+            # Boundary chunk, or an id the index does not hold.
+            continue
+        document, metadata = record
+        seed_score = float(seed.get("score", 0.0) or 0.0)
+        item = _result(document, metadata, seed_score, "neighbour", len(expanded) + 1)
+        item["rerank_score"] = seed.get("rerank_score")
+        item["neighbour_of"] = seed.get("chunk_id")
+        expanded.append(item)
+
+    for rank, item in enumerate(expanded, start=1):
+        item["final_rank"] = rank
+    return expanded
 
 
 def retrieve_candidates(
@@ -539,6 +664,8 @@ def retrieve(
     rrf_k: int = 60,
     reranker_enabled: bool = False,
     reranker_model_name: str = DEFAULT_RERANKER_MODEL_NAME,
+    neighbour_expansion: bool = False,
+    neighbour_radius: int = 1,
     query_rewrite_enabled: bool = False,
     query_rewrite_mode: str = "multi_query",
     max_queries: int = 3,
@@ -601,17 +728,25 @@ def retrieve(
             query_results, rrf_k=rrf_k, limit=pool_size
         )
 
+    def finalize(ranked: list[dict[str, object]]) -> list[dict[str, object]]:
+        if not neighbour_expansion:
+            return ranked[:top_k]
+        return expand_with_neighbours(
+            ranked, index_path, limit=top_k, radius=neighbour_radius
+        )
+
     if not reranker_enabled:
-        return candidates[:top_k]
+        return finalize(candidates)
     scorer = rerank_function or (
         lambda query, items: cross_encoder_scores(
             query, items, model_name=reranker_model_name
         )
     )
     try:
-        return rerank_candidates(
+        reranked = rerank_candidates(
             cleaned_question, candidates, rerank_function=scorer, final_k=top_k
         )
     except Exception as exc:
         logger.warning("Reranker failed; using fused retrieval ranking: %s", exc)
-        return _ranked_fallback(candidates, "fused", top_k)
+        return finalize(_ranked_fallback(candidates, "fused", top_k))
+    return finalize(reranked)

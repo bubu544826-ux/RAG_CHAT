@@ -11,11 +11,14 @@ from unittest.mock import Mock, patch
 
 from evaluate_retrieval import (
     DEFAULT_TEST_SET_PATH,
+    BASELINE_RETRIEVAL_OPTIONS,
     calculate_metrics_at_cutoffs,
     evaluate_pipeline_comparison,
     evaluate_retrieval,
     load_evaluation_cases,
     main,
+    precision_ceiling,
+    production_retrieval_options,
 )
 
 
@@ -47,16 +50,23 @@ class RetrievalEvaluationTest(unittest.TestCase):
         self.assertEqual(metrics["MRR@2"], 50.0)
 
     @patch("evaluate_retrieval.retrieve", return_value=[{"chunk_id": "chunk-a"}])
-    def test_pipeline_comparison_runs_all_four_experiments(
+    def test_pipeline_comparison_runs_every_experiment(
         self, retrieve_mock: Mock
     ) -> None:
         report = evaluate_pipeline_comparison([_case()], "index")
 
         self.assertEqual(
             set(report),
-            {"vector_baseline", "hybrid", "hybrid_reranker", "full_pipeline"},
+            {
+                "vector_baseline",
+                "hybrid",
+                "hybrid_reranker",
+                "hybrid_reranker_neighbours",
+                "hybrid_reranker_neighbours_r2",
+                "full_pipeline",
+            },
         )
-        self.assertEqual(retrieve_mock.call_count, 4)
+        self.assertEqual(retrieve_mock.call_count, len(report))
         self.assertEqual(
             report["full_pipeline"]["metrics"]["Recall@10"], 100.0
         )
@@ -117,7 +127,10 @@ class RetrievalEvaluationTest(unittest.TestCase):
         )
 
         retrieve_function.assert_called_once_with(
-            cases[0]["question"], "index", top_k=3
+            cases[0]["question"],
+            "index",
+            top_k=3,
+            **production_retrieval_options(3),
         )
         self.assertEqual(
             metrics,
@@ -190,7 +203,7 @@ class RetrievalEvaluationTest(unittest.TestCase):
 
         self.assertEqual(
             metrics,
-            {"Recall@3": 0.0, "Precision@3": 0.0, "MRR@3": 0.0, "NDCG@3": 0.0},
+            {"Recall@5": 0.0, "Precision@5": 0.0, "MRR@5": 0.0, "NDCG@5": 0.0},
         )
 
     def test_loader_requires_unique_ids_questions_and_relevance_labels(self) -> None:
@@ -241,7 +254,10 @@ class RetrievalEvaluationTest(unittest.TestCase):
         self.assertIn("MRR@5: 62.50%", output.getvalue())
         self.assertIn("NDCG@5: 70.25%", output.getvalue())
         evaluate_mock.assert_called_once()
-        self.assertEqual(evaluate_mock.call_args.kwargs, {"top_k": 5})
+        self.assertEqual(
+            evaluate_mock.call_args.kwargs,
+            {"top_k": 5, "retrieval_options": production_retrieval_options(5)},
+        )
 
 
 if __name__ == "__main__":

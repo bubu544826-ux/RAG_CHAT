@@ -1,182 +1,182 @@
 [
-    {
-        "id":  "rag_quic_001",
-        "relevant_chunk_ids":  ["RCF.txt#chunk-116"],
-        "question":  "In QUIC, what is the final size of a stream?",
-        "ground_truth":  "The final size represents the amount of flow control credit consumed by a stream. If every contiguous byte is sent exactly once, it equals the number of bytes sent. More generally, it is one greater than the largest byte offset sent on the stream, or zero if no bytes were sent.",
-        "evidence":  "Section 4.5 Stream Final Size: the final size is the amount of flow control credit consumed by a stream. It is generally the largest offset plus one, or zero if no bytes were sent.",
-        "type":  "fact",
-        "difficulty":  "easy"
-    },
-    {
-        "id":  "rag_quic_002",
-        "relevant_chunk_ids":  ["RCF.txt#chunk-117"],
-        "question":  "How does a QUIC sender communicate the final size of a stream to the receiver?",
-        "ground_truth":  "The sender can communicate the final size using a STREAM frame with the FIN flag, where the final size is the sum of the Offset and Length fields. Alternatively, the Final Size field of a RESET_STREAM frame carries this value.",
-        "evidence":  "Section 4.5: a STREAM frame with FIN communicates the final size as Offset plus Length, while RESET_STREAM carries it in the Final Size field.",
-        "type":  "fact",
-        "difficulty":  "easy"
-    },
-    {
-        "id":  "rag_quic_003",
-        "relevant_chunk_ids":  ["RCF.txt#chunk-118"],
-        "question":  "When does a QUIC endpoint know the final size of a stream?",
-        "ground_truth":  "An endpoint knows the final size when the receiving part of the stream enters the Size Known or Reset Recvd state.",
-        "evidence":  "Section 4.5: the endpoint knows the final size when the receiving part enters the Size Known or Reset Recvd state.",
-        "type":  "state_machine",
-        "difficulty":  "medium"
-    },
-    {
-        "id":  "rag_quic_004",
-        "relevant_chunk_ids":  ["RCF.txt#chunk-119"],
-        "question":  "Can the final size of a QUIC stream change after it becomes known?",
-        "ground_truth":  "No. Once the final size of a stream is known, it cannot change. If a RESET_STREAM or STREAM frame indicates a different final size, the endpoint should respond with a FINAL_SIZE_ERROR.",
-        "evidence":  "Section 4.5: once a final size is known, it cannot change. A conflicting STREAM or RESET_STREAM frame should result in FINAL_SIZE_ERROR.",
-        "type":  "protocol_rule",
-        "difficulty":  "easy"
-    },
-    {
-        "id":  "rag_quic_005",
-        "relevant_chunk_ids":  ["RCF.txt#chunk-119", "RCF.txt#chunk-120"],
-        "question":  "How should a QUIC receiver handle data received at or beyond the final size of a stream?",
-        "ground_truth":  "The receiver should treat data received at or beyond the final size as a FINAL_SIZE_ERROR, even if the stream has already been closed. However, generating this error is not mandatory because doing so may require maintaining final-size state for closed streams.",
-        "evidence":  "Section 4.5: receipt of data at or beyond final size should be treated as FINAL_SIZE_ERROR, even after the stream is closed, though generating the error is not mandatory.",
-        "type":  "error_handling",
-        "difficulty":  "medium"
-    },
-    {
-        "id":  "rag_quic_006",
-        "relevant_chunk_ids":  ["RCF.txt#chunk-120", "RCF.txt#chunk-121"],
-        "question":  "How does QUIC limit the number of streams that a peer can open?",
-        "ground_truth":  "An endpoint limits the cumulative number of incoming streams a peer can open. Initial limits are established using transport parameters, and later limits can be increased using MAX_STREAMS frames. Separate limits apply to unidirectional and bidirectional streams.",
-        "evidence":  "Section 4.6 Controlling Concurrency: initial stream limits are set in transport parameters, later limits are advertised with MAX_STREAMS, and separate limits apply to unidirectional and bidirectional streams.",
-        "type":  "fact",
-        "difficulty":  "easy"
-    },
-    {
-        "id":  "rag_quic_007",
-        "relevant_chunk_ids":  ["RCF.txt#chunk-120"],
-        "question":  "What is the relationship between max_streams and the maximum stream ID that can be opened in QUIC?",
-        "ground_truth":  "Only streams with a stream ID less than max_streams multiplied by 4 plus first_stream_id_of_type can be opened.",
-        "evidence":  "Section 4.6: a stream can be opened only if its ID is less than (max_streams * 4 + first_stream_id_of_type).",
-        "type":  "numeric_rule",
-        "difficulty":  "medium"
-    },
-    {
-        "id":  "rag_quic_008",
-        "relevant_chunk_ids":  ["RCF.txt#chunk-121", "RCF.txt#chunk-122"],
-        "question":  "What should happen if a max_streams transport parameter has a value greater than 2^60?",
-        "ground_truth":  "The connection must be closed immediately with a TRANSPORT_PARAMETER_ERROR because such a value would permit a maximum stream ID that cannot be represented as a QUIC variable-length integer.",
-        "evidence":  "Section 4.6: if a max_streams transport parameter is greater than 2^60, the connection must be closed with TRANSPORT_PARAMETER_ERROR.",
-        "type":  "error_handling",
-        "difficulty":  "medium"
-    },
-    {
-        "id":  "rag_quic_009",
-        "relevant_chunk_ids":  ["RCF.txt#chunk-121", "RCF.txt#chunk-122"],
-        "question":  "What error should be generated if a MAX_STREAMS frame contains a value greater than 2^60?",
-        "ground_truth":  "The connection must be closed immediately with a FRAME_ENCODING_ERROR.",
-        "evidence":  "Section 4.6: if the invalid value greater than 2^60 is received in a MAX_STREAMS frame, the error type is FRAME_ENCODING_ERROR.",
-        "type":  "error_handling",
-        "difficulty":  "medium"
-    },
-    {
-        "id":  "rag_quic_010",
-        "relevant_chunk_ids":  ["RCF.txt#chunk-122", "RCF.txt#chunk-123"],
-        "question":  "What should an endpoint do if it receives a stream with an ID that exceeds the limit it previously advertised to its peer?",
-        "ground_truth":  "It must treat the condition as a connection error of type STREAM_LIMIT_ERROR.",
-        "evidence":  "Section 4.6: receiving a stream ID that exceeds the advertised limit must be treated as STREAM_LIMIT_ERROR.",
-        "type":  "error_handling",
-        "difficulty":  "easy"
-    },
-    {
-        "id":  "rag_quic_011",
-        "relevant_chunk_ids":  ["RCF.txt#chunk-123"],
-        "question":  "Does a MAX_STREAMS frame with a smaller value reduce the current stream limit?",
-        "ground_truth":  "No. Advertising a smaller stream limit has no effect. MAX_STREAMS frames that do not increase the stream limit must be ignored.",
-        "evidence":  "Section 4.6: advertising a smaller limit has no effect, and MAX_STREAMS frames that do not increase the limit must be ignored.",
-        "type":  "protocol_rule",
-        "difficulty":  "easy"
-    },
-    {
-        "id":  "rag_quic_012",
-        "relevant_chunk_ids":  ["RCF.txt#chunk-124", "RCF.txt#chunk-125"],
-        "question":  "What should an endpoint do when it cannot open a new stream because of the peer\u0027s stream limit, and must the peer wait for this signal before granting more credit?",
-        "ground_truth":  "The blocked endpoint should send a STREAMS_BLOCKED frame. However, the peer must not wait to receive STREAMS_BLOCKED before advertising additional stream credit, because doing so could block the endpoint for at least one round trip or potentially indefinitely.",
-        "evidence":  "Section 4.6: an endpoint blocked by stream limits should send STREAMS_BLOCKED, but the peer must not wait for this signal before increasing credit.",
-        "type":  "multi_fact",
-        "difficulty":  "medium"
-    },
-    {
-        "id":  "rag_quic_013",
-        "relevant_chunk_ids":  ["RCF.txt#chunk-125", "RCF.txt#chunk-126"],
-        "question":  "What are the main purposes of the QUIC handshake phase?",
-        "ground_truth":  "During the handshake, the client and server establish a shared secret using the cryptographic handshake protocol, negotiate the application protocol, confirm that both endpoints are willing to communicate, and establish connection parameters.",
-        "evidence":  "Section 5 Connections: the handshake establishes a shared secret, negotiates the application protocol, confirms willingness to communicate, and establishes connection parameters.",
-        "type":  "summary",
-        "difficulty":  "medium"
-    },
-    {
-        "id":  "rag_quic_014",
-        "relevant_chunk_ids":  ["RCF.txt#chunk-126"],
-        "question":  "What security limitation does QUIC 0-RTT have despite reducing latency?",
-        "ground_truth":  "0-RTT allows a client to send application data before receiving a response from the server, but it does not provide protection against replay attacks.",
-        "evidence":  "Section 5: 0-RTT reduces latency by allowing early application data, but it provides no protection against replay attacks.",
-        "type":  "security",
-        "difficulty":  "easy"
-    },
-    {
-        "id":  "rag_quic_015",
-        "relevant_chunk_ids":  ["RCF.txt#chunk-129"],
-        "question":  "What is the primary function of a QUIC Connection ID?",
-        "ground_truth":  "The primary function of a Connection ID is to ensure that changes in lower-layer addressing, such as UDP or IP address changes, do not cause packets for a QUIC connection to be delivered to or associated with the wrong endpoint.",
-        "evidence":  "Section 5.1 Connection ID: the primary function of a Connection ID is to prevent lower-layer addressing changes from causing packets to be delivered to the wrong endpoint.",
-        "type":  "concept",
-        "difficulty":  "easy"
-    },
-    {
-        "id":  "rag_quic_016",
-        "relevant_chunk_ids":  ["RCF.txt#chunk-130", "RCF.txt#chunk-131"],
-        "question":  "Why can a QUIC connection use multiple Connection IDs?",
-        "ground_truth":  "Multiple Connection IDs help prevent external observers from determining that different packets belong to the same connection without cooperation from an endpoint. Connection IDs must also avoid containing information that would allow an external observer to correlate them with other Connection IDs from the same connection.",
-        "evidence":  "Section 5.1: multiple Connection IDs reduce linkability, and Connection IDs must not contain externally correlatable information.",
-        "type":  "security_privacy",
-        "difficulty":  "medium"
-    },
-    {
-        "id":  "rag_quic_017",
-        "relevant_chunk_ids":  ["RCF.txt#chunk-131"],
-        "question":  "Can the same Connection ID be issued more than once on the same QUIC connection?",
-        "ground_truth":  "No. The same Connection ID must not be issued more than once on the same connection.",
-        "evidence":  "Section 5.1: the same Connection ID MUST NOT be issued more than once on the same connection.",
-        "type":  "protocol_rule",
-        "difficulty":  "easy"
-    },
-    {
-        "id":  "rag_quic_018",
-        "relevant_chunk_ids":  ["RCF.txt#chunk-134", "RCF.txt#chunk-135"],
-        "question":  "Why should multiple concurrent QUIC connections generally not use zero-length Connection IDs on the same IP address and port?",
-        "ground_truth":  "With zero-length Connection IDs, connections rely heavily on addressing information for identification. Multiple concurrent connections on the same IP address and port can therefore fail in the presence of peer connection migration, NAT rebinding, or client port reuse. An endpoint must not use this configuration unless it is certain those protocol features are not in use.",
-        "evidence":  "Section 5.1: zero-length Connection IDs combined with the same local IP address and port can fail with migration, NAT rebinding, and client port reuse.",
-        "type":  "reasoning",
-        "difficulty":  "hard"
-    },
-    {
-        "id":  "rag_quic_019",
-        "relevant_chunk_ids":  ["RCF.txt#chunk-136", "RCF.txt#chunk-137"],
-        "question":  "What are the sequence number rules for newly issued QUIC Connection IDs?",
-        "ground_truth":  "The initial Connection ID issued by an endpoint during the handshake has sequence number 0. Each newly issued Connection ID sent in a NEW_CONNECTION_ID frame must increase the sequence number by 1. If the preferred_address transport parameter is sent, the Connection ID it supplies has sequence number 1.",
-        "evidence":  "Section 5.1.1 Issuing Connection IDs: the initial Connection ID has sequence number 0, newly issued IDs increment by 1, and the preferred_address Connection ID has sequence number 1.",
-        "type":  "sequence_rule",
-        "difficulty":  "medium"
-    },
-    {
-        "id":  "rag_quic_020",
-        "relevant_chunk_ids":  ["RCF.txt#chunk-151", "RCF.txt#chunk-152", "RCF.txt#chunk-153"],
-        "question":  "How does QUIC match an incoming packet to an existing connection, and what can happen if the packet cannot be associated with any connection?",
-        "ground_truth":  "If the packet has a non-zero-length Destination Connection ID that corresponds to an existing connection, QUIC processes it as part of that connection. If the Destination Connection ID has zero length, QUIC can use matching addressing information to identify the connection. If the packet cannot be attributed to an existing connection, an endpoint can send a Stateless Reset to help the peer detect that the connection has become unusable.",
-        "evidence":  "Section 5.2 Matching Packets to Connections: non-zero Destination Connection IDs are used to identify connections, zero-length IDs can rely on addressing information, and unmatched packets can result in a Stateless Reset.",
-        "type":  "multi_step",
-        "difficulty":  "hard"
-    }
+  {
+    "id": "rag_quic_streams_001",
+    "relevant_chunk_ids": ["RCF.txt#chunk-44"],
+    "question": "Who can create streams in QUIC?",
+    "ground_truth": "Streams can be created by either endpoint, meaning either the client or the server. Multiple streams can send data concurrently, and their data can be interleaved.",
+    "evidence": "Section 2 states that streams can be created by either endpoint and can concurrently send interleaved data.",
+    "type": "fact",
+    "difficulty": "easy"
+  },
+  {
+    "id": "rag_quic_streams_002",
+    "relevant_chunk_ids": ["RCF.txt#chunk-43", "RCF.txt#chunk-44"],
+    "question": "Does QUIC guarantee ordering between bytes on different streams?",
+    "ground_truth": "No. QUIC does not provide any guarantee of ordering between bytes on different streams. Ordering is maintained only within an individual stream.",
+    "evidence": "Section 2 describes each stream as an ordered byte stream but states that QUIC does not ensure ordering between bytes on different streams.",
+    "type": "protocol_rule",
+    "difficulty": "easy"
+  },
+  {
+    "id": "rag_quic_streams_003",
+    "relevant_chunk_ids": ["RCF.txt#chunk-45"],
+    "question": "What are the two basic types of QUIC streams?",
+    "ground_truth": "QUIC streams can be either unidirectional or bidirectional. A unidirectional stream carries data only from the initiator to its peer, while a bidirectional stream allows data to be sent in both directions.",
+    "evidence": "Section 2.1 defines unidirectional streams as carrying data from the initiator to its peer and bidirectional streams as carrying data in both directions.",
+    "type": "concept",
+    "difficulty": "easy"
+  },
+  {
+    "id": "rag_quic_streams_004",
+    "relevant_chunk_ids": ["RCF.txt#chunk-46"],
+    "question": "How large is a QUIC Stream ID?",
+    "ground_truth": "A Stream ID is a 62-bit integer, ranging from 0 to (2^62-1). It is encoded as a variable-length integer.",
+    "evidence": "Section 2.1 states that a stream ID is a 62-bit integer from 0 to 2^62-1 and is encoded as a variable-length integer.",
+    "type": "numeric_fact",
+    "difficulty": "easy"
+  },
+  {
+    "id": "rag_quic_streams_005",
+    "relevant_chunk_ids": ["RCF.txt#chunk-46"],
+    "question": "Can a Stream ID be reused within the same QUIC connection?",
+    "ground_truth": "No. A QUIC endpoint must not reuse a Stream ID within the same connection. Every Stream ID must be unique within that connection.",
+    "evidence": "Section 2.1 requires stream IDs to be unique and states that an endpoint must not reuse a stream ID within a connection.",
+    "type": "protocol_rule",
+    "difficulty": "easy"
+  },
+  {
+    "id": "rag_quic_streams_006",
+    "relevant_chunk_ids": ["RCF.txt#chunk-46", "RCF.txt#chunk-47"],
+    "question": "What does the least significant bit of a Stream ID indicate?",
+    "ground_truth": "The least significant bit identifies the initiator of the stream. Client-initiated streams have even-numbered Stream IDs, while server-initiated streams have odd-numbered Stream IDs.",
+    "evidence": "Section 2.1 states that bit 0 identifies the initiator: client-initiated IDs are even and server-initiated IDs are odd.",
+    "type": "bit_field",
+    "difficulty": "easy"
+  },
+  {
+    "id": "rag_quic_streams_007",
+    "relevant_chunk_ids": ["RCF.txt#chunk-47"],
+    "question": "What does the second least significant bit of a Stream ID indicate?",
+    "ground_truth": "It indicates whether the stream is bidirectional or unidirectional. A value of 0 indicates a bidirectional stream, while a value of 1 indicates a unidirectional stream.",
+    "evidence": "Section 2.1 states that bit 1 distinguishes bidirectional streams, with value 0, from unidirectional streams, with value 1.",
+    "type": "bit_field",
+    "difficulty": "easy"
+  },
+  {
+    "id": "rag_quic_streams_008",
+    "relevant_chunk_ids": ["RCF.txt#chunk-48", "RCF.txt#chunk-49"],
+    "question": "What are the four QUIC stream types identified by the two least significant bits?",
+    "ground_truth": "0x00: Client-Initiated, Bidirectional; 0x01: Server-Initiated, Bidirectional; 0x02: Client-Initiated, Unidirectional; 0x03: Server-Initiated, Unidirectional.",
+    "evidence": "Table 1 in Section 2.1 maps bit values 0x00 through 0x03 to the four initiator and direction combinations.",
+    "type": "mapping",
+    "difficulty": "medium"
+  },
+  {
+    "id": "rag_quic_streams_009",
+    "relevant_chunk_ids": ["RCF.txt#chunk-49", "RCF.txt#chunk-50"],
+    "question": "What happens if a Stream ID is used out of order?",
+    "ground_truth": "If a Stream ID is used out of order, all lower-numbered streams of the same type are also considered opened.",
+    "evidence": "Section 2.1 states that using a stream ID out of order also opens all lower-numbered streams of that type.",
+    "type": "protocol_rule",
+    "difficulty": "easy"
+  },
+  {
+    "id": "rag_quic_streams_010",
+    "relevant_chunk_ids": ["RCF.txt#chunk-50"],
+    "question": "Which frame is used to carry application data in a QUIC stream?",
+    "ground_truth": "The STREAM frame is used to carry application data. The Stream ID and Offset fields are used to place received data in the correct order.",
+    "evidence": "Section 2.2 states that STREAM frames encapsulate application data and that their Stream ID and Offset fields place data in order.",
+    "type": "fact",
+    "difficulty": "easy"
+  },
+  {
+    "id": "rag_quic_streams_011",
+    "relevant_chunk_ids": ["RCF.txt#chunk-50", "RCF.txt#chunk-51"],
+    "question": "How should a QUIC endpoint handle stream data received out of order?",
+    "ground_truth": "The endpoint must buffer out-of-order data, up to the advertised flow control limit, so that it can deliver an ordered byte stream to the application.",
+    "evidence": "Section 2.2 requires endpoints to buffer out-of-order data up to the advertised flow control limit to deliver an ordered byte stream.",
+    "type": "protocol_rule",
+    "difficulty": "easy"
+  },
+  {
+    "id": "rag_quic_streams_012",
+    "relevant_chunk_ids": ["RCF.txt#chunk-51"],
+    "question": "Can a QUIC implementation deliver out-of-order data to an application?",
+    "ground_truth": "Yes. QUIC does not specifically define out-of-order delivery, but an implementation may choose to provide this capability to the receiving application.",
+    "evidence": "Section 2.2 says QUIC makes no specific allowance for out-of-order delivery, but implementations may offer it to receiving applications.",
+    "type": "implementation_choice",
+    "difficulty": "medium"
+  },
+  {
+    "id": "rag_quic_streams_013",
+    "relevant_chunk_ids": ["RCF.txt#chunk-51", "RCF.txt#chunk-52"],
+    "question": "What happens if data for the same stream offset is received more than once?",
+    "ground_truth": "Data that has already been received can be discarded. However, the data at the same offset must not change. If different data is received at the same offset, it may be treated as a PROTOCOL_VIOLATION connection error.",
+    "evidence": "Section 2.2 permits duplicate data to be discarded, requires data at an offset not to change, and allows conflicting data to be treated as PROTOCOL_VIOLATION.",
+    "type": "error_handling",
+    "difficulty": "medium"
+  },
+  {
+    "id": "rag_quic_streams_014",
+    "relevant_chunk_ids": ["RCF.txt#chunk-52", "RCF.txt#chunk-53"],
+    "question": "Are STREAM frame boundaries preserved when data is delivered to the application?",
+    "ground_truth": "No. QUIC streams are ordered byte streams, and STREAM frame boundaries are not guaranteed to be preserved during transmission, retransmission, or delivery to the receiving application.",
+    "evidence": "Section 2.2 states that STREAM frame boundaries are not expected to survive transmission, retransmission, or delivery.",
+    "type": "protocol_rule",
+    "difficulty": "easy"
+  },
+  {
+    "id": "rag_quic_streams_015",
+    "relevant_chunk_ids": ["RCF.txt#chunk-53"],
+    "question": "What must an endpoint check before sending data on a stream?",
+    "ground_truth": "It must ensure that the data is within the flow control limits set by its peer.",
+    "evidence": "Section 2.2 requires an endpoint to ensure that stream data is within the peer's flow control limits before sending it.",
+    "type": "protocol_rule",
+    "difficulty": "easy"
+  },
+  {
+    "id": "rag_quic_streams_016",
+    "relevant_chunk_ids": ["RCF.txt#chunk-54"],
+    "question": "Does QUIC provide a built-in mechanism for exchanging stream priority information?",
+    "ground_truth": "No. QUIC does not provide a mechanism for exchanging prioritization information. Instead, it relies on the application to provide priority information to the QUIC implementation.",
+    "evidence": "Section 2.3 says QUIC does not exchange prioritization information and instead receives priority information from the application.",
+    "type": "protocol_rule",
+    "difficulty": "easy"
+  },
+  {
+    "id": "rag_quic_streams_017",
+    "relevant_chunk_ids": ["RCF.txt#chunk-56"],
+    "question": "What operations can an application protocol perform on the sending part of a stream?",
+    "ground_truth": "It can write data, cleanly end the stream by sending a STREAM frame with the FIN bit set, or abruptly terminate the stream using a RESET_STREAM frame.",
+    "evidence": "Section 2.4 lists writing data, clean termination with STREAM plus FIN, and abrupt termination with RESET_STREAM as sending-part operations.",
+    "type": "summary",
+    "difficulty": "easy"
+  },
+  {
+    "id": "rag_quic_streams_018",
+    "relevant_chunk_ids": ["RCF.txt#chunk-57"],
+    "question": "What operations can an application protocol perform on the receiving part of a stream?",
+    "ground_truth": "It can read data or abort reading the stream and request closure, which may result in a STOP_SENDING frame being sent.",
+    "evidence": "Section 2.4 lists reading data and aborting reading with a closure request that can produce STOP_SENDING.",
+    "type": "summary",
+    "difficulty": "easy"
+  },
+  {
+    "id": "rag_quic_streams_019",
+    "relevant_chunk_ids": ["RCF.txt#chunk-58", "RCF.txt#chunk-59"],
+    "question": "Which state machines are used by unidirectional and bidirectional streams?",
+    "ground_truth": "A unidirectional stream uses either the sending or receiving state machine, depending on the stream type and endpoint role. A bidirectional stream uses both the sending and receiving state machines at both endpoints.",
+    "evidence": "Section 3 assigns one state machine to a unidirectional stream according to direction and role, while bidirectional streams use both at both endpoints.",
+    "type": "state_machine",
+    "difficulty": "medium"
+  },
+  {
+    "id": "rag_quic_streams_020",
+    "relevant_chunk_ids": ["RCF.txt#chunk-61", "RCF.txt#chunk-64", "RCF.txt#chunk-69"],
+    "question": "What state transitions can occur when a STREAM frame with the FIN bit is sent from the Ready state?",
+    "ground_truth": "Sending a STREAM frame with the FIN bit set can cause two state transitions: first from Ready to Send, and then from Send to Data Sent. After all acknowledgments are received, the stream can transition to Data Recvd.",
+    "evidence": "Section 3 notes the Ready-to-Send and Send-to-Data Sent transitions for STREAM plus FIN; the sending state machine then reaches Data Recvd after all stream data is acknowledged.",
+    "type": "state_machine",
+    "difficulty": "medium"
+  }
 ]

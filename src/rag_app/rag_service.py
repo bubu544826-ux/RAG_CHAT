@@ -102,6 +102,8 @@ class RAGService:
             rrf_k=settings.rrf_k,
             reranker_enabled=settings.reranker_enabled,
             reranker_model_name=settings.reranker_model_name,
+            neighbour_expansion=settings.neighbour_expansion_enabled,
+            neighbour_radius=settings.neighbour_radius,
             query_rewrite_enabled=settings.query_rewrite_enabled,
             query_rewrite_mode=settings.query_rewrite_mode,
             max_queries=settings.max_queries,

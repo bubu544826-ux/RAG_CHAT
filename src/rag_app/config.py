@@ -53,7 +53,9 @@ class RetrievalSettings:
     reranker_model_name: str = DEFAULT_RERANKER_MODEL_NAME
     candidate_k: int = 30
     final_top_k: int = 5
-    query_rewrite_enabled: bool = True
+    neighbour_expansion_enabled: bool = True
+    neighbour_radius: int = 1
+    query_rewrite_enabled: bool = False
     query_rewrite_mode: str = "multi_query"
     max_queries: int = 3
 
@@ -70,7 +72,9 @@ RETRIEVAL_SETTINGS = RetrievalSettings(
     ),
     candidate_k=_environment_positive_int("RETRIEVAL_CANDIDATE_K", 30),
     final_top_k=_environment_positive_int("FINAL_TOP_K", 5),
-    query_rewrite_enabled=_environment_bool("QUERY_REWRITE_ENABLED", True),
+    neighbour_expansion_enabled=_environment_bool("NEIGHBOUR_EXPANSION_ENABLED", True),
+    neighbour_radius=_environment_positive_int("NEIGHBOUR_RADIUS", 1),
+    query_rewrite_enabled=_environment_bool("QUERY_REWRITE_ENABLED", False),
     query_rewrite_mode=(
         os.getenv("QUERY_REWRITE_MODE", "multi_query").strip().lower()
     ),
