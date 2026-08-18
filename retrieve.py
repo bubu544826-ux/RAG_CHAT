@@ -20,25 +20,25 @@ DEFAULT_INDEX_PATH = PROJECT_ROOT / "data" / "processed" / "index.json"
 
 def _parse_arguments(arguments: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="从本地 RAG index 中检索与问题最相关的 chunks。"
+        description="Retrieve the chunks most relevant to a question from the local RAG index."
     )
-    parser.add_argument("question", help="要检索的问题")
+    parser.add_argument("question", help="the question to retrieve for")
     parser.add_argument(
         "--top-k",
         type=int,
         default=RETRIEVAL_SETTINGS.final_top_k,
-        help=f"返回结果数量（默认：{RETRIEVAL_SETTINGS.final_top_k}）",
+        help=f"number of results to return (default: {RETRIEVAL_SETTINGS.final_top_k})",
     )
     parser.add_argument(
         "--index",
         type=Path,
         default=DEFAULT_INDEX_PATH,
-        help="Chroma index 目录",
+        help="Chroma index directory",
     )
     parser.add_argument(
         "--baseline",
         action="store_true",
-        help="只用旧的 vector-only 检索，不做 BM25 融合、重排和邻居扩展",
+        help="use the old vector-only retrieval: no BM25 fusion, reranking, or neighbour expansion",
     )
     return parser.parse_args(arguments)
 
@@ -55,7 +55,7 @@ def main(arguments: Sequence[str] | None = None) -> int:
         )
         results = retrieve(args.question, args.index, top_k=args.top_k, **options)
     except (OSError, TypeError, ValueError, EmbeddingError) as exc:
-        print(f"检索失败：{exc}")
+        print(f"Retrieval failed: {exc}")
         return 1
 
     print(json.dumps(results, ensure_ascii=False, indent=2))

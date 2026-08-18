@@ -20,17 +20,17 @@ class RAGEvaluationTest(unittest.TestCase):
     def test_evaluates_three_metrics_and_case_details(self) -> None:
         cases = [
             {
-                "question": "已知问题一",
+                "question": "known question one",
                 "expected_source": "a.txt",
-                "expected_answer_keywords": ["事实 A", "数字 3"],
+                "expected_answer_keywords": ["fact A", "number 3"],
             },
             {
-                "question": "已知问题二",
+                "question": "known question two",
                 "expected_source": "b.txt",
-                "expected_answer_keywords": ["事实 B"],
+                "expected_answer_keywords": ["fact B"],
             },
             {
-                "question": "未知问题",
+                "question": "unknown question",
                 "expected_source": None,
                 "expected_answer_keywords": [],
             },
@@ -38,15 +38,15 @@ class RAGEvaluationTest(unittest.TestCase):
         ask_function = Mock(
             side_effect=[
                 {
-                    "answer": "答案包含事实 A 和数字3。",
+                    "answer": "The answer contains fact A and number3.",
                     "sources": [{"source": "a.txt"}, {"source": "x.txt"}],
                 },
                 {
-                    "answer": "答案没有预期内容。",
+                    "answer": "The answer has none of the expected content.",
                     "sources": [{"source": "x.txt"}, {"source": "b.txt"}],
                 },
                 {
-                    "answer": "根据提供的 context 无法回答该问题。",
+                    "answer": "The provided context does not contain enough information to answer.",
                     "sources": [{"source": "x.txt"}],
                 },
             ]
@@ -68,7 +68,7 @@ class RAGEvaluationTest(unittest.TestCase):
         self.assertTrue(report["cases"][0]["retrieval_hit"])
         self.assertEqual(
             report["cases"][0]["matched_answer_keywords"],
-            ["事实 A", "数字 3"],
+            ["fact A", "number 3"],
         )
         self.assertFalse(report["cases"][1]["retrieval_hit"])
         self.assertTrue(report["cases"][2]["no_answer_refusal_pass"])
@@ -84,8 +84,14 @@ class RAGEvaluationTest(unittest.TestCase):
         self.assertEqual(matched, ["multi factor authentication", "30minutes"])
 
     def test_refusal_check_requires_explicit_refusal_phrase(self) -> None:
-        self.assertTrue(answer_refuses_unknown("现有信息不足，无法确定答案。"))
-        self.assertFalse(answer_refuses_unknown("总部食堂周末九点开门。"))
+        self.assertTrue(
+            answer_refuses_unknown(
+                "The provided context does not contain enough information to answer."
+            )
+        )
+        self.assertFalse(
+            answer_refuses_unknown("The headquarters canteen opens at nine on weekends.")
+        )
 
     def test_default_cases_include_answerable_and_no_answer_questions(self) -> None:
         cases = load_evaluation_cases(DEFAULT_CASES_PATH)
@@ -103,9 +109,9 @@ class RAGEvaluationTest(unittest.TestCase):
                 json.dumps(
                     [
                         {
-                            "question": "未知问题",
+                            "question": "unknown question",
                             "expected_source": None,
-                            "expected_answer_keywords": ["编造的事实"],
+                            "expected_answer_keywords": ["a made-up fact"],
                         }
                     ],
                     ensure_ascii=False,

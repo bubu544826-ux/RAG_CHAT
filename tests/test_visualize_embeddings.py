@@ -28,16 +28,21 @@ class LoadSentencesTest(unittest.TestCase):
     def test_reads_one_sentence_per_line_and_skips_blanks(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             input_path = Path(directory) / "sentences.txt"
-            input_path.write_text("第一句\n\n第二句\n  第三句  \n", encoding="utf-8")
+            input_path.write_text(
+                "first sentence\n\nsecond sentence\n  third sentence  \n",
+                encoding="utf-8",
+            )
 
             sentences = load_sentences(input_path)
 
-        self.assertEqual(sentences, ["第一句", "第二句", "第三句"])
+        self.assertEqual(
+            sentences, ["first sentence", "second sentence", "third sentence"]
+        )
 
     def test_rejects_fewer_than_three_sentences(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             input_path = Path(directory) / "sentences.txt"
-            input_path.write_text("只有一句\n", encoding="utf-8")
+            input_path.write_text("only one sentence\n", encoding="utf-8")
 
             with self.assertRaises(ValueError):
                 load_sentences(input_path)
@@ -53,7 +58,8 @@ class ReduceTo3dTest(unittest.TestCase):
         self.assertEqual(explained_ratio.shape, (3,))
 
     def test_keeps_all_information_when_data_is_already_3d(self) -> None:
-        # 四个点最多张成 3 维空间，所以前 3 个主成分应该保留全部信息。
+        # Four points span at most a 3D space, so the first 3 principal
+        # components should keep all of the information.
         vectors = np.random.default_rng(1).normal(size=(4, 16))
 
         _, explained_ratio = reduce_to_3d(vectors)
@@ -76,11 +82,11 @@ class MainTest(unittest.TestCase):
             self.assertGreater(output_path.stat().st_size, 0)
 
         self.assertGreaterEqual(embed_text_mock.call_count, 3)
-        self.assertIn("原始向量维度：8", output.getvalue())
+        self.assertIn("original vector dimension: 8", output.getvalue())
 
     @patch(
         "scripts.visualize_embeddings.embed_text",
-        side_effect=ValueError("text 不能为空。"),
+        side_effect=ValueError("text must not be empty."),
     )
     def test_reports_embedding_failure(self, embed_text_mock) -> None:
         output = io.StringIO()
@@ -89,7 +95,7 @@ class MainTest(unittest.TestCase):
             exit_code = main([])
 
         self.assertEqual(exit_code, 1)
-        self.assertIn("生成 embedding 失败", output.getvalue())
+        self.assertIn("Failed to generate the embeddings", output.getvalue())
 
 
 if __name__ == "__main__":

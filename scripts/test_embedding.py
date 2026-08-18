@@ -4,16 +4,16 @@ from src.rag_app.embedding import EmbeddingError, embed_text
 
 
 def main() -> int:
-    text = input("请输入一句话：")
+    text = input("Enter a sentence: ")
 
     try:
         vector = embed_text(text)
     except (TypeError, ValueError, EmbeddingError) as exc:
-        print(f"生成 embedding 失败：{exc}")
+        print(f"Failed to generate the embedding: {exc}")
         return 1
 
-    print(f"vector 类型：{type(vector).__name__}")
-    print(f"vector 维度：{len(vector)}")
+    print(f"vector type: {type(vector).__name__}")
+    print(f"vector dimension: {len(vector)}")
     return 0
 
 

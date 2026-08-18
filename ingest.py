@@ -22,13 +22,13 @@ def main() -> int:
             embedding_function=partial(embed_texts, show_progress=True),
         )
     except (OSError, TypeError, ValueError, EmbeddingError) as exc:
-        print(f"生成 index 失败：{exc}")
+        print(f"Failed to build the index: {exc}")
         return 1
 
-    print(f"文件数量：{summary['file_count']}")
-    print(f"chunk 数量：{summary['chunk_count']}")
-    print(f"embedding 数量：{summary['embedding_count']}")
-    print(f"Chroma index 目录：{OUTPUT_PATH.relative_to(PROJECT_ROOT)}")
+    print(f"files: {summary['file_count']}")
+    print(f"chunks: {summary['chunk_count']}")
+    print(f"embeddings: {summary['embedding_count']}")
+    print(f"Chroma index directory: {OUTPUT_PATH.relative_to(PROJECT_ROOT)}")
     return 0
 
 

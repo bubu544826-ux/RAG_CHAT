@@ -45,7 +45,7 @@ class ChatEndpointTest(unittest.TestCase):
 
     def test_chat_returns_answer_and_sources_from_rag_service(self) -> None:
         self.rag_service.ask.return_value = {
-            "answer": "RAG 是检索增强生成。",
+            "answer": "RAG stands for retrieval-augmented generation.",
             "sources": [
                 {
                     "source": "rag_notes.md",
@@ -55,11 +55,11 @@ class ChatEndpointTest(unittest.TestCase):
             ],
         }
 
-        response = self.client.post("/chat", json={"question": "什么是 RAG？"})
+        response = self.client.post("/chat", json={"question": "What is RAG?"})
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), self.rag_service.ask.return_value)
-        self.rag_service.ask.assert_called_once_with("什么是 RAG？")
+        self.rag_service.ask.assert_called_once_with("What is RAG?")
 
     def test_chat_rejects_an_empty_question(self) -> None:
         response = self.client.post("/chat", json={"question": ""})

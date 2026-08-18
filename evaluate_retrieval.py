@@ -28,39 +28,39 @@ EVALUATION_CUTOFFS = (1, 3, 5, 10)
 def _validate_evaluation_cases(cases: object) -> list[dict[str, object]]:
     """Validate the fields needed for label-based retrieval evaluation."""
     if not isinstance(cases, list) or not cases:
-        raise ValueError("评估测试集必须是非空 JSON 数组。")
+        raise ValueError("The evaluation test set must be a non-empty JSON array.")
 
     seen_case_ids: set[str] = set()
     for case in cases:
         if not isinstance(case, dict):
-            raise ValueError("每个评估样本必须是 JSON 对象。")
+            raise ValueError("Every evaluation case must be a JSON object.")
 
         case_id = case.get("id")
         if not isinstance(case_id, str) or not case_id.strip():
-            raise ValueError("每个评估样本都必须包含非空 id。")
+            raise ValueError("Every evaluation case must contain a non-empty id.")
         if case_id in seen_case_ids:
-            raise ValueError(f"评估样本 id 不能重复：{case_id}")
+            raise ValueError(f"Duplicate evaluation case id: {case_id}")
         seen_case_ids.add(case_id)
 
         question = case.get("question")
         if not isinstance(question, str) or not question.strip():
-            raise ValueError(f"评估样本 {case_id} 必须包含非空 question。")
+            raise ValueError(f"Evaluation case {case_id} must contain a non-empty question.")
 
         relevant_chunk_ids = case.get("relevant_chunk_ids")
         if not isinstance(relevant_chunk_ids, list) or not relevant_chunk_ids:
             raise ValueError(
-                f"评估样本 {case_id} 必须包含非空 relevant_chunk_ids 列表。"
+                f"Evaluation case {case_id} must contain a non-empty relevant_chunk_ids list."
             )
         if any(
             not isinstance(chunk_id, str) or not chunk_id.strip()
             for chunk_id in relevant_chunk_ids
         ):
             raise ValueError(
-                f"评估样本 {case_id} 的 relevant_chunk_ids 必须是非空字符串。"
+                f"relevant_chunk_ids of evaluation case {case_id} must be non-empty strings."
             )
         if len(relevant_chunk_ids) != len(set(relevant_chunk_ids)):
             raise ValueError(
-                f"评估样本 {case_id} 的 relevant_chunk_ids 不能重复。"
+                f"relevant_chunk_ids of evaluation case {case_id} must not repeat."
             )
 
     return cases
@@ -80,17 +80,17 @@ def load_evaluation_questions(path: str | Path) -> list[dict[str, object]]:
 def _retrieved_chunk_ids(results: object) -> list[str]:
     """Extract unique chunk IDs from one ranked retrieval result list."""
     if not isinstance(results, list):
-        raise ValueError("Retriever 返回结果必须是列表。")
+        raise ValueError("The retriever must return a list of results.")
 
     chunk_ids: list[str] = []
     for result in results:
         if not isinstance(result, dict):
-            raise ValueError("Retriever 的每条结果必须是对象。")
+            raise ValueError("Every retriever result must be an object.")
         chunk_id = result.get("chunk_id")
         if not isinstance(chunk_id, str) or not chunk_id.strip():
-            raise ValueError("Retriever 的每条结果都必须包含非空 chunk_id。")
+            raise ValueError("Every retriever result must contain a non-empty chunk_id.")
         if chunk_id in chunk_ids:
-            raise ValueError(f"Retriever 返回了重复 chunk_id：{chunk_id}")
+            raise ValueError(f"The retriever returned a duplicate chunk_id: {chunk_id}")
         chunk_ids.append(chunk_id)
 
     return chunk_ids
@@ -117,9 +117,9 @@ def evaluate_retrieval(
 ) -> dict[str, float]:
     """Macro-average Recall, Precision, MRR, and binary NDCG at ``top_k``."""
     if not isinstance(top_k, int) or isinstance(top_k, bool):
-        raise TypeError("top_k 必须是整数。")
+        raise TypeError("top_k must be an integer.")
     if top_k <= 0:
-        raise ValueError("top_k 必须大于 0。")
+        raise ValueError("top_k must be greater than 0.")
     _validate_evaluation_cases(cases)
     options = (
         production_retrieval_options(top_k)
@@ -175,12 +175,12 @@ def calculate_metrics_at_cutoffs(
     """Calculate all requested metrics from one shared set of Top-10 rankings."""
     _validate_evaluation_cases(cases)
     if len(rankings) != len(cases):
-        raise ValueError("排名数量必须与评估样本数量一致。")
+        raise ValueError("The number of rankings must match the number of evaluation cases.")
 
     metrics: dict[str, float] = {}
     for top_k in cutoffs:
         if top_k <= 0:
-            raise ValueError("评估 cutoff 必须大于 0。")
+            raise ValueError("The evaluation cutoff must be greater than 0.")
         recall_total = precision_total = reciprocal_rank_total = ndcg_total = 0.0
         for case, ranked_ids in zip(cases, rankings):
             relevant_ids = set(case["relevant_chunk_ids"])
@@ -298,53 +298,53 @@ def evaluate_pipeline_comparison(
 
 
 def _parse_arguments(arguments: Sequence[str] | None = None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="使用显式相关 chunk 标注评估 Retriever。")
+    parser = argparse.ArgumentParser(description="Evaluate the retriever against explicit relevant-chunk labels.")
     parser.add_argument(
         "--test-set",
         "--questions",
         dest="test_set",
         type=Path,
         default=DEFAULT_TEST_SET_PATH,
-        help="带 relevant_chunk_ids 标注的评估 JSON 文件路径",
+        help="path to the evaluation JSON file labeled with relevant_chunk_ids",
     )
     parser.add_argument(
         "--index",
         type=Path,
         default=DEFAULT_INDEX_PATH,
-        help="Chroma index 目录",
+        help="Chroma index directory",
     )
     parser.add_argument(
         "--top-k",
         type=int,
         default=5,
-        help="参与评估的排名结果数量（默认：5）",
+        help="number of ranked results to evaluate (default: 5)",
     )
     parser.add_argument(
         "--baseline",
         action="store_true",
-        help="只评估旧的 vector-only 基线，便于和历史数字对比",
+        help="evaluate only the old vector-only baseline, for comparison with historical numbers",
     )
     parser.add_argument(
         "--reranker-model",
         dest="reranker_model",
         default=None,
-        help="覆盖 CrossEncoder reranker 模型名",
+        help="override the CrossEncoder reranker model name",
     )
     parser.add_argument(
         "--compare",
         action="store_true",
-        help="运行 vector/hybrid/reranker/neighbour/rewrite 对照实验",
+        help="run the vector/hybrid/reranker/neighbour/rewrite comparison experiments",
     )
     parser.add_argument(
         "--compare-rerankers",
         action="store_true",
-        help="在对照实验中额外评测多个 reranker 模型（首次运行会下载模型）",
+        help="also evaluate several reranker models in the comparison (the first run downloads them)",
     )
     parser.add_argument(
         "--output",
         type=Path,
         default=DEFAULT_REPORT_PATH,
-        help="对照实验 JSON 报告路径",
+        help="path of the comparison experiment JSON report",
     )
     return parser.parse_args(arguments)
 
@@ -366,7 +366,7 @@ def main(arguments: Sequence[str] | None = None) -> int:
             args.output.write_text(
                 json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8"
             )
-            print(f"问题数量：{len(cases)}")
+            print(f"questions: {len(cases)}")
             for pipeline_name, result in report.items():
                 metrics = result["metrics"]
                 latency = result["latency_ms"]
@@ -378,31 +378,31 @@ def main(arguments: Sequence[str] | None = None) -> int:
                     f"NDCG@5={metrics['NDCG@5']:.2f}% "
                     f"median_latency={latency['median']:.2f}ms"
                 )
-            print(f"报告：{args.output}")
+            print(f"report: {args.output}")
             return 0
 
         if args.baseline:
             options = dict(BASELINE_RETRIEVAL_OPTIONS)
-            pipeline_label = "vector-only 基线"
+            pipeline_label = "vector-only baseline"
         else:
             options = production_retrieval_options(args.top_k)
-            pipeline_label = "生产检索管线（与 RAGService 一致）"
+            pipeline_label = "production retrieval pipeline (same as RAGService)"
         if args.reranker_model:
             options["reranker_model_name"] = args.reranker_model
         metrics = evaluate_retrieval(
             cases, args.index, top_k=args.top_k, retrieval_options=options
         )
     except (OSError, json.JSONDecodeError, TypeError, ValueError, EmbeddingError) as exc:
-        print(f"评估失败：{exc}")
+        print(f"Evaluation failed: {exc}")
         return 1
 
-    print(f"问题数量：{len(cases)}")
-    print(f"检索管线：{pipeline_label}")
+    print(f"questions: {len(cases)}")
+    print(f"retrieval pipeline: {pipeline_label}")
     ceiling = precision_ceiling(cases, args.top_k)
     for metric_name, value in metrics.items():
         if metric_name.startswith("Precision@"):
             # Precision@k divides by k, so these labels cap it below 100%.
-            print(f"{metric_name}: {value:.2f}%（本测试集上限 {ceiling:.2f}%）")
+            print(f"{metric_name}: {value:.2f}% (ceiling on this test set: {ceiling:.2f}%)")
         else:
             print(f"{metric_name}: {value:.2f}%")
     return 0

@@ -20,25 +20,25 @@ def _load_model() -> Any:
         from sentence_transformers import SentenceTransformer
     except ImportError as exc:
         raise EmbeddingError(
-            "缺少 sentence-transformers，请先安装 requirements.txt 中的依赖。"
+            "sentence-transformers is missing; install the dependencies listed in requirements.txt first."
         ) from exc
 
     try:
         return SentenceTransformer(EMBEDDING_MODEL_NAME)
     except Exception as exc:
         raise EmbeddingError(
-            f"无法加载 embedding 模型 {EMBEDDING_MODEL_NAME!r}。"
+            f"Failed to load the embedding model {EMBEDDING_MODEL_NAME!r}."
         ) from exc
 
 
 def embed_text(text: str) -> list[float]:
     """Convert one non-empty text string into a normalized embedding vector."""
     if not isinstance(text, str):
-        raise TypeError("text 必须是字符串。")
+        raise TypeError("text must be a string.")
 
     cleaned_text = text.strip()
     if not cleaned_text:
-        raise ValueError("text 不能为空。")
+        raise ValueError("text must not be empty.")
 
     try:
         model = _load_model()
@@ -50,12 +50,12 @@ def embed_text(text: str) -> list[float]:
     except EmbeddingError:
         raise
     except Exception as exc:
-        raise EmbeddingError("生成文本向量失败。") from exc
+        raise EmbeddingError("Failed to generate the text embedding.") from exc
 
     try:
         vector = embedding.tolist()
     except AttributeError as exc:
-        raise EmbeddingError("模型返回了无效的 embedding vector。") from exc
+        raise EmbeddingError("The model returned an invalid embedding vector.") from exc
 
     return _coerce_vector(vector)
 
@@ -67,12 +67,12 @@ def _coerce_vector(vector: Any) -> list[float]:
         or not vector
         or any(isinstance(value, list) for value in vector)
     ):
-        raise EmbeddingError("模型返回了无效的 embedding vector。")
+        raise EmbeddingError("The model returned an invalid embedding vector.")
 
     try:
         return [float(value) for value in vector]
     except (TypeError, ValueError) as exc:
-        raise EmbeddingError("embedding vector 包含非数值元素。") from exc
+        raise EmbeddingError("The embedding vector contains non-numeric elements.") from exc
 
 
 def embed_texts(
@@ -87,18 +87,18 @@ def embed_texts(
     of paying tokenizer and dispatch overhead for every chunk.
     """
     if not isinstance(texts, list):
-        raise TypeError("texts 必须是字符串列表。")
+        raise TypeError("texts must be a list of strings.")
     if batch_size <= 0:
-        raise ValueError("batch_size 必须大于 0。")
+        raise ValueError("batch_size must be greater than 0.")
 
     cleaned_texts = []
     for text in texts:
         if not isinstance(text, str):
-            raise TypeError("texts 必须是字符串列表。")
+            raise TypeError("texts must be a list of strings.")
 
         cleaned_text = text.strip()
         if not cleaned_text:
-            raise ValueError("text 不能为空。")
+            raise ValueError("text must not be empty.")
 
         cleaned_texts.append(cleaned_text)
 
@@ -117,14 +117,14 @@ def embed_texts(
     except EmbeddingError:
         raise
     except Exception as exc:
-        raise EmbeddingError("生成文本向量失败。") from exc
+        raise EmbeddingError("Failed to generate the text embedding.") from exc
 
     try:
         vectors = embeddings.tolist()
     except AttributeError as exc:
-        raise EmbeddingError("模型返回了无效的 embedding vector。") from exc
+        raise EmbeddingError("The model returned an invalid embedding vector.") from exc
 
     if not isinstance(vectors, list) or len(vectors) != len(cleaned_texts):
-        raise EmbeddingError("模型返回的 embedding 数量与输入不一致。")
+        raise EmbeddingError("The model returned a different number of embeddings than inputs.")
 
     return [_coerce_vector(vector) for vector in vectors]

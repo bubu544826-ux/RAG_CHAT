@@ -248,7 +248,7 @@ class RetrievalEvaluationTest(unittest.TestCase):
             exit_code = main(["--top-k", "5"])
 
         self.assertEqual(exit_code, 0)
-        self.assertIn("问题数量：20", output.getvalue())
+        self.assertIn("questions: 20", output.getvalue())
         self.assertIn("Recall@5: 75.12%", output.getvalue())
         self.assertIn("Precision@5: 50.00%", output.getvalue())
         self.assertIn("MRR@5: 62.50%", output.getvalue())

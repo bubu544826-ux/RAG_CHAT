@@ -20,8 +20,8 @@ class GeneratorTest(unittest.TestCase):
         client = Mock()
         client.messages.create.return_value = SimpleNamespace(
             content=[
-                SimpleNamespace(type="text", text="RAG 先检索，"),
-                SimpleNamespace(type="text", text="再生成回答。"),
+                SimpleNamespace(type="text", text="RAG retrieves first, "),
+                SimpleNamespace(type="text", text="then generates the answer."),
             ]
         )
         generator = Generator(
@@ -30,13 +30,13 @@ class GeneratorTest(unittest.TestCase):
             client=client,
         )
 
-        answer = generator.generate("请解释 RAG。")
+        answer = generator.generate("Please explain RAG.")
 
-        self.assertEqual(answer, "RAG 先检索，再生成回答。")
+        self.assertEqual(answer, "RAG retrieves first, then generates the answer.")
         client.messages.create.assert_called_once_with(
             model="test-claude-model",
             max_tokens=256,
-            messages=[{"role": "user", "content": "请解释 RAG。"}],
+            messages=[{"role": "user", "content": "Please explain RAG."}],
         )
 
     def test_rejects_empty_prompt_without_calling_api(self) -> None:
@@ -55,7 +55,7 @@ class GeneratorTest(unittest.TestCase):
         generator = Generator(client=client)
 
         with self.assertRaises(GenerationError) as context:
-            generator.generate("什么是 RAG？")
+            generator.generate("What is RAG?")
 
         self.assertIs(context.exception.__cause__, api_error)
 
@@ -67,7 +67,7 @@ class GeneratorTest(unittest.TestCase):
         generator = Generator(client=client)
 
         with self.assertRaises(GenerationError):
-            generator.generate("什么是 RAG？")
+            generator.generate("What is RAG?")
 
 
 if __name__ == "__main__":

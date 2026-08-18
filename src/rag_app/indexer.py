@@ -64,7 +64,7 @@ def build_index(
     if texts:
         embeddings = embedding_function(texts)
         if len(embeddings) != len(texts):
-            raise ValueError("embedding 数量与 chunk 数量不一致。")
+            raise ValueError("The number of embeddings does not match the number of chunks.")
 
     index_path = Path(output_path)
     _prepare_chroma_directory(index_path)

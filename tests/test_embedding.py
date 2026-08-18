@@ -29,11 +29,11 @@ class EmbedTextTest(unittest.TestCase):
         model = load_model.return_value
         model.encode.return_value = FakeEmbedding()
 
-        vector = embed_text("  RAG 是什么？  ")
+        vector = embed_text("  What is RAG?  ")
 
         self.assertEqual(vector, [0.1, 0.2, 0.3])
         model.encode.assert_called_once_with(
-            "RAG 是什么？",
+            "What is RAG?",
             convert_to_numpy=True,
             normalize_embeddings=True,
         )
@@ -68,11 +68,11 @@ class EmbedTextsTest(unittest.TestCase):
         model = load_model.return_value
         model.encode.return_value = FakeEmbeddingBatch([[0.1, 0.2], [0.3, 0.4]])
 
-        vectors = embed_texts(["  第一段  ", "第二段"], batch_size=8)
+        vectors = embed_texts(["  first passage  ", "second passage"], batch_size=8)
 
         self.assertEqual(vectors, [[0.1, 0.2], [0.3, 0.4]])
         model.encode.assert_called_once_with(
-            ["第一段", "第二段"],
+            ["first passage", "second passage"],
             batch_size=8,
             convert_to_numpy=True,
             normalize_embeddings=True,
@@ -98,7 +98,7 @@ class EmbedTextsTest(unittest.TestCase):
         model.encode.return_value = FakeEmbeddingBatch([[0.1, 0.2]])
 
         with self.assertRaises(EmbeddingError):
-            embed_texts(["第一段", "第二段"])
+            embed_texts(["first passage", "second passage"])
 
     @patch("src.rag_app.embedding._load_model")
     def test_wraps_model_errors(self, load_model: Mock) -> None:

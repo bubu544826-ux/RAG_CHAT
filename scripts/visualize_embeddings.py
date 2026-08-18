@@ -12,37 +12,37 @@ from src.rag_app.embedding import EmbeddingError, embed_text
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 DEFAULT_SENTENCES = [
-    "猫喜欢在窗台上晒太阳。",
-    "小狗在院子里追着球跑。",
-    "这只鸟每天清晨都在唱歌。",
-    "我用 Python 写了一个排序算法。",
-    "这段 JavaScript 代码有一个空指针错误。",
-    "编译器把源代码翻译成机器码。",
-    "今天下午下了一场很大的雨。",
-    "明天的气温会降到零度以下。",
+    "The cat likes to sunbathe on the windowsill.",
+    "The puppy chased a ball around the yard.",
+    "This bird sings every morning at dawn.",
+    "I wrote a sorting algorithm in Python.",
+    "This JavaScript code has a null pointer bug.",
+    "A compiler translates source code into machine code.",
+    "It rained heavily this afternoon.",
+    "Tomorrow the temperature will drop below zero.",
 ]
 
 
 def _parse_arguments(arguments: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="把句子的 embedding 向量降到 3 维并画出来。"
+        description="Reduce sentence embedding vectors to 3 dimensions and plot them."
     )
     parser.add_argument(
         "--input",
         type=Path,
         default=None,
-        help="每行一个句子的文本文件（默认：使用内置示例句子）",
+        help="text file with one sentence per line (default: use the built-in example sentences)",
     )
     parser.add_argument(
         "--output",
         type=Path,
         default=PROJECT_ROOT / "data" / "processed" / "embeddings_3d.png",
-        help="图片保存路径",
+        help="path to save the image to",
     )
     parser.add_argument(
         "--show",
         action="store_true",
-        help="保存后再打开交互窗口，可以旋转查看",
+        help="after saving, open an interactive window so the plot can be rotated",
     )
     return parser.parse_args(arguments)
 
@@ -55,7 +55,7 @@ def load_sentences(input_path: Path | None) -> list[str]:
     lines = input_path.read_text(encoding="utf-8").splitlines()
     sentences = [line.strip() for line in lines if line.strip()]
     if len(sentences) < 3:
-        raise ValueError("至少需要 3 个句子才能降到 3 维。")
+        raise ValueError("At least 3 sentences are needed to reduce to 3 dimensions.")
     return sentences
 
 
@@ -68,8 +68,9 @@ def embed_sentences(sentences: Sequence[str]) -> np.ndarray:
 def reduce_to_3d(vectors: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """Project high-dimensional vectors onto their 3 main directions with PCA.
 
-    PCA 先把数据移到原点，再用 SVD 找出方差最大的三个方向，
-    最后把每个向量投影到这三个方向上，得到可以画出来的 (x, y, z)。
+    PCA first moves the data to the origin, then uses SVD to find the three
+    directions of greatest variance, and finally projects every vector onto
+    those directions to get the plottable (x, y, z).
     """
     centered = vectors - vectors.mean(axis=0)
     _, singular_values, components = np.linalg.svd(centered, full_matrices=False)
@@ -96,8 +97,7 @@ def plot_vectors(
 
     import matplotlib.pyplot as plt
 
-    # 中文标签需要一个能显示汉字的字体，否则 matplotlib 会画成方块。
-    matplotlib.rcParams["font.sans-serif"] = ["Microsoft YaHei", "SimHei", "DejaVu Sans"]
+    matplotlib.rcParams["font.sans-serif"] = ["DejaVu Sans"]
     matplotlib.rcParams["axes.unicode_minus"] = False
 
     figure = plt.figure(figsize=(11, 9))
@@ -114,7 +114,7 @@ def plot_vectors(
     axes.set_xlabel(f"PC1 ({explained_ratio[0]:.1%})")
     axes.set_ylabel(f"PC2 ({explained_ratio[1]:.1%})")
     axes.set_zlabel(f"PC3 ({explained_ratio[2]:.1%})")
-    axes.set_title(f"{len(sentences)} 个句子的 embedding 向量（PCA 降到 3 维）")
+    axes.set_title(f"Embedding vectors of {len(sentences)} sentences (PCA down to 3D)")
 
     legend_text = "\n".join(
         f"{index + 1}. {sentence}" for index, sentence in enumerate(sentences)
@@ -124,7 +124,7 @@ def plot_vectors(
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     figure.savefig(output_path, dpi=150)
-    print(f"图片已保存到：{output_path}")
+    print(f"Image saved to: {output_path}")
 
     if show:
         plt.show()
@@ -138,25 +138,25 @@ def main(arguments: Sequence[str] | None = None) -> int:
     try:
         sentences = load_sentences(args.input)
     except (OSError, ValueError) as exc:
-        print(f"读取句子失败：{exc}")
+        print(f"Failed to read the sentences: {exc}")
         return 1
 
     try:
         vectors = embed_sentences(sentences)
     except (TypeError, ValueError, EmbeddingError) as exc:
-        print(f"生成 embedding 失败：{exc}")
+        print(f"Failed to generate the embeddings: {exc}")
         return 1
 
-    print(f"句子数量：{len(sentences)}")
-    print(f"原始向量维度：{vectors.shape[1]}")
+    print(f"sentences: {len(sentences)}")
+    print(f"original vector dimension: {vectors.shape[1]}")
 
     coordinates, explained_ratio = reduce_to_3d(vectors)
-    print(f"前 3 个主成分保留的信息比例：{explained_ratio.sum():.1%}")
+    print(f"variance kept by the first 3 principal components: {explained_ratio.sum():.1%}")
 
     try:
         plot_vectors(coordinates, sentences, explained_ratio, args.output, args.show)
     except ImportError:
-        print("缺少 matplotlib，请先安装 requirements.txt 中的依赖。")
+        print("matplotlib is missing; install the dependencies listed in requirements.txt first.")
         return 1
 
     return 0

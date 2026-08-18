@@ -41,19 +41,19 @@ class RetrieverTest(unittest.TestCase):
     def test_returns_top_k_chunks_ordered_by_descending_score(self) -> None:
         records = [
             {
-                "text": "不相关",
+                "text": "not relevant",
                 "source": "notes.md",
                 "chunk_id": "notes.md#chunk-0",
                 "embedding": [0.0, 1.0],
             },
             {
-                "text": "最相关",
+                "text": "most relevant",
                 "source": "rag.md",
                 "chunk_id": "rag.md#chunk-0",
                 "embedding": [1.0, 0.0],
             },
             {
-                "text": "部分相关",
+                "text": "partly relevant",
                 "source": "rag.md",
                 "chunk_id": "rag.md#chunk-1",
                 "embedding": [1.0, 1.0],
@@ -66,7 +66,7 @@ class RetrieverTest(unittest.TestCase):
             embedding_function = Mock(return_value=[1.0, 0.0])
 
             results = retrieve(
-                "RAG 是什么？",
+                "What is RAG?",
                 index_path,
                 top_k=2,
                 embedding_function=embedding_function,
@@ -80,7 +80,7 @@ class RetrieverTest(unittest.TestCase):
         self.assertAlmostEqual(results[0]["score"], 1.0, places=5)
         self.assertAlmostEqual(results[1]["score"], 2**-0.5, places=5)
         self.assertNotIn("embedding", results[0])
-        embedding_function.assert_called_once_with("RAG 是什么？")
+        embedding_function.assert_called_once_with("What is RAG?")
 
     def test_returns_all_chunks_when_top_k_exceeds_index_size(self) -> None:
         records = [

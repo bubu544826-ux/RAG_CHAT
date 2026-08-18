@@ -11,11 +11,11 @@ DEFAULT_REPORT_PATH = PROJECT_ROOT / "evaluation_report.json"
 DEFAULT_INDEX_PATH = PROJECT_ROOT / "data" / "processed" / "index.json"
 DEFAULT_TOP_K = 3
 DEFAULT_REFUSAL_PHRASES = (
-    "无法回答",
-    "没有足够信息",
-    "未提供相关信息",
-    "不能确定",
-    "无法确定",
+    "does not contain enough information",
+    "not enough information",
+    "no relevant information",
+    "cannot answer",
+    "unable to answer",
 )
 
 
@@ -23,19 +23,19 @@ def load_evaluation_cases(path: str | Path) -> list[dict[str, object]]:
     """Load and validate answerable and no-answer evaluation cases."""
     cases = json.loads(Path(path).read_text(encoding="utf-8"))
     if not isinstance(cases, list) or not cases:
-        raise ValueError("评估数据必须是非空 JSON 数组。")
+        raise ValueError("The evaluation data must be a non-empty JSON array.")
 
     for item in cases:
         if not isinstance(item, dict):
-            raise ValueError("每条评估数据必须是 JSON 对象。")
+            raise ValueError("Every evaluation case must be a JSON object.")
         if set(item) != {
             "question",
             "expected_source",
             "expected_answer_keywords",
         }:
             raise ValueError(
-                "每条评估数据必须且只能包含 question、expected_source 和 "
-                "expected_answer_keywords。"
+                "Every evaluation case must contain exactly question, "
+                "expected_source, and expected_answer_keywords."
             )
 
         question = item["question"]
@@ -43,20 +43,26 @@ def load_evaluation_cases(path: str | Path) -> list[dict[str, object]]:
         expected_keywords = item["expected_answer_keywords"]
 
         if not isinstance(question, str) or not question.strip():
-            raise ValueError("question 必须是非空字符串。")
+            raise ValueError("question must be a non-empty string.")
         if expected_source is not None and (
             not isinstance(expected_source, str) or not expected_source.strip()
         ):
-            raise ValueError("expected_source 必须是非空字符串或 null。")
+            raise ValueError("expected_source must be a non-empty string or null.")
         if not isinstance(expected_keywords, list) or any(
             not isinstance(keyword, str) or not keyword.strip()
             for keyword in expected_keywords
         ):
-            raise ValueError("expected_answer_keywords 必须是非空字符串组成的数组。")
+            raise ValueError(
+                "expected_answer_keywords must be an array of non-empty strings."
+            )
         if expected_source is None and expected_keywords:
-            raise ValueError("无答案问题的 expected_answer_keywords 必须为空数组。")
+            raise ValueError(
+                "expected_answer_keywords must be an empty array for a no-answer question."
+            )
         if expected_source is not None and not expected_keywords:
-            raise ValueError("有答案问题必须提供至少一个 expected_answer_keywords。")
+            raise ValueError(
+                "An answerable question needs at least one expected_answer_keywords entry."
+            )
 
     return cases
 
@@ -95,11 +101,11 @@ def evaluate_rag(
 ) -> dict[str, object]:
     """Evaluate retrieval, answer keywords, and no-answer refusals."""
     if not cases:
-        raise ValueError("评估数据不能为空。")
+        raise ValueError("The evaluation data must not be empty.")
     if not isinstance(top_k, int) or isinstance(top_k, bool):
-        raise TypeError("top_k 必须是整数。")
+        raise TypeError("top_k must be an integer.")
     if top_k <= 0:
-        raise ValueError("top_k 必须大于 0。")
+        raise ValueError("top_k must be greater than 0.")
 
     retrieval_hits = 0
     keyword_passes = 0
@@ -113,22 +119,24 @@ def evaluate_rag(
         expected_source = item["expected_source"]
         expected_keywords = item["expected_answer_keywords"]
         if not isinstance(question, str) or not isinstance(expected_keywords, list):
-            raise ValueError("评估数据格式无效，请先使用 load_evaluation_cases 加载。")
+            raise ValueError(
+                "Invalid evaluation data format; load it with load_evaluation_cases first."
+            )
 
         response = ask_function(question)
         if not isinstance(response, dict):
-            raise ValueError("ask_function 必须返回字典。")
+            raise ValueError("ask_function must return a dictionary.")
         answer = response.get("answer")
         sources = response.get("sources")
         if not isinstance(answer, str) or not isinstance(sources, list):
-            raise ValueError("问答结果必须包含字符串 answer 和数组 sources。")
+            raise ValueError("The QA result must contain a string answer and an array of sources.")
 
         retrieved_sources = []
         for source_item in sources[:top_k]:
             if not isinstance(source_item, dict) or not isinstance(
                 source_item.get("source"), str
             ):
-                raise ValueError("sources 中的每项都必须包含字符串 source。")
+                raise ValueError("Every item in sources must contain a string source.")
             retrieved_sources.append(source_item["source"])
 
         result: dict[str, object] = {
@@ -191,7 +199,7 @@ def write_report(report: dict[str, object], path: str | Path) -> None:
 
 
 def _parse_arguments(arguments: Sequence[str] | None = None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="运行简单的端到端 RAG evaluation。")
+    parser = argparse.ArgumentParser(description="Run a simple end-to-end RAG evaluation.")
     parser.add_argument("--cases", type=Path, default=DEFAULT_CASES_PATH)
     parser.add_argument("--index", type=Path, default=DEFAULT_INDEX_PATH)
     parser.add_argument("--top-k", type=int, default=DEFAULT_TOP_K)
@@ -211,12 +219,12 @@ def main(arguments: Sequence[str] | None = None) -> int:
         report = evaluate_rag(cases, service.ask, top_k=args.top_k)
         write_report(report, args.output)
     except (OSError, json.JSONDecodeError, TypeError, ValueError, RuntimeError) as exc:
-        print(f"评估失败：{exc}")
+        print(f"Evaluation failed: {exc}")
         return 1
 
     summary = report["summary"]
     print(json.dumps(summary, ensure_ascii=False, indent=2))
-    print(f"完整报告：{args.output}")
+    print(f"Full report: {args.output}")
     return 0
 
 

@@ -1,331 +1,331 @@
- 建议把 MVP 拆成 8 个可独立验收的阶段，逐步串成完整链路：
+  The suggestion is to split the MVP into 8 independently verifiable stages, wired together step by step into the complete chain:
 
-  文档加载 → 文本切分 → 向量化 → 索引 → 检索 → 上下文组装 → LLM 生成 → 引用校验
+  document loading → text chunking → vectorization → indexing → retrieval → context assembly → LLM generation → citation checking
 
-  第一版只支持本地 Markdown/TXT、单轮问答和简单向量检索，不引入 LangChain、LlamaIndex、Agent、认证或对话记忆。
+  The first version only supports local Markdown/TXT, single-turn question answering, and simple vector retrieval. No LangChain, LlamaIndex, agents, authentication, or conversation memory.
 
-  ## 一、需求分析
+  ## 1. Requirements analysis
 
-  ### 核心功能
+  ### Core functionality
 
-  系统需要支持两条流程：
+  The system needs to support two flows:
 
-  1. 知识库构建
+  1. Knowledge base construction
 
-     本地文档 → 读取与标准化 → Chunk → Embedding → 向量索引
+     local documents → reading and normalization → chunk → embedding → vector index
 
-  2. 用户问答
+  2. User question answering
 
-     问题 → Query Embedding → 相似度检索 → Prompt → LLM → Answer + Citations
+     question → query embedding → similarity search → prompt → LLM → answer + citations
 
-  ### MVP 输入与输出
+  ### MVP inputs and outputs
 
-  输入：
+  Inputs:
 
-  - .md 和 .txt 文件
-  - 用户的自然语言问题
-  - 可配置的检索数量 top_k
+  - .md and .txt files
+  - the user's natural language question
+  - a configurable retrieval count top_k
 
-  输出：
+  Outputs:
 
-  - 基于检索内容生成的答案
-  - 引用的文件名和 Chunk 标识
-  - 找不到足够依据时，明确返回“知识库中没有足够信息”
+  - an answer generated from the retrieved content
+  - the cited file names and chunk identifiers
+  - an explicit "the knowledge base does not contain enough information" when there is not enough evidence
 
-  ### 非功能要求
+  ### Non-functional requirements
 
-  - 模块职责单一，避免一个文件完成所有逻辑。
-  - 每个阶段可以使用固定输入独立测试。
-  - 测试不依赖网络或真实 API Key。
-  - Embedding 和 LLM 通过简单接口隔离，方便使用 Fake 实现。
-  - 不在日志或异常中暴露 API Key、文档全文或私人路径。
-  - 生成索引放入 data/，不提交 Git。
+  - Each module has a single responsibility; avoid one file doing everything.
+  - Every stage can be tested independently with fixed inputs.
+  - Tests do not depend on the network or a real API key.
+  - Embedding and the LLM are isolated behind simple interfaces so fake implementations can be swapped in.
+  - Never expose the API key, full document text, or private paths in logs or exceptions.
+  - Generated indexes go into data/ and are not committed to Git.
 
-  ### MVP 暂不包含
+  ### Out of scope for the MVP
 
-  - PDF、Word、网页抓取
+  - PDF, Word, web scraping
   - OCR
   - LangChain / LlamaIndex
-  - Agent 或工具调用
-  - 多轮对话和记忆
-  - 混合检索、重排序
-  - 用户系统和权限控制
+  - Agents or tool calling
+  - Multi-turn conversation and memory
+  - Hybrid retrieval, reranking
+  - User accounts and access control
   - Web UI
-  - 分布式向量数据库
+  - Distributed vector databases
 
-  ## 二、建议的模块边界
+  ## 2. Suggested module boundaries
 
-  建议在 rag-app/src/ 中按职责划分：
+  Suggested split by responsibility inside rag-app/src/:
 
-  - documents：文档读取、格式校验、文本标准化
-  - chunking：文本切分和 Chunk 元数据
-  - embeddings：Embedding 接口及具体实现
-  - index：向量存储、保存、加载和相似度搜索
-  - retrieval：问题向量化、Top-K 检索和阈值过滤
-  - generation：Prompt 组装和 LLM 调用
-  - answers：答案结构、引用组装和引用校验
-  - pipeline：连接上述模块，不承载底层实现
-  - cli：最后阶段提供的命令行入口
+  - documents: document reading, format validation, text normalization
+  - chunking: text splitting and chunk metadata
+  - embeddings: the embedding interface and its concrete implementations
+  - index: vector storage, saving, loading, and similarity search
+  - retrieval: question vectorization, Top-K retrieval, and threshold filtering
+  - generation: prompt assembly and LLM calls
+  - answers: answer structure, citation assembly, and citation checking
+  - pipeline: connects the modules above without carrying low-level implementation
+  - cli: the command-line entry point, provided in the final stage
 
-  关键数据对象建议保持简单：
+  The key data objects should stay simple:
 
-  - Document：文档 ID、来源、正文、元数据
-  - Chunk：Chunk ID、文档 ID、正文、位置、元数据
-  - SearchResult：Chunk、相似度分数、排名
-  - Answer：答案文本、引用列表、是否有充分依据
+  - Document: document ID, source, body text, metadata
+  - Chunk: chunk ID, document ID, body text, position, metadata
+  - SearchResult: chunk, similarity score, rank
+  - Answer: answer text, citation list, whether the evidence is sufficient
 
-  这样可以避免模块间直接传递无结构的字典。
+  This avoids passing unstructured dictionaries between modules.
 
-  ## 三、分阶段开发计划
+  ## 3. Staged development plan
 
-  ### 阶段 0：项目骨架和测试基础
+  ### Stage 0: project skeleton and testing foundation
 
-  目标：建立可持续开发的最小工程结构。
+  Goal: establish the smallest engineering structure that supports continuous development.
 
-  工作范围：
+  Scope of work:
 
-  - 创建 src/、tests/、tests/fixtures/ 和 data/
-  - 准备依赖文件、环境变量示例和 README
-  - 配置 pytest
-  - 确定生成索引和私密文件的忽略规则
+  - Create src/, tests/, tests/fixtures/, and data/
+  - Prepare the dependency file, the environment variable example, and the README
+  - Configure pytest
+  - Decide the ignore rules for generated indexes and private files
 
-  独立验证：
+  Independent verification:
 
-  - Python 可以导入项目模块
-  - compileall 通过
-  - pytest 可以运行一个最小测试
+  - Python can import the project modules
+  - compileall passes
+  - pytest can run one minimal test
 
-  完成标准：项目可以安装、导入、运行测试，但还没有 RAG 功能。
-
-  ———
-
-  ### 阶段 1：文档加载
-
-  目标：把本地 .md 和 .txt 文件转换为统一的 Document。
-
-  工作范围：
-
-  - UTF-8 文本读取
-  - 文件类型校验
-  - 空文件处理
-  - 生成稳定的文档 ID
-  - 保存文件名、来源和类型等元数据
-
-  独立测试：
-
-  - 正确读取 Markdown 和 TXT
-  - 拒绝不支持的文件
-  - 空文件行为明确
-  - 编码或文件不存在时返回可理解的错误
-  - 不泄露不必要的绝对路径
-
-  完成标准：给定文件路径，可以稳定得到标准化 Document。
+  Definition of done: the project installs, imports, and runs its tests, but has no RAG functionality yet.
 
   ———
 
-  ### 阶段 2：Chunk 切分
+  ### Stage 1: document loading
 
-  目标：把 Document 转换成可检索的 Chunk。
+  Goal: turn local .md and .txt files into a uniform Document.
 
-  第一版建议采用简单策略：
+  Scope of work:
 
-  - 优先按段落边界切分
-  - 超长段落再按字符窗口切分
-  - 支持少量 overlap
-  - 不引入复杂语义切分
+  - UTF-8 text reading
+  - File type validation
+  - Empty file handling
+  - Generating a stable document ID
+  - Storing metadata such as file name, source, and type
 
-  每个 Chunk 应保留：
+  Independent tests:
+
+  - Markdown and TXT are read correctly
+  - Unsupported files are rejected
+  - Empty file behaviour is well defined
+  - Encoding problems and missing files return an understandable error
+  - No unnecessary absolute paths are leaked
+
+  Definition of done: given a file path, a normalized Document comes back reliably.
+
+  ———
+
+  ### Stage 2: chunk splitting
+
+  Goal: turn a Document into retrievable chunks.
+
+  A simple strategy is suggested for the first version:
+
+  - Split on paragraph boundaries first
+  - Split over-long paragraphs again with a character window
+  - Support a small amount of overlap
+  - Do not introduce complex semantic splitting
+
+  Every chunk should keep:
 
   - chunk_id
   - document_id
-  - 文本内容
-  - 在文档中的顺序
-  - 来源文件
-  - 可用于引用的位置元数据
+  - the text content
+  - its order within the document
+  - the source file
+  - position metadata usable for citations
 
-  独立测试：
+  Independent tests:
 
-  - 短文档得到一个 Chunk
-  - 长文档得到多个 Chunk
-  - Chunk 大小基本符合配置
-  - overlap 行为正确
-  - 文本顺序没有改变
-  - 元数据可以追溯到原文档
-  - 空白内容不会生成无效 Chunk
+  - A short document yields one chunk
+  - A long document yields several chunks
+  - Chunk size roughly matches the configuration
+  - Overlap behaves correctly
+  - Text order is unchanged
+  - Metadata traces back to the original document
+  - Whitespace-only content does not produce an invalid chunk
 
-  完成标准：Chunk 结果稳定、可追溯、适合后续 Embedding。
-
-  ———
-
-  ### 阶段 3：Embedding 抽象
-
-  目标：将 Chunk 文本转换为固定维度向量。
-
-  先定义简单的 Embedding 接口，再接入真实供应商。测试中使用确定性的 Fake Embedder。
-
-  需要明确的行为：
-
-  - 支持批量文本
-  - 每个输入对应一个向量
-  - 同一实现的向量维度一致
-  - 空输入和服务错误有明确处理
-  - 模型名称和向量维度可以记录到索引元数据
-
-  独立测试：
-
-  - 输入数量和输出数量一致
-  - 维度一致
-  - 批量处理正确
-  - Fake Embedder 结果可重复
-  - 维度不一致时及时报错
-  - 单元测试不调用真实网络
-
-  完成标准：Chunk 可以转换为向量，且上层模块不依赖具体供应商。
+  Definition of done: chunk results are stable, traceable, and suitable for embedding.
 
   ———
 
-  ### 阶段 4：本地向量索引
+  ### Stage 3: embedding abstraction
 
-  目标：保存 Chunk 及其向量，并执行相似度搜索。
+  Goal: turn chunk text into fixed-dimension vectors.
 
-  第一版可使用 NumPy 和余弦相似度，不必立即引入向量数据库。
+  Define a simple embedding interface first, then plug in a real provider. Tests use a deterministic fake embedder.
 
-  工作范围：
+  Behaviour to pin down:
 
-  - 添加向量记录
-  - 保存索引到 data/
-  - 从磁盘重新加载
-  - 校验向量维度
-  - 根据查询向量返回 Top-K 结果
-  - 将搜索结果映射回 Chunk
+  - Batches of text are supported
+  - Every input maps to one vector
+  - Vector dimensions are consistent within one implementation
+  - Empty input and service errors are handled explicitly
+  - The model name and vector dimension can be recorded in the index metadata
 
-  独立测试：
+  Independent tests:
 
-  - 添加和读取记录
-  - 保存后重新加载结果一致
-  - Top-K 排名正确
-  - top_k 大于记录数量时行为正确
-  - 空索引返回空结果
-  - 维度不匹配时报错
+  - The number of inputs matches the number of outputs
+  - Dimensions are consistent
+  - Batch processing is correct
+  - Fake embedder results are reproducible
+  - A dimension mismatch raises promptly
+  - Unit tests never touch the real network
 
-  完成标准：给定查询向量，可以得到排序稳定的相似 Chunk。
-
-  ———
-
-  ### 阶段 5：Retrieval 检索层
-
-  目标：把自然语言问题转换成可使用的检索结果。
-
-  Retriever 负责：
-
-  - 对问题生成 Embedding
-  - 调用向量索引
-  - 应用 top_k
-  - 应用最低相似度阈值
-  - 返回带来源和分数的 SearchResult
-
-  独立测试：
-
-  - 相关问题优先返回相关 Chunk
-  - 不相关问题被阈值过滤
-  - 空问题行为明确
-  - 空索引不会崩溃
-  - 结果包含正确的来源、排名和分数
-
-  完成标准：输入问题，输出经过过滤且可解释的检索结果。
+  Definition of done: chunks can be turned into vectors, and the layers above do not depend on a specific provider.
 
   ———
 
-  ### 阶段 6：LLM 生成
+  ### Stage 4: local vector index
 
-  目标：让 LLM 只根据检索到的上下文回答问题。
+  Goal: store chunks together with their vectors and run similarity search.
 
-  Prompt 应明确要求：
+  The first version can use NumPy and cosine similarity; a vector database is not needed straight away.
 
-  - 仅使用提供的上下文
-  - 不知道时明确说明
-  - 不把外部知识伪装成文档内容
-  - 使用 Chunk 标识支持后续引用
+  Scope of work:
 
-  LLM 同样通过简单接口隔离，单元测试使用 Fake LLM。
+  - Add vector records
+  - Save the index into data/
+  - Reload it from disk
+  - Validate vector dimensions
+  - Return Top-K results for a query vector
+  - Map search results back to chunks
 
-  独立测试：
+  Independent tests:
 
-  - Prompt 包含问题和选中的 Chunk
-  - 没有检索结果时不调用 LLM，或直接返回缺少依据
-  - 上下文顺序与检索排名一致
-  - 模型异常被转换为可理解的应用错误
-  - 测试不需要 API Key
+  - Records can be added and read back
+  - Reloading after saving gives identical results
+  - Top-K ranking is correct
+  - Behaviour is correct when top_k exceeds the number of records
+  - An empty index returns empty results
+  - A dimension mismatch raises
 
-  完成标准：可以根据固定检索上下文生成可预测的回答。
-
-  ———
-
-  ### 阶段 7：答案和引用组装
-
-  目标：输出可以验证来源的最终答案。
-
-  引用至少应包含：
-
-  - 文件名
-  - Chunk ID
-  - Chunk 在文档中的顺序
-  - 可选的原文摘要或片段
-
-  需要防止：
-
-  - LLM 引用了不存在的 Chunk
-  - 引用与检索结果不匹配
-  - 有答案但没有任何可验证依据
-
-  独立测试：
-
-  - 有依据的答案包含有效引用
-  - 无依据时返回统一的缺失答案
-  - 不存在的引用被拒绝或过滤
-  - 引用可以追溯至原始文件
-  - 相同输入得到稳定的引用顺序
-
-  完成标准：答案不仅可读，而且可以追溯和验证。
+  Definition of done: given a query vector, similar chunks come back in a stable order.
 
   ———
 
-  ### 阶段 8：端到端 Pipeline 和 CLI
+  ### Stage 5: the retrieval layer
 
-  目标：将已测试的组件连接起来。
+  Goal: turn a natural language question into usable retrieval results.
 
-  建议提供两个命令：
+  The retriever is responsible for:
 
-  - 构建或更新知识库索引
-  - 向知识库提问
+  - Embedding the question
+  - Calling the vector index
+  - Applying top_k
+  - Applying a minimum similarity threshold
+  - Returning SearchResults carrying the source and the score
 
-  端到端测试使用：
+  Independent tests:
 
-  - 小型 fixture 文档
-  - Fake Embedder
-  - Fake LLM
-  - 临时索引目录
+  - A relevant question returns the relevant chunk first
+  - An irrelevant question is filtered out by the threshold
+  - Empty question behaviour is well defined
+  - An empty index does not crash
+  - Results carry the correct source, rank, and score
 
-  验证内容：
+  Definition of done: a question in, filtered and explainable retrieval results out.
 
-  - 文档能够完整经过所有阶段
-  - 问题能够检索到预期 Chunk
-  - 最终答案包含正确引用
-  - 不相关问题返回“没有足够信息”
-  - 重启并加载索引后结果保持一致
+  ———
 
-  完成标准：完整链路能够离线测试，真实模型只作为可替换配置。
+  ### Stage 6: LLM generation
 
-  ## 四、推荐实施顺序
+  Goal: make the LLM answer only from the retrieved context.
 
-  每次只完成一个阶段：
+  The prompt must explicitly require:
 
-  1. 实现当前阶段的数据结构和模块。
-  2. 编写该阶段的单元测试。
-  3. 运行语法检查和全部已有测试。
-  4. 更新 README，记录阶段行为。
-  5. 确认完成标准后再进入下一阶段。
+  - Using only the provided context
+  - Saying so plainly when the answer is unknown
+  - Never dressing outside knowledge up as document content
+  - Using chunk identifiers so citations can be built later
 
-  真实 Embedding 和 LLM 接入不应成为早期测试的前提。先通过 Fake 实现验证数据流，再接真实 API，能够更容易区分“业务逻辑错误”和“外部模型服务错误”。
+  The LLM is likewise isolated behind a simple interface, and unit tests use a fake LLM.
 
-  下一步应从阶段 0 开始：只建立项目骨架、测试入口和配置约定，不实现文档读取或其他 RAG 功能。
+  Independent tests:
+
+  - The prompt contains the question and the selected chunks
+  - With no retrieval results, the LLM is not called, or a missing-evidence answer is returned directly
+  - Context order matches the retrieval ranking
+  - Model exceptions are converted into understandable application errors
+  - Tests need no API key
+
+  Definition of done: a predictable answer can be generated from a fixed retrieval context.
+
+  ———
+
+  ### Stage 7: answer and citation assembly
+
+  Goal: produce a final answer whose sources can be verified.
+
+  A citation should carry at least:
+
+  - the file name
+  - the chunk ID
+  - the chunk's order within the document
+  - optionally a summary or snippet of the original text
+
+  What must be prevented:
+
+  - The LLM citing a chunk that does not exist
+  - Citations that do not match the retrieval results
+  - An answer with no verifiable evidence behind it
+
+  Independent tests:
+
+  - A grounded answer carries valid citations
+  - With no evidence, a uniform missing-answer response is returned
+  - Non-existent citations are rejected or filtered out
+  - Citations trace back to the original file
+  - The same input produces a stable citation order
+
+  Definition of done: the answer is not only readable but also traceable and verifiable.
+
+  ———
+
+  ### Stage 8: end-to-end pipeline and CLI
+
+  Goal: connect the already-tested components.
+
+  Two commands are suggested:
+
+  - Build or update the knowledge base index
+  - Ask the knowledge base a question
+
+  End-to-end tests use:
+
+  - small fixture documents
+  - a fake embedder
+  - a fake LLM
+  - a temporary index directory
+
+  What to verify:
+
+  - A document passes through every stage intact
+  - A question retrieves the expected chunk
+  - The final answer carries the correct citations
+  - An irrelevant question returns "not enough information"
+  - Results stay consistent after a restart that reloads the index
+
+  Definition of done: the whole chain can be tested offline, with the real models as replaceable configuration.
+
+  ## 4. Recommended implementation order
+
+  Complete one stage at a time:
+
+  1. Implement the data structures and modules for the current stage.
+  2. Write the unit tests for that stage.
+  3. Run the syntax checks and all existing tests.
+  4. Update the README to record the stage's behaviour.
+  5. Confirm the definition of done before moving to the next stage.
+
+  Wiring up a real embedding provider and a real LLM should not be a prerequisite for early testing. Validating the data flow through fake implementations first, and only then connecting the real APIs, makes it much easier to tell a "business logic error" apart from an "external model service error".
+
+  The next step is to start from stage 0: set up only the project skeleton, the test entry point, and the configuration conventions — no document reading or other RAG functionality yet.

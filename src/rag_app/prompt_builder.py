@@ -17,21 +17,21 @@ ANSWER_LANGUAGE_REMINDER = "Answer in English."
 def build_prompt(question: str, retrieved_chunks: list[dict[str, object]]) -> str:
     """Return one prompt containing instructions, context, and the question."""
     if not isinstance(question, str):
-        raise TypeError("question 必须是字符串。")
+        raise TypeError("question must be a string.")
     if not question.strip():
-        raise ValueError("question 不能为空。")
+        raise ValueError("question must not be empty.")
     if not isinstance(retrieved_chunks, list):
-        raise TypeError("retrieved_chunks 必须是列表。")
+        raise TypeError("retrieved_chunks must be a list.")
 
     context_parts: list[str] = []
 
     for position, chunk in enumerate(retrieved_chunks, start=1):
         if not isinstance(chunk, dict):
-            raise TypeError("retrieved_chunks 中的每个 chunk 必须是字典。")
+            raise TypeError("Every chunk in retrieved_chunks must be a dictionary.")
 
         text = chunk.get("text")
         if not isinstance(text, str):
-            raise ValueError("每个 chunk 必须包含字符串类型的 text 字段。")
+            raise ValueError("Every chunk must contain a string 'text' field.")
 
         source = chunk.get("source", "unknown source")
         chunk_id = chunk.get("chunk_id", "unknown id")

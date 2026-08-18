@@ -45,7 +45,7 @@ CONSTRAINT_PATTERNS = (
     re.compile(r"\b[A-Z]{2,}(?:-[A-Z0-9]+)*\b"),
     re.compile(r"\b[\w.-]+\.(?:py|js|ts|json|ya?ml|toml|ini|md|txt|log)\b"),
 )
-NEGATIONS = {"no", "not", "never", "without", "except", "cannot", "can't", "不", "没有", "不能"}
+NEGATIONS = {"no", "not", "never", "without", "except", "cannot", "can't"}
 QUERY_STOP_WORDS = {
     "a", "an", "and", "are", "be", "because", "can", "do", "does", "for",
     "from", "how", "if", "in", "is", "it", "of", "on", "or", "should", "that",
@@ -55,21 +55,21 @@ QUERY_STOP_WORDS = {
 
 def _validate_question_and_top_k(question: str, top_k: int) -> str:
     if not isinstance(question, str):
-        raise TypeError("question 必须是字符串。")
+        raise TypeError("question must be a string.")
     cleaned_question = question.strip()
     if not cleaned_question:
-        raise ValueError("question 不能为空。")
+        raise ValueError("question must not be empty.")
     if not isinstance(top_k, int) or isinstance(top_k, bool):
-        raise TypeError("top_k 必须是整数。")
+        raise TypeError("top_k must be an integer.")
     if top_k <= 0:
-        raise ValueError("top_k 必须大于 0。")
+        raise ValueError("top_k must be greater than 0.")
     return cleaned_question
 
 
 def _open_collection(index_path: str | Path) -> Any:
     chroma_path = Path(index_path)
     if chroma_path.is_file():
-        raise ValueError("检测到旧 JSON index，请先运行 python ingest.py 迁移到 Chroma。")
+        raise ValueError("Found a legacy JSON index; run 'python ingest.py' first to migrate to Chroma.")
     client = chromadb.PersistentClient(path=str(chroma_path))
     return client.get_collection(name=COLLECTION_NAME, embedding_function=None)
 
@@ -84,7 +84,7 @@ def _result(
     source = metadata.get("source")
     chunk_id = metadata.get("chunk_id")
     if not isinstance(source, str) or not isinstance(chunk_id, str):
-        raise ValueError("Chroma metadata 缺少 source 或 chunk_id。")
+        raise ValueError("Chroma metadata is missing 'source' or 'chunk_id'.")
     document_id = metadata.get("document_id", source)
     return {
         "text": text,
@@ -121,14 +121,14 @@ def vector_search(
     metadatas = query_result["metadatas"]
     distances = query_result["distances"]
     if documents is None or metadatas is None or distances is None:
-        raise ValueError("Chroma 查询结果缺少 documents、metadatas 或 distances。")
+        raise ValueError("The Chroma query result is missing documents, metadatas, or distances.")
 
     results: list[dict[str, object]] = []
     for rank, (text, metadata, distance) in enumerate(
         zip(documents[0], metadatas[0], distances[0]), start=1
     ):
         if text is None or metadata is None:
-            raise ValueError("Chroma 查询结果包含空文档或空 metadata。")
+            raise ValueError("The Chroma query result contains an empty document or empty metadata.")
         results.append(_result(text, metadata, 1.0 - float(distance), "vector", rank))
     return results
 
@@ -186,7 +186,7 @@ def lexical_search(
     documents = stored.get("documents") or []
     metadatas = stored.get("metadatas") or []
     if len(documents) != len(metadatas):
-        raise ValueError("Chroma 查询结果中的 documents 与 metadatas 数量不一致。")
+        raise ValueError("The Chroma query result has a different number of documents than metadatas.")
 
     ranked = sorted(
         enumerate(_bm25_scores(cleaned_question, documents)),
@@ -199,7 +199,7 @@ def lexical_search(
         text = documents[index]
         metadata = metadatas[index]
         if text is None or metadata is None:
-            raise ValueError("Chroma 查询结果包含空文档或空 metadata。")
+            raise ValueError("The Chroma query result contains an empty document or empty metadata.")
         results.append(_result(text, metadata, score, "lexical", len(results) + 1))
     return results
 
@@ -211,7 +211,7 @@ def reciprocal_rank_fusion(
 ) -> list[dict[str, object]]:
     """Fuse ranked lists using RRF and deduplicate chunks by ``chunk_id``."""
     if not isinstance(rrf_k, int) or isinstance(rrf_k, bool) or rrf_k <= 0:
-        raise ValueError("rrf_k 必须是正整数。")
+        raise ValueError("rrf_k must be a positive integer.")
     fused_scores: dict[str, float] = {}
     first_result: dict[str, dict[str, object]] = {}
     ranks_by_chunk: dict[str, list[int]] = {}
@@ -330,9 +330,9 @@ def expand_with_neighbours(
     two chunks. Pulling in the neighbours of a hit recovers the other half.
     """
     if not isinstance(radius, int) or isinstance(radius, bool) or radius <= 0:
-        raise ValueError("neighbour_radius 必须是正整数。")
+        raise ValueError("neighbour_radius must be a positive integer.")
     if not isinstance(limit, int) or isinstance(limit, bool) or limit <= 0:
-        raise ValueError("limit 必须是正整数。")
+        raise ValueError("limit must be a positive integer.")
     if not results:
         return []
 
@@ -343,7 +343,7 @@ def expand_with_neighbours(
     for result in results:
         chunk_id = result.get("chunk_id")
         if not isinstance(chunk_id, str):
-            raise ValueError("Retriever 的每条结果都必须包含 chunk_id。")
+            raise ValueError("Every retriever result must contain a chunk_id.")
         if chunk_id not in seen:
             seen.add(chunk_id)
             wanted.append((chunk_id, result))
@@ -409,7 +409,7 @@ def retrieve_candidates(
 ) -> list[dict[str, object]]:
     """Run one retrieval query with backend-level graceful fallbacks."""
     if strategy not in SUPPORTED_STRATEGIES:
-        raise ValueError(f"不支持的 retrieval strategy：{strategy}")
+        raise ValueError(f"Unsupported retrieval strategy: {strategy}")
     if strategy == "vector_only":
         return vector_search(question, index_path, vector_top_k, embedding_function)[
             :candidate_k
@@ -445,7 +445,7 @@ def retrieve_candidates(
     if lexical_results is not None:
         return _ranked_fallback(lexical_results, "lexical", candidate_k)
     raise RuntimeError(
-        f"向量检索和 BM25 检索均失败：vector={vector_error}; lexical={lexical_error}"
+        f"Both vector search and BM25 search failed: vector={vector_error}; lexical={lexical_error}"
     )
 
 
@@ -503,15 +503,15 @@ def generate_search_queries(
     if not enabled or is_precise_query(cleaned_question):
         return [cleaned_question]
     if mode not in SUPPORTED_REWRITE_MODES:
-        raise ValueError(f"不支持的 query rewrite mode：{mode}")
+        raise ValueError(f"Unsupported query rewrite mode: {mode}")
     if not isinstance(max_queries, int) or isinstance(max_queries, bool) or max_queries <= 0:
-        raise ValueError("max_queries 必须是正整数。")
+        raise ValueError("max_queries must be a positive integer.")
 
     rewriter = rewrite_function or rule_based_rewrite
     try:
         rewritten_queries = rewriter(cleaned_question, max_queries)
         if not isinstance(rewritten_queries, list):
-            raise TypeError("Query rewriter 必须返回字符串列表。")
+            raise TypeError("The query rewriter must return a list of strings.")
     except Exception as exc:
         logger.warning("Query rewrite failed; using original query: %s", exc)
         return [cleaned_question]
@@ -630,12 +630,12 @@ def rerank_candidates(
         return []
     scores = list(rerank_function(question, candidates))
     if len(scores) != len(candidates):
-        raise ValueError("Reranker score 数量与候选数量不一致。")
+        raise ValueError("The reranker returned a different number of scores than candidates.")
     scored: list[tuple[int, float, dict[str, object]]] = []
     for index, (candidate, raw_score) in enumerate(zip(candidates, scores)):
         score = float(raw_score)
         if not math.isfinite(score):
-            raise ValueError("Reranker 返回了非有限分数。")
+            raise ValueError("The reranker returned a non-finite score.")
         scored.append((index, score, candidate))
     scored.sort(key=lambda item: (-item[1], item[0]))
 
@@ -687,9 +687,9 @@ def retrieve(
         "candidate_k": pool_size,
     }.items():
         if not isinstance(value, int) or isinstance(value, bool) or value <= 0:
-            raise ValueError(f"{name} 必须是正整数。")
+            raise ValueError(f"{name} must be a positive integer.")
     if pool_size < top_k:
-        raise ValueError("candidate_k 不能小于最终 top_k。")
+        raise ValueError("candidate_k must not be smaller than the final top_k.")
 
     search_queries = generate_search_queries(
         cleaned_question,
